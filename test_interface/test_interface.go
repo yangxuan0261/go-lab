@@ -81,4 +81,5 @@ func test_003() {
 	default:
 		fmt.Println("unknown", value)
 	}
+	fmt.Println("---")
 }
