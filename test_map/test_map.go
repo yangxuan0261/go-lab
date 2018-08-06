@@ -6,7 +6,8 @@ import "fmt"
 
 func main() {
 	// test_map01()
-	test_map02()
+	// test_map02()
+	test_map03()
 }
 
 func test_map01() {
@@ -62,8 +63,27 @@ func test_map02() {
 	fmt.Println("\n--- 分割线 3")
 	countryCapitalMap["China"] = "guangzhou"
 	countryCapitalMap["China"] = "shenzhen" // 重复设置使用最后一个
+
 	for country := range countryCapitalMap {
 		fmt.Println(country, "首都是", countryCapitalMap[country])
 	}
+}
 
+// 用于测试会不会 复制拷贝 元素
+func test_map03() {
+
+	fn := func(tm map[string]int) {
+		tm["aaa"] = 666
+	}
+
+	cm := make(map[string]int)
+	cm["aaa"] = 111
+	cm["bbb"] = 222
+
+	fn(cm)
+
+	fmt.Println("cm", cm) // cm map[aaa:666 bbb:222] 说明是引用传递, 不会复制拷贝元素
+	for key, val := range cm {
+		fmt.Println(key, val)
+	}
 }

@@ -12,8 +12,8 @@ import (
 
 func main() {
 	// test_001()
-	test_0012()
-	// test_002()
+	// test_0012()
+	test_002()
 }
 
 // 定义一个 DivideError 结构
@@ -134,7 +134,7 @@ func myfunc() {
 		}
 	}()
 	badCall()
-	fmt.Printf("After bad call\r\n") // <-- wordt niet bereikt
+	fmt.Printf("After bad call\r\n") // 不会运行
 }
 
 func test_002() {

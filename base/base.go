@@ -1,11 +1,17 @@
-// package base
+package base
 
-package main
+// package main
 
 import (
 	"fmt"
+	"math"
 	"unsafe"
 )
+
+// 下面两种做法都只是为了引入包, 防止自动格式化时 引入包被删除
+// import _ "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options"
+
+var _ = math.Inf
 
 func main() {
 	// test_default()
@@ -14,11 +20,11 @@ func main() {
 	// test_size()
 	// test_defer()
 	// test_switch()
-	// test_select()
-	// test_for()
+	test_for()
 	// test_arr()
 	// test_funcPoint()
-	test_struct()
+	// test_struct()
+	// test_string()
 }
 
 func test_default() {
@@ -47,6 +53,10 @@ func test_default() {
 
 //变量声明
 func test001() {
+	// 记住make只用于map，slice和channel，并且不返回指针。要获得一个显式的指针，使用new进行分配，或者显式地使用一个变量的地址。
+	tm := make(map[string]int)
+	println(tm)
+
 	var aaa int32 // 第一种，指定变量类型，声明后若不赋值，使用默认值。
 	aaa = 123
 
@@ -179,8 +189,10 @@ func test_switch() {
 
 	switch marks {
 	case 90:
+		fmt.Println("--- match 111")
 		grade = "A"
-	case 80:
+	case 80: // 如果这里 再次 case 90 会编译报错, 所以 go 里面不需要 break
+		fmt.Println("--- match 222")
 		grade = "B"
 	case 50, 60, 70:
 		grade = "C"
@@ -220,12 +232,7 @@ func test_switch() {
 	}
 }
 
-func test_select() {
-
-}
-
 func test_for() {
-
 	/* for 循环 */
 	for index := 0; index < 3; index++ { // 和 C 语言的 for 一样：
 		fmt.Printf("index=%d\n", index)
@@ -243,13 +250,18 @@ func test_for() {
 	// for 循环的 range 格式可以对 slice、map、数组、字符串等进行迭代循环。格式如下
 	numbers := [6]int{1, 2, 3, 5}
 	for i, x := range numbers {
+		if i == 5 {
+			break
+			// return
+
+		}
 		fmt.Printf("第 %d 位 x 的值 = %d\n", i, x)
 	}
 
 	fmt.Println("\n--- 分割线 3")
-	for { // 和 C 的 for(;;) 一样
-		fmt.Println("hello")
-	}
+	// for { // 和 C 的 for(;;) 一样,
+	// 	fmt.Println("hello")
+	// }
 }
 
 func test_arr() {
@@ -321,4 +333,8 @@ func test_struct() {
 	u3 := NewUser()
 	fmt.Print(u3, "\n")
 	fmt.Printf("addr:%p\n", u3)
+}
+
+func test_string() {
+
 }
