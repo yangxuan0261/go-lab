@@ -5,18 +5,19 @@ import (
 )
 
 func Test_test001(t *testing.T) {
-	tests := []struct {
-		name string
-	}{
-		// TODO: Add test cases.
-	}
-	for range tests {
-		t.Run("asd", func(t *testing.T) {
-			test001()
-		})
-	}
+	// tests := []struct {
+	// 	name string
+	// }{
+	// 	// TODO: Add test cases.
+	// }
+	// for range tests {
+	// 	t.Run("asd", func(t *testing.T) {
+	// 		test001()
+	// 	})
+	// }
 
-	t.Log("sdfsssssssssd")
+	// t.Log("sdfsssssssssd")
+	test001()
 }
 
 func Test_test_const_iota(t *testing.T) {

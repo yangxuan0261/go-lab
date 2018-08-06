@@ -15,12 +15,12 @@ var _ = math.Inf
 
 func main() {
 	// test_default()
-	// test001()
+	test001()
 	// test_const_iota()
 	// test_size()
 	// test_defer()
 	// test_switch()
-	test_for()
+	// test_for()
 	// test_arr()
 	// test_funcPoint()
 	// test_struct()
@@ -67,6 +67,10 @@ func test001() {
 	// var a string = "abc" // 尝试编译这段代码将得到错误 a declared and not used, 必须被使用
 
 	fmt.Println(aaa, bbb, ccc)
+
+	// var sd bool
+	// sd = 1 > 0 ? true : false // go 不支持 三元运算
+	// fmt.Println("sd:", sd)
 
 	// 多变量声明
 	var x, y int
@@ -298,7 +302,7 @@ func test_funcPoint() {
 	var myfunc2 FnAdd = fn2
 	total2, flag2 := myfunc2(4, 5)
 	fmt.Print(total2, " ", flag2, "\n")
-	fmt.Print(fn2, "\n")
+	// fmt.Print(fn2, "\n")
 }
 
 // 结构体
