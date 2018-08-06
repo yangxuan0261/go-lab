@@ -1,6 +1,6 @@
-package base
+// package base
 
-// package main
+package main
 
 import (
 	"fmt"
@@ -17,6 +17,8 @@ func main() {
 	// test_select()
 	// test_for()
 	// test_arr()
+	// test_funcPoint()
+	test_struct()
 }
 
 func test_default() {
@@ -263,4 +265,60 @@ func test_arr() {
 	for i, v := range balance2 {
 		fmt.Printf("balance2[%d]=%f\n", i, v)
 	}
+}
+
+// 函数指针
+type FnAdd func(int, int) (int, string)
+
+func test_funcPoint() {
+	fn := func(a int, b int) (int, string) {
+		return a + b, "hello"
+	}
+	var myfunc FnAdd = fn
+	total, flag := myfunc(2, 3)
+	fmt.Print(total, " ", flag, "\n")
+
+	fn2 := func(a int, b int) (r1 int, r2 string) {
+		r1 = a + b
+		r2 = "world"
+		return
+	}
+	var myfunc2 FnAdd = fn2
+	total2, flag2 := myfunc2(4, 5)
+	fmt.Print(total2, " ", flag2, "\n")
+	fmt.Print(fn2, "\n")
+}
+
+// 结构体
+type User struct {
+	name string `defaultName` // `` 里面的是注释内容, 并不是默认值
+	age  int8
+}
+
+// 一般会专门起一个方法来New对象
+func NewUser() *User {
+	return &User{
+		name: "defaultName",
+		age:  10,
+	}
+}
+
+func test_struct() {
+	u1 := &User{
+		name: "aaa",
+		age:  12,
+	}
+	fmt.Print(u1, "\n")
+	fmt.Printf("addr:%p\n", u1)
+
+	var u2 *User = &User{
+		name: "bbb",
+		age:  12,
+	}
+	fmt.Print(u2, "\n")
+	fmt.Printf("addr:%p\n", u2)
+
+	u3 := NewUser()
+	fmt.Print(u3, "\n")
+	fmt.Printf("addr:%p\n", u3)
 }

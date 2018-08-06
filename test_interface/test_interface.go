@@ -1,6 +1,6 @@
-// package test_interface
+package test_interface
 
-package main
+// package main
 
 import (
 	"fmt"
@@ -81,5 +81,4 @@ func test_003() {
 	default:
 		fmt.Println("unknown", value)
 	}
-	fmt.Println("---")
 }
