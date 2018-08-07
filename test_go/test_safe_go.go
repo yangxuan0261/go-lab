@@ -50,8 +50,8 @@ func (g *Go) Go(f func(), cb func()) {
 
 func (g *Go) Cb(cb func()) {
 	defer func() {
-		fmt.Println("pendingGo--:", g.pendingGo)
 		g.pendingGo--
+		fmt.Println("pendingGo--:", g.pendingGo)
 		if r := recover(); r != nil {
 			if LenStackBuf > 0 {
 				buf := make([]byte, LenStackBuf)
@@ -93,7 +93,7 @@ func main() {
 		fmt.Println(res)
 	})
 
-	d.Cb(<-d.ChanCb)
+	d.Cb(<-d.ChanCb) // 这里用 ChanCb (chan func() 函数信号) 阻塞, 等 Go() 中执行完 f 后, 函数结束时 (defer) 将发送 回调函数 发送给 ChanCb信号 (g.ChanCb <- cb), 这里接收到信号后 获取到 回调函数 cb 作为 Cb 的形参传进去, 在里面执行 cb()
 
 	// go 2
 	d.Go(func() {
