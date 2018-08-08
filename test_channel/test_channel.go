@@ -1,6 +1,6 @@
-package test_channel
+// package test_channel
 
-// package main
+package main
 
 import (
 	"fmt"
@@ -15,7 +15,8 @@ import (
 func main() {
 	// test_chan01()
 	// test_chan02()
-	test_chan03()
+	// test_chan03()
+	test_chan04()
 }
 
 func test_chan01() {
@@ -113,3 +114,51 @@ func test_chan03() {
 		c1 <- "one" 表示 通知 c1 信号阻塞的地方可以继续运行了, 并往里面丢了一个数据 "one"
 	*/
 }
+
+//-------------
+// 初始化多个 chan, 等待全部返回
+func test_chan04() {
+	num := 3
+	c1 := make(chan int)
+
+	go func() {
+		time.Sleep(time.Second * 1)
+		for index := 0; index < num; index++ {
+			fmt.Println("---index:", index)
+			c1 <- index
+		}
+	}()
+
+	fmt.Println("开始阻塞等待")
+	for index := 0; index < num; index++ {
+		v := <-c1
+		fmt.Println("---v:", v)
+	}
+
+	fmt.Println("程序结束 666")
+}
+
+/*
+num := 3
+c1 := make(chan int, num) // 缓冲区可以存储3个int类型的整数, 一次性将3个整数存入channel，在读取的时候，也是一次性读取.
+							如果要求必须全部存入后才能读取的话, 必须指定缓冲区长度
+开始阻塞等待
+---index: 0
+---index: 1
+---index: 2
+---v: 0
+---v: 1
+---v: 2
+程序结束 666
+
+
+c1 := make(chan int) // 缓冲区默认为1个, 存入和读取也就是混乱的.
+开始阻塞等待
+---index: 0
+---index: 1
+---v: 0
+---v: 1
+---index: 2
+---v: 2
+程序结束 666
+*/

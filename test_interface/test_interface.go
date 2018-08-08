@@ -1,6 +1,6 @@
-package test_interface
+// package test_interface
 
-// package main
+package main
 
 import (
 	"fmt"
@@ -14,7 +14,8 @@ interface{} 像 csharp 中的 Object, 所有类型的基类, 有装箱拆箱操�
 func main() {
 	// test_001()
 	// test_002()
-	test_003()
+	// test_003()
+	test_004()
 }
 
 type Phone interface {
@@ -81,4 +82,33 @@ func test_003() {
 	default:
 		fmt.Println("unknown", value)
 	}
+}
+
+// --------------
+// 通过继承来实现接口
+type Module interface {
+	OnInit()
+	OnDestroy()
+}
+
+type Actor struct {
+}
+
+func (a *Actor) OnInit() {
+	fmt.Println("--- Actor OnInit")
+}
+
+type Cat struct {
+	*Actor
+}
+
+func (c *Cat) OnDestroy() {
+	fmt.Println("--- Cat OnDestroy")
+}
+
+func test_004() {
+	var tor Module
+	tor = new(Cat)
+	tor.OnInit()
+	tor.OnDestroy()
 }
