@@ -40,23 +40,26 @@ func main() {
 
 	wg.Add(1)
 	go readMsg(&wg, c, conn)
-
-	signal.Notify(c, os.Interrupt, os.Kill)
 	wg.Wait()
 
+	signal.Notify(c, os.Interrupt, os.Kill)
+	sig := <-c
 	// conn.Close() // 客户端调了这个关闭, 服务器 read message: EOF
-	sig := "asd" //<-c
 	fmt.Printf("Leaf closing down (signal: %v)\n", sig)
 }
 
 func readMsg(wg *sync.WaitGroup, c chan os.Signal, conn net.Conn) {
+	wg.Done()
+
 	for {
 		//  var buf [50]byte
 		buf := make([]byte, 2)
-		_, err := conn.Read(buf)
+		fmt.Println("--- readMsg")
+		_, err := conn.Read(buf) // 这个是阻塞的
 		if err != nil {
 			fmt.Println("conn closed")
 			c <- os.Kill
+			return
 		} else {
 			dataLen := binary.BigEndian.Uint16(buf) // 读长度
 			if dataLen > 0 {
@@ -65,17 +68,11 @@ func readMsg(wg *sync.WaitGroup, c chan os.Signal, conn net.Conn) {
 				if err2 != nil {
 					fmt.Println("conn closed")
 					c <- os.Kill
+					return
 				} else {
 					fmt.Println("recv msg:", string(buf[:n]))
 				}
 			}
-		}
-
-		select {
-		case <-c:
-			wg.Done()
-			fmt.Println("结束读取")
-			return
 		}
 	}
 }
