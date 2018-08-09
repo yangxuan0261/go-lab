@@ -100,6 +100,8 @@ func test001() {
 	)
 	println(Ea, Eb, Ec) //abc 3 16
 
+	empty := struct{}{}
+	println("empty len:", unsafe.Sizeof(empty)) // 0, 空结构体的长度为 0, 常用于 map里面做value值, 因为 go里面没有 set, 所以用map变相做set
 }
 
 func test_const_iota() {
@@ -220,7 +222,7 @@ func test_switch() {
 
 	var x interface{}
 
-	switch i := x.(type) {
+	switch i := x.(type) { // 还可以做类型检查
 	case nil:
 		fmt.Printf(" x 的类型 :%T", i)
 	case int:
@@ -234,6 +236,7 @@ func test_switch() {
 	default:
 		fmt.Printf("未知型")
 	}
+
 }
 
 func test_for() {

@@ -1,6 +1,6 @@
-package test_leaf
+// package test_leaf
 
-// package main
+package main
 
 import (
 	"encoding/binary"

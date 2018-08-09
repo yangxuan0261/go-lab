@@ -1,5 +1,3 @@
-// package test_interface
-
 package main
 
 import (
@@ -15,7 +13,9 @@ func main() {
 	// test_001()
 	// test_002()
 	// test_003()
-	test_004()
+	// test_004()
+	// test_005()
+	test_006()
 }
 
 type Phone interface {
@@ -111,4 +111,69 @@ func test_004() {
 	tor = new(Cat)
 	tor.OnInit()
 	tor.OnDestroy()
+}
+
+// --------------
+// 类型转换
+type Human struct {
+	name string
+}
+
+type Animal struct {
+	name string
+}
+
+func test_005() {
+	var a1 interface{}
+	a1 = &Human{"aaa"}
+	println("a1:", a1)
+
+	a2 := a1.(*Human)
+	println("a2:", a2)
+
+	// a3 := a1.(*Animal)
+	// println("a3:", a3)
+
+	switch x := a1.(type) {
+	case *Human:
+		println("is *Human")
+		println("x:", x.name)
+	case *Animal:
+		println("is *Animal")
+		println("x:", x)
+	default:
+		println("unknown types")
+		println("x:", x)
+	}
+
+}
+
+// --------------
+// 返回值检查 居然还有这种功效
+func test_006() {
+	var f interface{}
+	f = func([]interface{}) {
+
+	}
+
+	checkFn := func(n int8) {
+		var ok bool
+		switch n {
+		case 0:
+			_, ok = f.(func([]interface{}))
+		case 1:
+			_, ok = f.(func([]interface{}) interface{})
+		case 2:
+			_, ok = f.(func([]interface{}) []interface{})
+		default:
+			panic("bug")
+		}
+
+		if !ok {
+			panic("bug")
+		}
+		return
+	}
+
+	checkFn(0)
 }

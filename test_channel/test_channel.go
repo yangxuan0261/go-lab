@@ -1,6 +1,6 @@
-// package test_channel
+package test_channel
 
-package main
+// package main
 
 import (
 	"fmt"

@@ -1,12 +1,13 @@
-package test_multi_args
+// package test_multi_args
 
-// package main
+package main
 
 import "fmt"
 
 func main() {
 	// test_001()
-	test_002()
+	// test_002()
+	test_003()
 }
 
 func test_001() {
@@ -41,4 +42,44 @@ func test_002() {
 		addr1:0xc0420600c0
 		addr2:0xc0420600c0 // 地址相同
 	*/
+}
+
+type Actor struct {
+	name string
+}
+
+func test_003() {
+	fn1 := func(args []interface{}) {
+		fmt.Printf("fn1 args addr:%p, len:%d\n", args, len(args))
+
+		if args == nil {
+			fmt.Println("fn1 args is nil")
+		} else {
+			fmt.Println("fn1 args:", args)
+		}
+	}
+
+	fn2 := func(args ...interface{}) {
+		fmt.Println("fn2 args:", args, " len:", len(args))
+		fmt.Println("fn2 args[0]:", args[0]) // 如果 fn2() 这样不传参调用的话, 这里会空指针奔溃
+
+		a2 := args[2].(*Actor) // 类型装换, 获取正确类型 *Actor
+		fmt.Println("a2 name:", a2.name)
+	}
+
+	a1 := Actor{"hello"}
+	a2 := &Actor{"world"}
+	fn2(1, a1, a2)
+
+	// fn1() // 报错 not enough arguments in call to fn1, 必须得有参数
+	pi1 := []interface{}{}
+	pi2 := []interface{}{a1}
+	pi3 := []interface{}{a2}
+	fmt.Printf("pi1 addr:%p\n", pi1) // 地址和方法里的地址相同, 说明是个切片都是
+	fmt.Printf("pi2 addr:%p\n", pi2)
+	fmt.Printf("pi3 addr:%p\n", pi3)
+
+	fn1(pi1)
+	fn1(pi2)
+	fn1(pi3)
 }
