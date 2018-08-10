@@ -12,6 +12,13 @@ func init() {
 	fmt.Println("--- init")
 }
 
+/*
+需要指定 launch.json 中的参数为
+
+"program": "${workspaceRoot}/src/GoLab/test_pkg/test_pkg.go", // 指定入口文件
+
+*/
+
 func main() {
 	// test_001()
 	pkg001.SayHello()
