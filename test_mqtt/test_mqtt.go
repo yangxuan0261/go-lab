@@ -16,9 +16,9 @@ import (
 )
 
 func main() {
-	// doConn(nil, "-1", false)
+	doConn(nil, "-1", false)
 	// doMultiConn()
-	doConnWithInput()
+	// doConnWithInput()
 }
 
 func doMultiConn() {
@@ -160,4 +160,5 @@ func doConnWithInput() {
 	signal.Notify(c, os.Interrupt, os.Kill)
 	sig := <-c
 	fmt.Printf("mqant closing down (signal: %v)\n", sig)
+
 }

@@ -10,12 +10,12 @@ interface{} 像 csharp 中的 Object, 所有类型的基类, 有装箱拆箱操�
 */
 
 func main() {
-	// test_001()
+	test_001()
 	// test_002()
 	// test_003()
 	// test_004()
 	// test_005()
-	test_006()
+	// test_006()
 }
 
 type Phone interface {
@@ -45,7 +45,17 @@ func test_001() {
 	phone2 = new(IPhone)
 	phone2.call()
 
-	println(phone1, phone2) // (0x4ce940,0x54ee08) (0x4ce920,0x54ee08), 接口是一个指针
+	println(phone1, phone2) // (0x4ce940,0x54ee08) (0x4ce920,0x54ee08), 接口是一个指针, 第一个是指针的地址, 第二个是所指对象的地址
+
+	var i1 interface{}
+	i1 = phone2
+	println(i1) // (0x4a24e0,0x54ee08)
+
+	v1, ok := i1.(*IPhone)
+	fmt.Println(v1, ok) // &{} true , 类型检查, 需要注意 指针和对象 是有区别的
+	v2, ok := i1.(IPhone)
+	fmt.Println(v2, ok) // {} false
+
 }
 
 // -------------
@@ -68,6 +78,7 @@ func test_002() {
 	fn1(123)
 	fn1(true)
 	fn1(123.2)
+
 }
 
 type Element interface{}
