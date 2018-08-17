@@ -74,6 +74,7 @@ func tcp_protobuf(wg *sync.WaitGroup, ps chan *ProtoSend) {
 		retmsg := &goprotobuf.HelloWorld{}
 		if err = proto.Unmarshal(rb.Result, retmsg); err == nil {
 			// fmt.Println("len:", len(rb.Result), "bytes:", rb.Result)
+			fmt.Println("Error:", rb.Error)
 			fmt.Println(fmt.Sprintf("msgId:%d, topic:%s, body:%s", msg.MessageID(), msg.Topic(), retmsg.String()))
 		}
 	}

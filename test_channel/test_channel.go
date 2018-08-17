@@ -1,6 +1,4 @@
-package test_channel
-
-// package main
+package main
 
 import (
 	"fmt"
@@ -14,28 +12,74 @@ import (
 
 func main() {
 	// test_chan01()
+	// test_chan012()
+	test_chan013_readwrite()
 	// test_chan02()
 	// test_chan03()
-	test_chan04()
+	// test_chan04()
 }
 
 func test_chan01() {
 	show := func(c chan int) {
 		for {
 			data := <-c
-			if 1 == data {
-				fmt.Print("receive ")
-			}
+			fmt.Println("receive:", data)
 		}
 	}
 
 	c := make(chan int)
 	go show(c)
 	for {
-		c <- 1
-		time.Sleep(3000000000)
-		fmt.Print("send ")
+		num := 6
+		fmt.Println("send:", num)
+		c <- num
+		time.Sleep(time.Second * 3)
 	}
+}
+
+// 使用 for range 阻塞 chan, 效果等同 test_chan01
+func test_chan012() {
+	show := func(c chan int) {
+		for b := range c {
+			fmt.Println("receive:", b)
+		}
+	}
+
+	c := make(chan int)
+	go show(c)
+	for {
+		num := 6
+		fmt.Println("send:", num)
+		c <- num
+		time.Sleep(time.Second * 3)
+	}
+}
+
+// chan 的只读,只写,读写
+func test_chan013_readwrite() {
+	fnRW := func(c chan int) { // c可以读写
+		c <- 6
+		val := <-c
+		fmt.Println("val:", val)
+	}
+
+	fnR := func(c <-chan int) { // c只读
+		// c <- 6 // 报错: send to receive-only type <-chan int
+		val := <-c
+		fmt.Println("val:", val)
+	}
+
+	fnW := func(c chan<- int) { // c只写
+		// <-c // 报错: receive from send-only type chan<- int
+		c <- 6
+	}
+
+	ci := make(chan int)
+	go fnRW(ci)
+	go fnR(ci)
+	go fnW(ci)
+
+	select {}
 }
 
 // 多 channel 访问
