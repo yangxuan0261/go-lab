@@ -13,11 +13,11 @@ import (
 
 func main() {
 	// doConn(nil, "-1", false)
-	// test_multiJson(10, true)
+	test_multiJson(1, false)
 	// test_multiProtobuf(1, true)
 	// test_multiProtobuf(10, true)
 	// test_multiProtobuf(10, true)
-	ArgsParser()
+	// ArgsParser()
 }
 
 /*
@@ -120,6 +120,11 @@ func tcp_json(wg *sync.WaitGroup, ps chan *JsonSend) {
 		return
 	}
 
+	// 注册服务端推送
+	this.On("Wilker/TestChat", func(client MQTT.Client, pushMsg MQTT.Message) {
+		fmt.Println("server push, regMsg:", string(pushMsg.Payload()))
+	})
+
 	sendFn := func(topic string, body string) {
 		if topic == "" {
 			sig <- true
@@ -200,7 +205,7 @@ func test_multiJson(num int, isPing bool) {
 }
 
 func ArgsParser() {
-	num := flag.Int("num", 10, "arg is num")
+	num := flag.Int("num", 1, "arg is num")
 	isPing := flag.Bool("isPing", true, "arg is isPing")
 	isProto := flag.Bool("isProto", true, "arg is isProto")
 	flag.Parse()
