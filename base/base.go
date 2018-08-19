@@ -1,6 +1,4 @@
-package base
-
-// package main
+package main
 
 import (
 	"fmt"
@@ -15,7 +13,7 @@ var _ = math.Inf
 
 func main() {
 	// test_default()
-	test001()
+	// test001()
 	// test_const_iota()
 	// test_size()
 	// test_defer()
@@ -25,6 +23,7 @@ func main() {
 	// test_funcPoint()
 	// test_struct()
 	// test_string()
+	test_map_new()
 }
 
 func test_default() {
@@ -273,17 +272,21 @@ func test_for() {
 
 func test_arr() {
 	balance1 := [7]float32{1000.0, 2.0} // 指定长度
-	fmt.Println("len=", len(balance1))
+	fmt.Println("len=", len(balance1))  // len= 7
 	for i, v := range balance1 {
 		fmt.Printf("balance1[%d]=%f\n", i, v)
 	}
 
 	fmt.Println("\n--- 分割线 1")
 	balance2 := [...]float32{1000.0, 2.0, 3.4, 7.0, 50.0} // 动态长度
-	fmt.Println("len=", len(balance2))
+	fmt.Println("len=", len(balance2))                    // len= 5
 	for i, v := range balance2 {
 		fmt.Printf("balance2[%d]=%f\n", i, v)
 	}
+
+	fmt.Println("\n--- 分割线 2")
+	balance3 := [4][2]int{1: {20, 21}, 3: {40, 41}}
+	fmt.Println("balance3=", balance3) // balance3= [[0 0] [20 21] [0 0] [40 41]] // 指定索引赋值, 其他默认是0
 }
 
 // 函数指针
@@ -344,4 +347,29 @@ func test_struct() {
 
 func test_string() {
 
+}
+
+func test_map_new() {
+	num1 := new(int) // 返回指针
+	*num1 = 1
+	fmt.Println("num1:", num1, "*num:", *num1) // num1: 0xc042060058 *num: 1
+
+	// make 只适用于 slice, map, channel
+	slice1 := make([]int, 2, 3)
+	fmt.Println("slice1, len:", len(slice1), "cap:", cap(slice1), "ref:", slice1) // slice1, len: 2 cap: 3 ref: [0 0]
+
+	slice2 := []int{11, 22, 33}
+	fmt.Println("slice1, len:", len(slice2), "cap:", cap(slice2), "ref:", slice2) // slice1, len: 3 cap: 3 ref: [11 22 33]
+
+	m1 := map[string]int{}
+	// m1 := make(map[string]int) // 等价于上一行的 声明及初始化
+	m1["aaa"] = 111
+	m1["bbb"] = 222
+	fn1 := func(arg1 map[string]int) {
+		arg1["aaa"] = 666
+	}
+	fn1(m1)
+	for key, val := range m1 {
+		fmt.Println("kv:", key, val)
+	}
 }

@@ -31,7 +31,8 @@ func test_001() {
 		fmt.Println("strData:", string(strData))
 	}
 
-	stb := &Student{}
+	var stb Student // 只需要声明就可以, 并不需要初始化
+	fmt.Println("stb:", stb)
 	err = json.Unmarshal([]byte(strData), &stb)
 	if err == nil {
 		fmt.Println("stb:", stb)
