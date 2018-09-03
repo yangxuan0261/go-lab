@@ -12,8 +12,9 @@ func main() {
 	// test_slice02()
 	// test_slice03()
 	// test_slice04()
+	test_slice05()
 
-	test_slice_delete()
+	// test_slice_delete()
 }
 
 func printSlice(x []int) {
@@ -191,4 +192,15 @@ func test_slice04() {
 	newSlice5 := slice[1:3:3]                                            // 不需要额外的容量
 	fmt.Println("newSlice5:", len(newSlice5), cap(newSlice5), newSlice5) // newSlice5: 2 2 [123 30]
 
+}
+
+// 防止切除来的切片修改 原有切片的数据, 需要指定第三个参数
+func test_slice05() {
+	slice := []int{10, 20, 30, 40, 50}
+	newSlice1 := slice[1:2:2]
+	newSlice1 = append(newSlice1, 666)                                   // 复制拷贝到新的内存块, 就不会修改到 slice 的数据
+	fmt.Println("slice:", len(slice), cap(slice), slice)                 // slice: 5 5 [10 20 30 40 50]
+	fmt.Println("newSlice1:", len(newSlice1), cap(newSlice1), newSlice1) // newSlice1: 2 2 [20 666]
+
+	// copy(dst, src) // 或者是使用系统 copy 函数
 }

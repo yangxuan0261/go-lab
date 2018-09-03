@@ -9,7 +9,7 @@ import (
 	"sync"
 )
 
-func main() {
+func test_002() {
 	conn, err := net.Dial("tcp", "127.0.0.1:3563")
 	if err != nil {
 		panic(err)
@@ -39,7 +39,7 @@ func main() {
 	c := make(chan os.Signal, 1)
 
 	wg.Add(1)
-	go readMsg(&wg, c, conn)
+	go readMsg11(&wg, c, conn)
 	wg.Wait()
 
 	signal.Notify(c, os.Interrupt, os.Kill)
@@ -48,7 +48,7 @@ func main() {
 	fmt.Printf("Leaf closing down (signal: %v)\n", sig)
 }
 
-func readMsg(wg *sync.WaitGroup, c chan os.Signal, conn net.Conn) {
+func readMsg11(wg *sync.WaitGroup, c chan os.Signal, conn net.Conn) {
 	wg.Done()
 
 	for {

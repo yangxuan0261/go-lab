@@ -13,11 +13,11 @@ import (
 
 func main() {
 	// doConn(nil, "-1", false)
-	test_multiJson(1, false)
+	// test_multiJson(1, false)
 	// test_multiProtobuf(1, true)
 	// test_multiProtobuf(10, true)
 	// test_multiProtobuf(10, true)
-	// ArgsParser()
+	ArgsParser()
 }
 
 /*
@@ -106,7 +106,7 @@ func tcp_json(wg *sync.WaitGroup, ps chan *JsonSend) {
 	sig := make(chan bool, 1)
 
 	this := new(work.MqttWork)
-	opts := this.GetDefaultOptions("tcp://127.0.0.1:3563")
+	opts := this.GetDefaultOptions("tcp://127.0.0.1:3564")
 	opts.SetConnectionLostHandler(func(client MQTT.Client, err error) {
 		fmt.Println("连接断开", err.Error())
 		sig <- true
