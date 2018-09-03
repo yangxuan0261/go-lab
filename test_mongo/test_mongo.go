@@ -8,6 +8,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+// 参考: http://www.itfanr.cc/2017/06/28/golang-connect-to-mongodb/
 // 参考: https://blog.csdn.net/wangshubo1989/article/details/75105397
 
 type Person struct {
