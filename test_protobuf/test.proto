@@ -8,3 +8,34 @@ message HelloWorld
     required string    str = 2;  // str 
     optional int32     opt = 3;  //optional field 
 }
+
+// 公共请求体
+message PBMessageRequest {
+    optional uint32 type = 1;                            // 消息类型
+    optional bytes messageData = 2;                      // 请求数据
+    optional uint64 timestamp = 3;                       // 客户端时间戳
+    optional string version = 4;                         // api版本号
+    optional string token = 14;                          // 用户登录后服务器返回的 token，用于登录校验
+}
+
+// 消息响应包
+message PBMessageResponse {
+    optional uint32 type2 = 3;                            // 消息类型
+    optional bytes messageData = 4;                      // 返回数据
+    optional uint32 resultCode = 6;                      // 返回的结果码
+    optional string resultInfo = 7;                      // 返回的结果消息提示文本（用于错误提示）
+}
+// 所有的接口
+enum PBMessageType {
+    // 学生相关
+    getStudentList = 0;                         // 获取所有学生的列表, PBStudentListReq => PBStudentListRsp
+}
+
+message PBStudentListReq {
+    optional uint32 offset = 1;
+    optional uint32 limit = 2;
+}
+  
+message PBStudentListRsp {
+    repeated uint32 list = 1;
+}
