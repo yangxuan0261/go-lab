@@ -11,8 +11,8 @@ import (
 )
 
 func SayHello(w http.ResponseWriter, req *http.Request) {
-	s, _ := ioutil.ReadAll(req.Body)
-	fmt.Fprintf(os.Stderr, "--- %s", s)
+	reqBytes, _ := ioutil.ReadAll(req.Body)
+	fmt.Fprintf(os.Stderr, "\n--- %s", reqBytes)
 	// w.Write([]byte("Hello world"))
 
 	// msg := &goprotobuf.HelloWorld{
@@ -23,6 +23,20 @@ func SayHello(w http.ResponseWriter, req *http.Request) {
 	// buffer, _ := proto.Marshal(msg)
 	// w.Write(buffer)
 
+	// 上行解包
+	pbReq := &goprotobuf.PBMessageRequest{}
+	_ = proto.Unmarshal(reqBytes, pbReq)
+
+	fmt.Printf("\n --- read Type: %d", *pbReq.Type)
+	fmt.Printf("\n --- read Version: %s", *pbReq.Version)
+	fmt.Printf("\n --- read Token: %s", *pbReq.Token)
+
+	pbReq2 := &goprotobuf.PBStudentListReq{}
+	_ = proto.Unmarshal(pbReq.MessageData, pbReq2)
+	fmt.Printf("\n --- read Offset: %d", *pbReq2.Offset)
+	fmt.Printf("\n --- read Limit: %d", *pbReq2.Limit)
+
+	// 下行数据
 	msg := &goprotobuf.PBStudentListRsp{
 		List: []uint32{1, 2, 3},
 	}
