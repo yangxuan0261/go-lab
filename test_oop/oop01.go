@@ -2,7 +2,9 @@ package main
 
 // package oop01
 
-// 参考: http://wiki.jikexueyuan.com/project/magical-go/object-oriented.html
+// 参考:
+// 面向对象 - http://wiki.jikexueyuan.com/project/magical-go/object-oriented.html
+// Go 面向对象编程（译） - https://juejin.im/post/5d065cad51882523be6a92f2
 
 import (
 	"fmt"
@@ -110,7 +112,7 @@ func test_004() {
 	// w = &xf // 编译报错, 因为 xiaofang 没有实现 read() 方法
 }
 
-// struct里面嵌入 interface
+// struct 里面嵌入 interface
 type xiaoli struct {
 	age int
 	act // 接口成员
@@ -128,7 +130,7 @@ func test_005() {
 	var xl2 act // 只要实现了接口, 就可以赋值调用
 	xl2 = xl
 	xl2.write()
-	// xl2.read() // 执行时会闪退, 因为 xiaoli 没有实现 read() 方法
+	// xl2.read() // 执行时会闪退, 因为 xiaoli 没有实现 read() 方法, 所以不建议使用这种方式, 因为编译期不能提示, 运行期有问题才闪退
 	fmt.Printf("\nxl:%v", xl)
 	fmt.Printf("\nxl2:%v", xl2)
 }
