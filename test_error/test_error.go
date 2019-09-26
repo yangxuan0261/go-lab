@@ -1,6 +1,6 @@
-package test_error
+// package test_error
 
-// package main
+package main
 
 // http://www.runoob.com/go/go-error-handling.html
 
@@ -8,12 +8,14 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strconv"
 )
 
 func main() {
 	// test_001()
 	// test_0012()
-	test_002()
+	// test_002()
+	test_003()
 }
 
 // 定义一个 DivideError 结构
@@ -123,14 +125,22 @@ func protectExec(g func()) {
 //这是一个展示 panic，defer 和 recover 怎么结合使用的完整例子：
 // 参考:http://wiki.jikexueyuan.com/project/the-way-to-go/13.3.html
 
+// defer panic 相当于 try catch
+
 func badCall() {
-	panic("bad end")
+	// 1.
+	// panic("bad end")
+
+	// 2.
+	b := 0
+	a := 10 / b // 除 0
+	_ = a
 }
 
 func myfunc() {
 	defer func() {
-		if e := recover(); e != nil {
-			fmt.Printf("Panicing %s\r\n", e)
+		if err := recover(); err != nil {
+			fmt.Printf("Panicing %s\r\n", err)
 		}
 	}()
 	badCall()
@@ -146,5 +156,48 @@ func test_002() {
 /*
 Calling test
 Panicing bad end
+Test completed
+*/
+
+// --------------- 自定义错误
+
+// 自定义包中的错误处理和 panicking http://wiki.jikexueyuan.com/project/the-way-to-go/13.4.html
+
+type CMyError struct {
+	Age  int
+	Name string
+	Err  error // 继承 error
+}
+
+func myFunc222() {
+	defer func() {
+		if err := recover(); err != nil {
+			myErr, ok := err.(*CMyError) // 动态匹配 CMyError
+			if !ok {
+				fmt.Printf("--- not CMyError\n")
+			} else {
+				fmt.Printf("--- is CMyError, name:%s, err:%v\n", myErr.Name, myErr.Err)
+			}
+		}
+	}()
+	fmt.Printf("myFunc222 111\r\n")
+	num, err := strconv.Atoi("aaa") // 报错
+	if err != nil {
+		panic(&CMyError{Age: 12, Name: "wolegequ", Err: err}) // 实例化 自定义错误 CMyError
+	}
+	_ = num
+	fmt.Printf("myFunc222 222\r\n")
+}
+
+func test_003() {
+	fmt.Printf("Calling test\r\n")
+	myFunc222()
+	fmt.Printf("Test completed\r\n")
+}
+
+/*
+Calling test
+myFunc222 111
+--- is CMyError, name:wolegequ, err:strconv.Atoi: parsing "aaa": invalid syntax
 Test completed
 */
