@@ -57,6 +57,7 @@ func SayHello(w http.ResponseWriter, req *http.Request) {
 
 func main() {
 	http.HandleFunc("/hello", SayHello)
+	// http.HandleFunc("/hello_json", SayHello)
 	http.ListenAndServe(":8001", nil)
 	fmt.Println("---------------")
 	// fmt.Fprintf("%s", "http://127.0.0.1:8001/hello")

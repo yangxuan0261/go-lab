@@ -1,4 +1,6 @@
-package oop01
+package main
+
+// package oop01
 
 // 参考: http://wiki.jikexueyuan.com/project/magical-go/object-oriented.html
 
@@ -9,7 +11,9 @@ import (
 func main() {
 	// test_001()
 	// test_002()
-	test_003()
+	// test_003()
+	test_005()
+	// test_101()
 }
 
 type Actor struct {
@@ -28,7 +32,7 @@ func test_001() {
 
 // 封装特性
 type data struct {
-	val int
+	val int // 开头字母 大写 为 public, 小写 为 private, 别的 package 不能调用 private
 }
 
 func (p_data *data) set(num int) {
@@ -58,20 +62,21 @@ type parent struct {
 }
 
 type child struct {
-	parent
-	num int
+	parent // 继承 parent
+	num    int
 }
 
 func test_003() {
 	var c child
-	c = child{parent{1}, 2}
+	c = child{parent{1}, 2} // 这样初始化值必须按顺序赋值
 	fmt.Println(c.num)
 	fmt.Println(c.val)
 }
 
-// 继承特性
+// 多态特性, 实现接口
 type act interface {
 	write()
+	read()
 }
 
 type xiaoming struct {
@@ -80,8 +85,12 @@ type xiaoming struct {
 type xiaofang struct {
 }
 
-func (xm *xiaoming) write() {
+func (xm *xiaoming) write() { // 只要实现了 act 的接口, 就可以将 xiaofang 的地址赋值给 act (interface) 变量.
 	fmt.Println("xiaoming write")
+}
+
+func (xm *xiaoming) read() {
+	fmt.Println("xiaofang write")
 }
 
 func (xf *xiaofang) write() {
@@ -97,6 +106,29 @@ func test_004() {
 	w = &xm
 	w.write()
 
-	w = &xf
-	w.write()
+	_ = xf
+	// w = &xf // 编译报错, 因为 xiaofang 没有实现 read() 方法
+}
+
+// struct里面嵌入 interface
+type xiaoli struct {
+	age int
+	act // 接口成员
+}
+
+func (this *xiaoli) write() { // 实现接口
+	fmt.Printf("\nxiaoli write, age:%d", this.age)
+}
+
+func test_005() {
+	xl := &xiaoli{}
+	xl.age = 123
+	xl.write()
+
+	var xl2 act // 只要实现了接口, 就可以赋值调用
+	xl2 = xl
+	xl2.write()
+	// xl2.read() // 执行时会闪退, 因为 xiaoli 没有实现 read() 方法
+	fmt.Printf("\nxl:%v", xl)
+	fmt.Printf("\nxl2:%v", xl2)
 }
