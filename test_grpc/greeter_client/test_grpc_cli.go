@@ -1,7 +1,7 @@
 package main
 
 import (
-	pb "GoLab/test_grpc/protos"
+	pb "GoLab/test_grpc/aaa"
 	"context"
 	"log"
 	"os"
@@ -41,3 +41,7 @@ func main() {
 	log.Printf("--- from srv, Greeting %s", r.Message)
 
 }
+
+// build 一个 exe 程序:
+// 1. cd GoLab/test_grpc
+// 2. go build -o ./greeter_client/grpc_client.exe ./greeter_client/test_grpc_cli.go
