@@ -22,7 +22,7 @@ func main() {
 func test_chan01() {
 	show := func(c chan int) {
 		for {
-			data := <-c
+			data := <-c // 阻塞 c, 直至有东西发送到 c
 			fmt.Println("receive:", data)
 		}
 	}
@@ -32,7 +32,7 @@ func test_chan01() {
 	for {
 		num := 6
 		fmt.Println("send:", num)
-		c <- num
+		c <- num // 将 num 发送到 c
 		time.Sleep(time.Second * 3)
 	}
 }
