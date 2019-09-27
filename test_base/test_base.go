@@ -66,10 +66,47 @@ func test_dynamicCast() {
 	} else {
 		fmt.Printf("--- ptr1 is not CDog \n")
 	}
+
+	Print := func(i interface{}) {
+		switch i.(type) {
+		case string:
+			fmt.Printf("type is string,value is:%v\n", i.(string))
+			break
+		case float64:
+			fmt.Printf("type is float32,value is:%v\n", i.(float64))
+			break
+		case int:
+			fmt.Printf("type is int,value is:%v\n", i.(int))
+			break
+		default:
+			fmt.Printf("type is unknown\n")
+		}
+	}
+	var i interface{}
+	i = "hello"
+	Print(i)
+	i = 100
+	Print(i)
+	i = 1.29
+	Print(i)
+}
+
+func testLambda() {
+	// https://blog.csdn.net/wangshubo1989/article/details/79217291
+	text := "hello"
+	foo := func(age11 int) (int, string) {
+		fmt.Printf("--- text:%s, age11:%d\n", text, age11)
+		return 666, "world"
+	}
+
+	// calling the closure
+	age22, value := foo(123)
+	fmt.Printf("--- value:%s, age22:%d\n", value, age22)
 }
 
 func main() {
-	test_string_int_float()
+	// test_string_int_float()
 	// test_type()
 	// test_dynamicCast()
+	testLambda()
 }
