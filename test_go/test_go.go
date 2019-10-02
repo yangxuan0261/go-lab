@@ -1,6 +1,6 @@
-package test_go
+// package test_go
 
-// package main
+package main
 
 import (
 	"fmt"
