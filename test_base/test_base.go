@@ -6,7 +6,11 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
+	"strings"
 )
+
+// Golang常用包有哪些？- https://www.zhihu.com/question/22009370
+// https://godoc.org/
 
 func test_string_int_float() {
 	// #string到int
@@ -91,6 +95,20 @@ func test_dynamicCast() {
 	Print(i)
 }
 
+// https://studygolang.com/articles/5769
+func testString() {
+	Slash := func(r rune) rune {
+		if r == '\\' {
+			return '/'
+		}
+		return r
+	}
+
+	s := "C:\\Windows\\System32\\FileName"
+	ms := strings.Map(Slash, s)
+	fmt.Printf("%q\n", ms) // "C:/Windows/System32/FileName"
+}
+
 func testLambda() {
 	// https://blog.csdn.net/wangshubo1989/article/details/79217291
 	text := "hello"
@@ -104,9 +122,39 @@ func testLambda() {
 	fmt.Printf("--- value:%s, age22:%d\n", value, age22)
 }
 
+func testFor() {
+
+	for i := 1; i < 10; i++ { // 和 C 语言的 for 一样:
+		fmt.Printf("--- i:%d\n", i)
+	}
+
+	cnt := 1
+	flag := true
+	for flag { // 和 C 的 while 一样：
+		if cnt == 5 {
+			flag = false
+		} else {
+			fmt.Printf("--- cnt:%d\n", cnt)
+			cnt++
+		}
+	}
+
+	cnt222 := 1
+	for { // 和 C 的 for(;;) 一样：
+		if cnt222 == 5 {
+			break
+		} else {
+			fmt.Printf("--- cnt222:%d\n", cnt222)
+			cnt222++
+		}
+	}
+}
+
 func main() {
 	// test_string_int_float()
 	// test_type()
 	// test_dynamicCast()
-	testLambda()
+	// testLambda()
+	// testString()
+	testFor()
 }

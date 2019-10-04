@@ -1,13 +1,11 @@
-package test_map
-
-// package main
+package main
 
 import "fmt"
 
 func main() {
-	// test_map01()
+	test_map01()
 	// test_map02()
-	test_map03()
+	// test_map03()
 }
 
 func test_map01() {
@@ -21,19 +19,22 @@ func test_map01() {
 	countryCapitalMap["India "] = "新德里"
 
 	/*使用键输出地图值 */
-	for country, val := range countryCapitalMap {
+	for country, val := range countryCapitalMap { // 遍历
 		fmt.Println(country, countryCapitalMap[country])
 		fmt.Println("val", val)
 	}
 
 	/*查看元素在集合中是否存在 */
-	captial, ok := countryCapitalMap["美国"] /*如果确定是真实的,则存在,否则不存在 */
-	/*fmt.Println(captial) */
-	/*fmt.Println(ok) */
-	if ok {
+	if captial, ok := countryCapitalMap["美国"]; ok {
 		fmt.Println("美国的首都是", captial)
 	} else {
 		fmt.Println("美国的首都不存在")
+	}
+
+	if captial, ok := countryCapitalMap["Japan"]; ok {
+		fmt.Println("Japan的首都是", captial)
+	} else {
+		fmt.Println("Japan的首都不存在")
 	}
 }
 
