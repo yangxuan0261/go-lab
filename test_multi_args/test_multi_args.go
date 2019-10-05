@@ -1,5 +1,3 @@
-// package test_multi_args
-
 package main
 
 import "fmt"
@@ -48,6 +46,10 @@ type Actor struct {
 	name string
 }
 
+type Animal struct {
+	name string
+}
+
 func test_003() {
 	fn1 := func(args []interface{}) {
 		fmt.Printf("fn1 args addr:%p, len:%d\n", args, len(args))
@@ -63,8 +65,11 @@ func test_003() {
 		fmt.Println("fn2 args:", args, " len:", len(args))
 		fmt.Println("fn2 args[0]:", args[0]) // 如果 fn2() 这样不传参调用的话, 这里会空指针奔溃
 
-		a2 := args[2].(*Actor) // 类型装换, 获取正确类型 *Actor
-		fmt.Println("a2 name:", a2.name)
+		if a2, ok := args[2].(*Actor); ok { // 类型装换, 获取正确类型 *Actor
+			fmt.Println("a2 name:", a2.name)
+		} else {
+			fmt.Println("a2 is not *Animal")
+		}
 	}
 
 	a1 := Actor{"hello"}

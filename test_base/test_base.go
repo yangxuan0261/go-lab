@@ -150,11 +150,43 @@ func testFor() {
 	}
 }
 
+type bbbFunc func(int, string)
+
+func aaaFunc(arg1 int, arg2 string) {
+	fmt.Printf("--- arg1:%d, arg2:%s\n", arg1, arg2)
+}
+
+type CBall struct {
+	name string
+}
+
+func (self *CBall) Run(speed int) {
+	fmt.Printf("--- CBall, name:%s, run speed:%d\n", self.name, speed)
+}
+
+func testFuncPtr() {
+	var funcPtr1 func(int, string) // 函数指针
+	funcPtr1 = aaaFunc
+	funcPtr1(123, "hello")
+
+	var funcPtr2 bbbFunc // 函数指针
+	funcPtr2 = aaaFunc
+	funcPtr2(456, "world")
+
+	insBall := &CBall{name: "Tom"}
+	insBall.Run(666)
+
+	var funcPtr3 func(int)
+	funcPtr3 = insBall.Run // 实例对象的函数
+	funcPtr3(777)
+}
+
 func main() {
 	// test_string_int_float()
 	// test_type()
 	// test_dynamicCast()
 	// testLambda()
 	// testString()
-	testFor()
+	// testFor()
+	testFuncPtr()
 }
