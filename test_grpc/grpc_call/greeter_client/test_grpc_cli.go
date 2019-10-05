@@ -1,7 +1,7 @@
 package main
 
 import (
-	pb "GoLab/test_grpc/aaa"
+	pb "GoLab/test_grpc/grpc_call/aaa"
 	"context"
 	"log"
 	"os"
