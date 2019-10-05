@@ -17,6 +17,7 @@ type server struct {
 func (s *server) GetStream(req *pro.StreamReqData, res pro.Greeter_GetStreamServer) error {
 	i := 0
 	for {
+		log.Println("--- srv GetStream req data:", req.Data) // req 没有定义为 stream, 可以直接 .xxx 获取属性值
 		i++
 		res.Send(&pro.StreamResData{Data: "--- srv GetStream"})
 		time.Sleep(1 * time.Second)
@@ -50,7 +51,7 @@ func (this *server) AllStream(allStr pro.Greeter_AllStreamServer) error {
 	go func() {
 		for {
 			data, _ := allStr.Recv()
-			log.Println("--- srv AllStream recv:", data)
+			log.Println("--- srv AllStream recv:", data.Data)
 		}
 		wg.Done()
 	}()
