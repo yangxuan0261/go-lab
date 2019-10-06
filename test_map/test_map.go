@@ -2,12 +2,6 @@ package main
 
 import "fmt"
 
-func main() {
-	test_map01()
-	// test_map02()
-	// test_map03()
-}
-
 func test_map01() {
 	var countryCapitalMap map[string]string /*创建集合 map[KeyType]ValueType*/
 	countryCapitalMap = make(map[string]string)
@@ -87,4 +81,34 @@ func test_map03() {
 	for key, val := range cm {
 		fmt.Println(key, val)
 	}
+}
+
+type CDog struct {
+	name string
+	age  int
+}
+
+func (self *CDog) Run(speed int) {
+	fmt.Printf("--- CDog.Run, name:%s, age:%d, speed:%d\n", self.name, self.age, speed)
+}
+
+func test_value() {
+	dogMap := map[string]*CDog{ // key: string, value:*CDog (CDog指针)
+		"xxx": &CDog{name: "xxx", age: 111}, // 初始化 map
+	}
+	dogMap["aaa"] = &CDog{name: "aaa", age: 123}
+	dogMap["bbb"] = &CDog{name: "bbb", age: 456}
+	dogMap["ccc"] = &CDog{name: "ccc", age: 789}
+	for k, v := range dogMap {
+		fmt.Println("------ key:", k)
+		dogMap[k].Run(666)
+		v.Run(777)
+	}
+}
+
+func main() {
+	// test_map01()
+	// test_map02()
+	// test_map03()
+	test_value()
 }
