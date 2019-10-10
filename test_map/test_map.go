@@ -104,6 +104,8 @@ func test_value() {
 		dogMap[k].Run(666)
 		v.Run(777)
 	}
+
+	fmt.Println("--- len:", len(dogMap)) // --- len: 4
 }
 
 func main() {

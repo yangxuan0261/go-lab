@@ -6,17 +6,6 @@ import "fmt"
 从 slice或数组 中创建slice, 都是共享底层数组, 如果不同享数据, 得使用 copy 函数拷贝数据
 */
 
-// 类似 c++ stl 中的 vector, 动态增长数组
-func main() {
-	// test_slice01()
-	// test_slice02()
-	// test_slice03()
-	// test_slice04()
-	test_slice05()
-
-	// test_slice_delete()
-}
-
 func printSlice(x []int) {
 	fmt.Printf("len=%d cap=%d slice=%v\n", len(x), cap(x), x)
 }
@@ -203,4 +192,29 @@ func test_slice05() {
 	fmt.Println("newSlice1:", len(newSlice1), cap(newSlice1), newSlice1) // newSlice1: 2 2 [20 666]
 
 	// copy(dst, src) // 或者是使用系统 copy 函数
+}
+
+func test_emptySlice() {
+	type CDog struct {
+		name string
+		age  int
+	}
+	var dogArr []*CDog
+	fmt.Printf("--- dogArr:%v\n", &dogArr)
+	fmt.Printf("--- dogArr len:%d\n", len(dogArr)) // len:0
+
+	dogArr = []*CDog{}                             // 空数组
+	fmt.Printf("--- dogArr len:%d\n", len(dogArr)) // len:0
+}
+
+// 类似 c++ stl 中的 vector, 动态增长数组
+func main() {
+	// test_slice01()
+	// test_slice02()
+	// test_slice03()
+	// test_slice04()
+	// test_slice05()
+	// test_slice_delete()
+
+	test_emptySlice()
 }

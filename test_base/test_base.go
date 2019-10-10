@@ -5,6 +5,7 @@ package main
 import (
 	"fmt"
 	"reflect"
+	"runtime/debug"
 	"strconv"
 	"strings"
 )
@@ -181,6 +182,25 @@ func testFuncPtr() {
 	funcPtr3(777)
 }
 
+func testPtr() {
+	ins1 := CBall{name: "hello"}
+	ins2 := &ins1
+	fmt.Printf("--- ins1 addr:%p\n", &ins1)
+	fmt.Printf("--- ins2 addr:%p\n", ins2)
+}
+
+func testPrintStack() {
+	func1 := func() {
+		fmt.Println("--- fucn1")
+		debug.PrintStack()
+	}
+	func2 := func() {
+		func1()
+		fmt.Println("--- fucn2")
+	}
+	func2()
+}
+
 func main() {
 	// test_string_int_float()
 	// test_type()
@@ -188,5 +208,7 @@ func main() {
 	// testLambda()
 	// testString()
 	// testFor()
-	testFuncPtr()
+	// testFuncPtr()
+	// testPtr()
+	testPrintStack()
 }
