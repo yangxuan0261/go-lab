@@ -13,8 +13,8 @@ import (
 func main() {
 	// test_001()
 	// test_002()
-	// test_003()
-	test_005()
+	test_003()
+	// test_005()
 	// test_101()
 }
 
@@ -63,16 +63,36 @@ type parent struct {
 	val int
 }
 
+func (self *parent) Run(speed int) {
+	fmt.Printf("--- parent, val:%d, speed:%d\n", self.val, speed)
+}
+
 type child struct {
-	parent // 继承 parent
+	*parent // 继承 parent
+	num     int
+}
+
+type child2 struct {
+	parent // 继承 parent, 一般集成父类还是用 值类型,
 	num    int
+}
+
+func (self *child2) Run(speed int) {
+	self.parent.Run(speed) // 调用父类方法, 等价于其他语言的 super.xxx()
+	fmt.Printf("--- child2, val:%d, speed:%d\n", self.val, speed)
 }
 
 func test_003() {
 	var c child
-	c = child{parent{1}, 2} // 这样初始化值必须按顺序赋值
+	c = child{parent: &parent{1}, num: 2} // 这样初始化值必须按顺序赋值
 	fmt.Println(c.num)
 	fmt.Println(c.val)
+
+	c.Run(111)        // 直接调用父类方法
+	c.parent.Run(222) // 通过父类调用父类方法
+
+	c2 := child2{parent: parent{33}, num: 3} // 这样初始化值必须按顺序赋值
+	c2.Run(333)
 }
 
 // 多态特性, 实现接口
