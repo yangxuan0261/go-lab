@@ -160,27 +160,34 @@ Test completed
 
 // 自定义包中的错误处理和 panicking http://wiki.jikexueyuan.com/project/the-way-to-go/13.4.html
 
+type IMyErr interface {
+	Log(args ...interface{}) string
+}
+
 type CMyError struct {
 	Age  int
 	Name string
-	Err  error // 继承 error
+}
+
+func (self *CMyError) Log(args ...interface{}) string { // 实现 IMyErr 的所有接口
+	return fmt.Sprintf("--- is CMyError, name:%s\n", self.Name)
 }
 
 func myFunc222() {
 	defer func() {
 		if err := recover(); err != nil {
-			myErr, ok := err.(*CMyError) // 动态匹配 CMyError
+			myErr, ok := err.(IMyErr) // 动态匹配 IMyErr
 			if !ok {
-				fmt.Printf("--- not CMyError\n")
+				fmt.Printf("--- unknown error\n")
 			} else {
-				fmt.Printf("--- is CMyError, name:%s, err:%v\n", myErr.Name, myErr.Err)
+				fmt.Println("--- myErr:", myErr.Log())
 			}
 		}
 	}()
 	fmt.Printf("myFunc222 111\r\n")
 	num, err := strconv.Atoi("aaa") // 报错
 	if err != nil {
-		panic(&CMyError{Age: 12, Name: "wolegequ", Err: err}) // 实例化 自定义错误 CMyError
+		panic(&CMyError{Age: 12, Name: "wolegequ"}) // 实例化 自定义错误 CMyError, 将在 recover() 中获取到这个 interface{} 参数
 	}
 	_ = num
 	fmt.Printf("myFunc222 222\r\n")

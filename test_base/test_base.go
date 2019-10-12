@@ -57,6 +57,18 @@ func test_type() {
 	fmt.Printf("--- str1 type:%s\n", mt3.Name()) // --- str1 type:string
 }
 
+type IActor interface {
+	Run(speed int)
+}
+
+type CPig struct {
+	name string
+}
+
+func (self *CPig) Run(speed int) {
+	fmt.Printf("--- CPig.Run, name:%s, speed:%d\n", self.name, speed)
+}
+
 func test_dynamicCast() {
 	type CDog struct {
 	}
@@ -94,6 +106,15 @@ func test_dynamicCast() {
 	Print(i)
 	i = 1.29
 	Print(i)
+
+	pig := &CPig{name: "hello"}
+	var actor interface{}
+	actor = pig
+	if actIns, actOk := actor.(IActor); actOk { // 接口的匹配指针不需要 *, actor 必须是 指针才能匹配成功, 如果是 对象 话将匹配失败
+		actIns.Run(666)
+	} else {
+		fmt.Println("--- cast IActor fail")
+	}
 }
 
 // https://studygolang.com/articles/5769
@@ -204,11 +225,11 @@ func testPrintStack() {
 func main() {
 	// test_string_int_float()
 	// test_type()
-	// test_dynamicCast()
+	test_dynamicCast()
 	// testLambda()
 	// testString()
 	// testFor()
 	// testFuncPtr()
 	// testPtr()
-	testPrintStack()
+	// testPrintStack()
 }
