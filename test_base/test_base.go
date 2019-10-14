@@ -206,7 +206,7 @@ func testFuncPtr() {
 func testPtr() {
 	ins1 := CBall{name: "hello"}
 	ins2 := &ins1
-	fmt.Printf("--- ins1 addr:%p\n", &ins1)
+	fmt.Printf("--- ins1 addr:%p\n", &ins1) // 打印指针地址
 	fmt.Printf("--- ins2 addr:%p\n", ins2)
 }
 
