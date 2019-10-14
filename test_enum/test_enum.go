@@ -20,7 +20,7 @@ var enumMap = map[EnumType]string{
 	EPolicyAVG: "EPolicyAVG",
 }
 
-// switch 据说性能没有 map 的块
+// switch 与 map 的性能比较: https://segmentfault.com/a/1190000011361164
 // func (p EnumType) String() string { // 重写 String() 方法
 // 	switch p {
 // 	case Policy_MIN:
