@@ -37,7 +37,11 @@ var enumMap = map[EnumType]string{
 // }
 
 func (p EnumType) String() string {
-	return enumMap[p]
+	if val, ok := enumMap[p]; ok {
+		return val
+	} else {
+		return "Unknown enum"
+	}
 }
 
 func foo(p EnumType) {
