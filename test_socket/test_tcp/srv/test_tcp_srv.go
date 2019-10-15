@@ -40,19 +40,21 @@ func (this *CAgent) Done() {
 
 func (this *CAgent) ReadMsg() {
 	buf := make([]byte, 4096, 4096)
-	//读消息
-	cnt, err := this.conn.Read(buf)
-	if err != nil {
-		panic(err)
+
+	cnt, err := this.conn.Read(buf) //读消息
+	if err != nil {                 // 客户端主动断线
+		log.Println("--- CAgent.ReadMsg, err:", err)
+		this.cancel()
+		return
 	}
 
 	stReceive := &stProto.UserInfo{}
 	pData := buf[:cnt]
 
-	//protobuf解码
-	err = proto.Unmarshal(pData, stReceive)
+	err = proto.Unmarshal(pData, stReceive) //protobuf 解码
 	if err != nil {
-		panic(err)
+		log.Println("--- proto.Unmarshal, err:", err)
+		return
 	}
 
 	log.Println("receive", this.conn.RemoteAddr(), stReceive)
@@ -97,7 +99,6 @@ func main() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, os.Kill)
 	s := <-c
-	log.Println("--- exist, signal 111:", s)
 	cancel()
 	log.Println("--- exist, signal 222:", s)
 }
