@@ -33,3 +33,7 @@ func test_001() {
 	println("mt3:", mt3)
 	println("msgID3:", msgID3) // msgID3: // m3 是任意指针, 无法识别到具体类型
 }
+
+func test_str2func() {
+	// https://blog.csdn.net/wowzai/article/details/9327405
+}

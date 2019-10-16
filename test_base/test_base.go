@@ -4,10 +4,15 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
+	"os/signal"
 	"reflect"
 	"runtime/debug"
 	"strconv"
 	"strings"
+	"syscall"
+	"time"
 )
 
 // Golang常用包有哪些？- https://www.zhihu.com/question/22009370
@@ -222,14 +227,59 @@ func testPrintStack() {
 	func2()
 }
 
+func testOsInterrupt() {
+
+	go func() {
+		time.Sleep(time.Second * 3)
+		os.Exit(0)
+	}()
+
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, os.Kill)
+	log.Println("--- testOsInterrupt")
+
+	s := <-c
+	log.Println("--- exist, signal:", s)
+}
+
+func testOsInterrupt22() {
+	sigs := make(chan os.Signal, 1)
+	done := make(chan bool, 1)
+	signal.Notify(sigs, os.Interrupt, os.Kill, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	go func() {
+		time.Sleep(time.Second * 2)
+		// fmt.Println("--- try exit")
+		// os.Exit(1)
+		sig := <-sigs
+		fmt.Println()
+		fmt.Println(sig)
+		done <- true
+	}()
+
+	fmt.Println("awaiting signal")
+	<-done
+	fmt.Println("exiting")
+}
+
+func testFmt() {
+	a := 1
+	fmt.Printf("a:%v\n", a) // %v 可以打印所有东西
+
+	b := float32(123.123456)
+	fmt.Printf("b:%0.f\n", b)
+}
+
 func main() {
 	// test_string_int_float()
 	// test_type()
-	test_dynamicCast()
+	// test_dynamicCast()
 	// testLambda()
 	// testString()
 	// testFor()
 	// testFuncPtr()
 	// testPtr()
 	// testPrintStack()
+	// testOsInterrupt()
+	// testOsInterrupt22()
+	testFmt()
 }

@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	var wg sync.WaitGroup
+	var wg sync.WaitGroup // struct, 不允许复制拷贝, 只能用指针的形式传递
 
 	for i := 0; i < 5; i++ {
 		// 计数加 1

@@ -194,17 +194,36 @@ func test_slice05() {
 	// copy(dst, src) // 或者是使用系统 copy 函数
 }
 
+type CDog struct {
+	name string
+	age  int
+}
+
 func test_emptySlice() {
-	type CDog struct {
-		name string
-		age  int
-	}
+
 	var dogArr []*CDog
-	fmt.Printf("--- dogArr:%v\n", &dogArr)
+	if dogArr == nil {
+		fmt.Println("--- is nil") // is nil, dogArr 所指向的对象 为 nil, 用 len 判断即可
+	}
+	fmt.Printf("--- dogArr:%p\n", &dogArr)         // 0xc000064440 有地址
 	fmt.Printf("--- dogArr len:%d\n", len(dogArr)) // len:0
 
-	dogArr = []*CDog{}                             // 空数组
-	fmt.Printf("--- dogArr len:%d\n", len(dogArr)) // len:0
+	dogArr2 := []*CDog{}                             // 空数组
+	fmt.Printf("--- dogArr2 len:%d\n", len(dogArr2)) // len:0
+}
+
+func test_copy() {
+	arr1 := []*CDog{
+		&CDog{name: "aaa"},
+		&CDog{name: "bbb"},
+	}
+
+	arr2 := make([]*CDog, len(arr1))
+	copy(arr2, arr1)
+
+	for _, val := range arr2 {
+		fmt.Printf("--- name:%s\n", val.name)
+	}
 }
 
 // 类似 c++ stl 中的 vector, 动态增长数组
@@ -216,5 +235,6 @@ func main() {
 	// test_slice05()
 	// test_slice_delete()
 
-	test_emptySlice()
+	// test_emptySlice()
+	test_copy()
 }
