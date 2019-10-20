@@ -261,12 +261,18 @@ func testOsInterrupt22() {
 	fmt.Println("exiting")
 }
 
-func testFmt() {
-	a := 1
-	fmt.Printf("a:%v\n", a) // %v 可以打印所有东西
+func testThreeCalc() {
+	// b := true
+	// a = b ? "aaa" || "bbb" // go 木有 三元运算
+}
 
-	b := float32(123.123456)
-	fmt.Printf("b:%0.f\n", b)
+func testDefer() {
+	defer fmt.Println("aaa")
+	defer fmt.Println("bbb")
+	/*
+	   bbb
+	   aaa // 栈, 后进先出
+	*/
 }
 
 func main() {
@@ -281,5 +287,6 @@ func main() {
 	// testPrintStack()
 	// testOsInterrupt()
 	// testOsInterrupt22()
-	testFmt()
+	// testThreeCalc()
+	testDefer()
 }

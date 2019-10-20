@@ -3,10 +3,15 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"reflect"
+
+	"github.com/goinggo/mapstructure"
 )
 
 func main() {
-	test_001()
+	// test_json_struct()
+	test_json_map()
+	// test_map_struct()
 }
 
 type Student struct {
@@ -17,7 +22,7 @@ type Student struct {
 	Price   float32
 }
 
-func test_001() {
+func test_json_struct() {
 	st := &Student{
 		Name:    "Xiao Ming",
 		Age:     16,
@@ -37,4 +42,74 @@ func test_001() {
 	if err == nil {
 		fmt.Println("stb:", stb)
 	}
+}
+
+func test_json_map() {
+	fmt.Println("--- json to map")
+
+	jsonStr := `
+	{
+		"user_name":"amy",
+		"user_id":7,
+		"user_age":18,
+		"student":{"Name":"world","Age":456}
+	}
+`
+	var mapResult map[string]interface{}
+	err := json.Unmarshal([]byte(jsonStr), &mapResult)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(mapResult)
+
+	fmt.Println("--- map to json")
+	mapInstances := map[string]interface{}{"user_name": "amy", "user_id": 7, "user_age": 18}
+	mapInstances["student"] = Student{Name: "hello", Age: 123}
+
+	jsonBytes, err := json.Marshal(mapInstances)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(string(jsonBytes))
+}
+
+type Account struct {
+	Name string `json:"user_name"`
+	ID   int32  `json:"user_id"`
+	Age  uint32 `json:"user_age"`
+}
+
+func test_map_struct() {
+	fmt.Println("--- map to struct")
+	mapInstances := make(map[string]interface{})
+	mapInstances["Name"] = "amy"
+	mapInstances["ID"] = 7
+	mapInstances["Age"] = 18
+
+	var account1 Account
+	err := mapstructure.Decode(mapInstances, &account1)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(account1)
+
+	fmt.Println("--- struct to map")
+	account2 := Account{
+		Name: "amy",
+		ID:   007,
+		Age:  18,
+	}
+
+	obj1 := reflect.TypeOf(account2)
+	obj2 := reflect.ValueOf(account2)
+
+	var data = make(map[string]interface{})
+	for i := 0; i < obj1.NumField(); i++ {
+		data[obj1.Field(i).Name] = obj2.Field(i).Interface()
+	}
+
+	fmt.Println(data)
 }

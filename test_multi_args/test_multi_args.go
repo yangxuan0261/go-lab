@@ -5,7 +5,8 @@ import "fmt"
 func main() {
 	// test_001()
 	// test_002()
-	test_003()
+	// test_003()
+	test_004()
 }
 
 func test_001() {
@@ -87,4 +88,23 @@ func test_003() {
 	fn1(pi1)
 	fn1(pi2)
 	fn1(pi3)
+}
+
+func test_004() {
+	func1 := func(nums ...int) {
+		fmt.Printf("--- nums:%+v\n", nums)
+	}
+
+	arr1 := []int{
+		4, 5, 6,
+	}
+
+	// func1(1, 2, 3, arr1...) // 错误
+
+	arr0 := []int{
+		1, 2, 3,
+	}
+
+	arr0 = append(arr0, arr1...) // 正确
+	func1(arr0...)
 }

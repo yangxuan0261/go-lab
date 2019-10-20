@@ -9,13 +9,16 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"sync"
+	"time"
 )
 
 func main() {
 	// test_001()
 	// test_0012()
 	// test_002()
-	test_003()
+	// test_003()
+	test_004()
 }
 
 // 定义一个 DivideError 结构
@@ -197,6 +200,40 @@ func test_003() {
 	fmt.Printf("Calling test\r\n")
 	myFunc222()
 	fmt.Printf("Test completed\r\n")
+}
+
+func test_004() {
+	defer func() {
+		if err := recover(); err != nil {
+			log.Printf("--- error 111, msg:%v\n", err)
+		}
+	}()
+
+	var wg sync.WaitGroup
+	wg.Add(1)
+
+	go func() {
+		defer func() { // panic 只能在对应的 goroutine 中捕获
+			if err := recover(); err != nil {
+				log.Printf("--- error 222, msg:%v\n", err)
+			}
+			wg.Done()
+		}()
+
+		time.Sleep(time.Second * 3)
+		panic("--- err")
+	}()
+
+	go func() {
+		log.Println("--- hello")
+		time.Sleep(time.Second)
+	}()
+
+	log.Println("--- start")
+	// wg.Wait()
+	for {
+	}
+	log.Println("--- end")
 }
 
 /*

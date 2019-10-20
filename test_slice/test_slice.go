@@ -226,6 +226,19 @@ func test_copy() {
 	}
 }
 
+func test_arrAppendArr() {
+	arr1 := []int{
+		4, 5, 6,
+	}
+
+	arr0 := []int{
+		1, 2, 3,
+	}
+
+	arr0 = append(arr0, arr1...) // 正确
+	fmt.Printf("--- arr0:%+v\n", arr0)
+}
+
 // 类似 c++ stl 中的 vector, 动态增长数组
 func main() {
 	// test_slice01()
@@ -236,5 +249,6 @@ func main() {
 	// test_slice_delete()
 
 	// test_emptySlice()
-	test_copy()
+	// test_copy()
+	test_arrAppendArr()
 }
