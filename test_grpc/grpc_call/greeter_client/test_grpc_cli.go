@@ -3,19 +3,49 @@ package main
 import (
 	pb "GoLab/test_grpc/grpc_call/aaa"
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"sync"
 	"time"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 )
 
 const (
 	address     = "localhost:50051"
 	defaultName = "world"
 )
+
+func getTls() grpc.DialOption {
+	cert, err := tls.LoadX509KeyPair("../conf/server.pem", "../conf/server.key")
+	if err != nil {
+		log.Fatalf("tls.LoadX509KeyPair err: %v", err)
+	}
+
+	certPool := x509.NewCertPool()
+	ca, err := ioutil.ReadFile("../conf/ca.pem")
+	if err != nil {
+		log.Fatalf("ioutil.ReadFile err: %v", err)
+	}
+
+	if ok := certPool.AppendCertsFromPEM(ca); !ok {
+		log.Fatalf("certPool.AppendCertsFromPEM err")
+	}
+
+	tlsCfg := &tls.Config{
+		Certificates:       []tls.Certificate{cert},
+		RootCAs:            certPool,
+		InsecureSkipVerify: true,
+	}
+
+	creds := credentials.NewTLS(tlsCfg)
+	return grpc.WithTransportCredentials(creds)
+}
 
 func testCall() {
 	//创建一个gRPC频道，指定连接的主机名和服务器端口
@@ -45,14 +75,25 @@ func testCall() {
 }
 
 func testStream() {
-	conn, err := grpc.Dial(address, grpc.WithInsecure())
+	// conn, err := grpc.Dial(address, grpc.WithInsecure()) // 无 tls 证书
+	conn, err := grpc.Dial(address, getTls()) // 有 tls 证书
+
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
 	cl := pb.NewGreeterClient(conn)
 
-	stream, err := cl.SayBye(context.Background())
+	valueCtx := context.WithValue(context.Background(), "key1", "value1") // 专门需要一个 parent ctx 才能 cancel
+
+	stream, err := cl.SayBye(valueCtx)
+	if err != nil {
+		log.Printf("--- cl.SayBye, err:%+v\n", err)
+		return
+	}
+	md, _ := stream.Header() // 获取 srv SetHeader 值
+	log.Printf("--- srv hdr:%+v\n", md)
+
 	if err != nil {
 		log.Println("err:", err)
 		return
@@ -97,3 +138,7 @@ func main() {
 	// testCall()
 	testStream()
 }
+
+// 踩坑
+// 1. 客户端 tls 报错: x509: certificate is not valid for any names, but wanted to match localhost
+// > 将 InsecureSkipVerify: false, 改为 InsecureSkipVerify: true,

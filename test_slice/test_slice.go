@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
 /*
 从 slice或数组 中创建slice, 都是共享底层数组, 如果不同享数据, 得使用 copy 函数拷贝数据
@@ -239,6 +242,84 @@ func test_arrAppendArr() {
 	fmt.Printf("--- arr0:%+v\n", arr0)
 }
 
+type Person struct {
+	Name string
+	Age  int
+}
+
+// 按照 Person.Age 从大到小排序
+type PersonSlice []Person
+
+func (a PersonSlice) Len() int { // 重写 Len() 方法
+	return len(a)
+}
+func (a PersonSlice) Swap(i, j int) { // 重写 Swap() 方法
+	a[i], a[j] = a[j], a[i]
+}
+func (a PersonSlice) Less(i, j int) bool { // 重写 Less() 方法， 从大到小排序
+	return a[j].Age < a[i].Age
+}
+
+// 封装成 wrap
+type PersonWrapper struct { //注意此处
+	people []Person
+	by     func(p, q *Person) bool
+}
+
+func (pw PersonWrapper) Len() int { // 重写 Len() 方法
+	return len(pw.people)
+}
+func (pw PersonWrapper) Swap(i, j int) { // 重写 Swap() 方法
+	pw.people[i], pw.people[j] = pw.people[j], pw.people[i]
+}
+func (pw PersonWrapper) Less(i, j int) bool { // 重写 Less() 方法
+	return pw.by(&pw.people[i], &pw.people[j])
+}
+
+func test_sort() {
+	fmt.Println("--- 基础类型排序")
+	// 基础类型
+	intList := []int{2, 4, 3, 5, 7, 6, 9, 8, 1, 0}
+	float8List := []float64{4.2, 5.9, 12.3, 10.0, 50.4, 99.9, 31.4, 27.81828, 3.14}
+	stringList := []string{"a", "c", "b", "d", "f", "i", "z", "x", "w", "y"}
+
+	sort.Sort(sort.Reverse(sort.IntSlice(intList))) // 逆序
+	sort.Sort(sort.Reverse(sort.Float64Slice(float8List)))
+	sort.Sort(sort.Reverse(sort.StringSlice(stringList)))
+
+	fmt.Printf("%v\n%v\n%v\n", intList, float8List, stringList)
+
+	fmt.Println()
+	// 数据结构
+	// 参考: https://itimetraveler.github.io/2016/09/07/%E3%80%90Go%E8%AF%AD%E8%A8%80%E3%80%91%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B%E6%8E%92%E5%BA%8F%E5%92%8C%20slice%20%E6%8E%92%E5%BA%8F/
+	people := []Person{
+		{"shang san", 12},
+		{"aaa", 12},
+		{"zzz", 12},
+		{"li si", 30},
+		{"wang wu", 52},
+		{"zhao liu", 26},
+	}
+
+	fmt.Println(people)
+
+	sort.Sort(PersonSlice(people)) // 按照 Age 的逆序排序
+	fmt.Println(people)
+
+	sort.Sort(sort.Reverse(PersonSlice(people))) // 按照 Age 的升序排序
+	fmt.Println(people)
+
+	fmt.Println("--- 字段优先级排序")
+	sort.Sort(PersonWrapper{people, func(a, b *Person) bool {
+		if a.Age == b.Age { // 排序优先级 Age > Name
+			return a.Name > b.Name
+		} else {
+			return a.Age < b.Age // Age 递减排序
+		}
+	}})
+	fmt.Println(people)
+}
+
 // 类似 c++ stl 中的 vector, 动态增长数组
 func main() {
 	// test_slice01()
@@ -250,5 +331,6 @@ func main() {
 
 	// test_emptySlice()
 	// test_copy()
-	test_arrAppendArr()
+	// test_arrAppendArr()
+	test_sort()
 }

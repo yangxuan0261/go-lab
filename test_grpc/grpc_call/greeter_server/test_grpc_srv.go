@@ -3,13 +3,19 @@ package main
 import (
 	pb "GoLab/test_grpc/grpc_call/aaa"
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net"
 	"sync"
 	"time"
 
 	"google.golang.org/grpc"
+
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/metadata"
 )
 
 const port = ":50051"
@@ -24,7 +30,16 @@ func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloRe
 }
 
 func (*server) SayBye(srv pb.Greeter_SayByeServer) error {
-	log.Printf("-- srv SayBye begin\n")
+	ctx := srv.Context()
+
+	// 设置头部信息, cli 可以获取到
+	hdr := metadata.MD{}
+	hdr["aaa"] = []string{"a-111", "a-222"}
+	srv.SetHeader(hdr)
+
+	value := ctx.Value("key1")
+	_ = value
+	log.Printf("-- srv SayBye begin, ctx value:%+v\n", ctx) // 每一个连接进来都是一个独立的 connection
 
 	wg := sync.WaitGroup{}
 	wg.Add(2)
@@ -34,10 +49,11 @@ func (*server) SayBye(srv pb.Greeter_SayByeServer) error {
 		for {
 			data, err := srv.Recv()
 			if err != nil {
-
+				// io.EOF
+				log.Printf("-- srv Recv err:%+v\n", err)
 				return
 			}
-			log.Printf("-- srv recv:%+v\n", data)
+			log.Printf("-- srv Recv:%+v\n", data)
 		}
 	}()
 
@@ -45,7 +61,12 @@ func (*server) SayBye(srv pb.Greeter_SayByeServer) error {
 		defer wg.Done()
 		cnt := int32(1)
 		for {
-			srv.Send(&pb.HelloReply{Message: fmt.Sprintf("srv msg-%d", cnt)})
+			err := srv.Send(&pb.HelloReply{Message: fmt.Sprintf("srv msg-%d", cnt)})
+			if err != nil {
+				// io.EOF
+				log.Printf("-- srv Send err:%+v\n", err)
+				return
+			}
 			cnt++
 			time.Sleep(time.Second)
 		}
@@ -53,6 +74,33 @@ func (*server) SayBye(srv pb.Greeter_SayByeServer) error {
 
 	wg.Wait()
 	return nil
+}
+
+// TLS认证
+func getCreds() grpc.ServerOption {
+	cert, err := tls.LoadX509KeyPair("../conf/server.pem", "../conf/server.key")
+	if err != nil {
+		log.Fatalf("tls.LoadX509KeyPair err: %v", err)
+	}
+
+	certPool := x509.NewCertPool()
+	ca, err := ioutil.ReadFile("../conf/ca.pem")
+	if err != nil {
+		log.Fatalf("ioutil.ReadFile err: %v", err)
+	}
+
+	if ok := certPool.AppendCertsFromPEM(ca); !ok {
+		log.Fatalf("certPool.AppendCertsFromPEM err")
+	}
+
+	tlsCfg := &tls.Config{
+		Certificates:       []tls.Certificate{cert},
+		ClientAuth:         tls.RequireAndVerifyClientCert,
+		ClientCAs:          certPool,
+		InsecureSkipVerify: false,
+	}
+	creds := credentials.NewTLS(tlsCfg)
+	return grpc.Creds(creds)
 }
 
 func main() {
@@ -64,13 +112,18 @@ func main() {
 	log.Printf("-- srv start:\n")
 
 	//创建 gRPC 服务器，将我们实现的Greeter服务绑定到一个端口
-	s := grpc.NewServer()
+
+	s := grpc.NewServer(
+		getCreds(),
+	)
 	pb.RegisterGreeterServer(s, &server{})
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to server: %v", err)
 	}
+
 }
 
 // 生成 pb: protoc -I .\protos\ --go_out=plugins=grpc:./aaa .\protos/*.proto
 // 参考
 // - https://www.jianshu.com/p/85e9cfa16247
+// 证书生成 参考: https://blog.csdn.net/yangxuan0261/article/details/102508827

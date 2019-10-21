@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
 func test_map01() {
 	var countryCapitalMap map[string]string /*创建集合 map[KeyType]ValueType*/
@@ -92,12 +95,12 @@ func (self *CDog) Run(speed int) {
 	fmt.Printf("--- CDog.Run, name:%s, age:%d, speed:%d\n", self.name, self.age, speed)
 }
 
-func test_value() {
+func test_value() map[string]*CDog {
 	dogMap := map[string]*CDog{ // key: string, value:*CDog (CDog指针)
 		"xxx": &CDog{name: "xxx", age: 111}, // 初始化 map
 	}
-	dogMap["aaa"] = &CDog{name: "aaa", age: 123}
 	dogMap["bbb"] = &CDog{name: "bbb", age: 456}
+	dogMap["aaa"] = &CDog{name: "aaa", age: 123}
 	dogMap["ccc"] = &CDog{name: "ccc", age: 789}
 	for k, v := range dogMap {
 		fmt.Println("------ key:", k)
@@ -106,11 +109,28 @@ func test_value() {
 	}
 
 	fmt.Println("--- len:", len(dogMap)) // --- len: 4
+	return dogMap
+}
+
+func test_sort() {
+	dogMap := test_value()
+
+	keys := make([]string, len(dogMap)) // 遍历 map, 用数组装起来排序
+	i := 0
+	for k, _ := range dogMap {
+		keys[i] = k
+		i++
+	}
+	fmt.Printf("--- keys:%+v\n", keys)
+
+	sort.Sort(sort.StringSlice(keys))
+	fmt.Printf("--- keys sort:%+v\n", keys)
 }
 
 func main() {
 	// test_map01()
 	// test_map02()
 	// test_map03()
-	test_value()
+	// test_value()
+	test_sort()
 }
