@@ -95,10 +95,10 @@ func NewErrorLogger(logPath string, isDev bool) *zap.SugaredLogger {
 		EncodeTime:     zapcore.ISO8601TimeEncoder,
 		EncodeDuration: zapcore.SecondsDurationEncoder,
 	}
-	if isDev {
-		cfg.EncoderConfig.EncodeCaller = zapcore.ShortCallerEncoder
-		cfg.EncoderConfig.CallerKey = "C"
-	}
+
+	cfg.EncoderConfig.EncodeCaller = zapcore.ShortCallerEncoder
+	cfg.EncoderConfig.CallerKey = "C"
+
 	var err error
 	logger, err := cfg.Build()
 	if err != nil {

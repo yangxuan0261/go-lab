@@ -15,7 +15,7 @@ const (
 	defaultName = "world"
 )
 
-func main() {
+func testCall() {
 	//创建一个gRPC频道，指定连接的主机名和服务器端口
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
@@ -42,6 +42,23 @@ func main() {
 
 }
 
-// build 一个 exe 程序:
-// 1. cd GoLab/test_grpc
-// 2. go build -o ./greeter_client/grpc_client.exe ./greeter_client/test_grpc_cli.go
+func testStream() {
+	// conn, err := grpc.Dial(address, grpc.WithInsecure())
+	// if err != nil {
+	// 	log.Fatalf("did not connect: %v", err)
+	// }
+	// defer conn.Close()
+	// cl := pb.NewGreeterClient(conn)
+
+	// stream, err := cl.SayBye(context.Background())
+	// if err != nil {
+	// 	log.Println("err:", err)
+	// 	return
+	// }
+
+}
+
+func main() {
+	testCall()
+	// testStream()
+}

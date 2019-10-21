@@ -13,7 +13,7 @@ https://www.jianshu.com/p/b0de3b46e63f
 */
 
 func main() {
-	defer syslog.Access.Sync() // flushing any buffered log entries, 把缓存写入到 output, 貌似是
+	defer syslog.Access.Sync() // flushing any buffered log entries, 把缓存写入到 output
 
 	syslog.Init("./access.json", "./error.json", 0)
 	syslog.Error.Errorf("connect error [SssConnectRes],may be conn exception, id:%d", 123)
