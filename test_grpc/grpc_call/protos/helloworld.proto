@@ -9,9 +9,9 @@ service Greeter{
 }
 
 message HelloRequest{
-    string name = 1;
+    string Name = 1;
 }
 
 message HelloReply{
-    string message = 1;
+    string Message = 1;
 }
