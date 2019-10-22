@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net"
+	"strings"
 	"sync"
 	"time"
 
@@ -16,6 +17,7 @@ import (
 
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/peer"
 )
 
 const port = ":50051"
@@ -37,9 +39,17 @@ func (*server) SayBye(srv pb.Greeter_SayByeServer) error {
 	hdr["aaa"] = []string{"a-111", "a-222"}
 	srv.SetHeader(hdr)
 
-	value := ctx.Value("key1")
-	_ = value
-	log.Printf("-- srv SayBye begin, ctx value:%+v\n", ctx) // 每一个连接进来都是一个独立的 connection
+	log.Printf("--- srv SayBye begin\n") // 每一个连接进来都是一个独立的 connection
+
+	// 获取客户端id
+	pr, _ := peer.FromContext(ctx)
+	addrSlice := strings.Split(pr.Addr.String(), ":")
+	log.Printf("--- peer:%+v\n", pr)
+	log.Printf("--- addSlice:%+v\n", addrSlice)
+	if pr.Addr == net.Addr(nil) {
+		log.Printf("--- pr.Addr is nil\n")
+		return fmt.Errorf("getClientIP, peer.Addr is nil")
+	}
 
 	wg := sync.WaitGroup{}
 	wg.Add(2)
@@ -73,6 +83,7 @@ func (*server) SayBye(srv pb.Greeter_SayByeServer) error {
 	}()
 
 	wg.Wait()
+	log.Printf("--- srv SayBye end\n")
 	return nil
 }
 
