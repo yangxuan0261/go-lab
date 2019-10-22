@@ -14,6 +14,7 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/metadata"
 )
 
 const (
@@ -84,9 +85,11 @@ func testStream() {
 	defer conn.Close()
 	cl := pb.NewGreeterClient(conn)
 
-	valueCtx := context.WithValue(context.Background(), "key1", "value1") // 专门需要一个 parent ctx 才能 cancel
+	// 设置自定义信息, srv 可以获取到
+	header := metadata.New(map[string]string{"qqq": "q-111", "www": "w-222"})
+	ctx := metadata.NewOutgoingContext(context.Background(), header)
 
-	stream, err := cl.SayBye(valueCtx)
+	stream, err := cl.SayBye(ctx)
 	if err != nil {
 		log.Printf("--- cl.SayBye, err:%+v\n", err)
 		return
@@ -142,3 +145,5 @@ func main() {
 // 踩坑
 // 1. 客户端 tls 报错: x509: certificate is not valid for any names, but wanted to match localhost
 // > 将 InsecureSkipVerify: false, 改为 InsecureSkipVerify: true,
+
+// 设置自定义信息, 参考: http://ralphbupt.github.io/2017/05/27/gRPC%E4%B9%8Bmetadata/

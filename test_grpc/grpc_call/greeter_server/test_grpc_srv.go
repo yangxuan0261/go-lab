@@ -41,6 +41,12 @@ func (*server) SayBye(srv pb.Greeter_SayByeServer) error {
 
 	log.Printf("--- srv SayBye begin\n") // 每一个连接进来都是一个独立的 connection
 
+	// 获取客户端自定义信息
+	headers, ok := metadata.FromIncomingContext(srv.Context())
+	if ok {
+		log.Printf("--- headers:%+v\n", headers)
+	}
+
 	// 获取客户端id
 	pr, _ := peer.FromContext(ctx)
 	addrSlice := strings.Split(pr.Addr.String(), ":")
