@@ -134,10 +134,10 @@ func main() {
 		getCreds(),
 	)
 	pb.RegisterGreeterServer(s, &server{})
-	if err := s.Serve(lis); err != nil {
+	if err := s.Serve(lis); err != nil { // 会阻塞
 		log.Fatalf("failed to server: %v", err)
 	}
-
+	log.Printf("-- srv start 222:\n")
 }
 
 // 生成 pb: protoc -I .\protos\ --go_out=plugins=grpc:./aaa .\protos/*.proto
