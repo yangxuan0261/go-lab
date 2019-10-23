@@ -4,6 +4,9 @@ import (
 	stProto "GoLab/test_socket/proto"
 	"bufio"
 	"context"
+	"crypto/tls"
+	"crypto/x509"
+	"io/ioutil"
 	"log"
 	"net"
 	"os"
@@ -83,11 +86,36 @@ type CInfo struct {
 	conn   net.Conn
 }
 
+func getTls() *tls.Config {
+	cert, err := tls.LoadX509KeyPair("../conf/server.pem", "../conf/server.key")
+	if err != nil {
+		log.Fatalf("tls.LoadX509KeyPair err: %v", err)
+	}
+
+	certPool := x509.NewCertPool()
+	ca, err := ioutil.ReadFile("../conf/ca.pem")
+	if err != nil {
+		log.Fatalf("ioutil.ReadFile err: %v", err)
+	}
+
+	if ok := certPool.AppendCertsFromPEM(ca); !ok {
+		log.Fatalf("certPool.AppendCertsFromPEM err")
+	}
+
+	tlsCfg := &tls.Config{
+		Certificates:       []tls.Certificate{cert},
+		RootCAs:            certPool,
+		InsecureSkipVerify: true,
+	}
+	return tlsCfg
+}
+
 func main() {
 	addr := "localhost:6600"
 	var conn net.Conn
 	var err error
 
+	// for conn, err = tls.Dial("tcp", addr, getTls()); err != nil; conn, err = net.Dial("tcp", addr) {
 	for conn, err = net.Dial("tcp", addr); err != nil; conn, err = net.Dial("tcp", addr) {
 		log.Printf("--- connect addr:%s fail\n", addr)
 		time.Sleep(time.Second)

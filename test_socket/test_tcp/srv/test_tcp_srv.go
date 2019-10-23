@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
+	"io/ioutil"
 	"log"
 	"net"
 	"os"
@@ -63,12 +66,39 @@ func (this *CAgent) ReadMsg() {
 	}
 }
 
+// TLS认证
+func getTlsCfg() *tls.Config {
+	cert, err := tls.LoadX509KeyPair("../conf/server.pem", "../conf/server.key")
+	if err != nil {
+		log.Fatalf("tls.LoadX509KeyPair err: %v", err)
+	}
+
+	certPool := x509.NewCertPool()
+	ca, err := ioutil.ReadFile("../conf/ca.pem")
+	if err != nil {
+		log.Fatalf("ioutil.ReadFile err: %v", err)
+	}
+
+	if ok := certPool.AppendCertsFromPEM(ca); !ok {
+		log.Fatalf("certPool.AppendCertsFromPEM err")
+	}
+
+	tlsCfg := &tls.Config{
+		Certificates:       []tls.Certificate{cert},
+		ClientAuth:         tls.RequireAndVerifyClientCert,
+		ClientCAs:          certPool,
+		InsecureSkipVerify: false,
+	}
+	return tlsCfg
+}
+
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	//监听
 	addr := "localhost:6600"
-	listener, err := net.Listen("tcp", addr)
+	// listener, err := net.Listen("tcp", addr)
+	listener, err := tls.Listen("tcp", addr, getTlsCfg())
 	if err != nil {
 		panic(err)
 	}

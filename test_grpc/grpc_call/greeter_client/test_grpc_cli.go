@@ -123,6 +123,7 @@ func testStream() {
 
 		cnt := int32(1)
 		for {
+			// 测试 stream
 			msg := &pb.HelloRequest{Name: fmt.Sprintf("john-%d", cnt)}
 			log.Printf("-- cli Send:%+v\n", msg)
 			err := stream.Send(msg)
@@ -131,6 +132,15 @@ func testStream() {
 				return
 			}
 			cnt++
+
+			// 测试 call
+			rsp, cerr := cl.SayHello(ctx, &pb.HelloRequest{Name: fmt.Sprintf("tom-%d", cnt)})
+			if err != nil {
+				log.Printf("-- cli call err:%+v\n", cerr)
+			} else {
+				log.Printf("-- cli recv call:%+v\n", rsp)
+			}
+
 			time.Sleep(time.Second)
 		}
 	}()

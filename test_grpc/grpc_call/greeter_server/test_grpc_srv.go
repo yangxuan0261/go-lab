@@ -28,6 +28,8 @@ type server struct{}
 // SayHello 实现 helloworld.GreeterServer接口.
 func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
 	fmt.Printf("--- from cli, say:%s\n", in.Name)
+	pr, _ := peer.FromContext(ctx)
+	fmt.Printf("--- from cli, peer:%+v\n", pr)
 	return &pb.HelloReply{Message: "hello " + in.Name}, nil
 }
 
@@ -134,6 +136,7 @@ func main() {
 		getCreds(),
 	)
 	pb.RegisterGreeterServer(s, &server{})
+
 	if err := s.Serve(lis); err != nil { // 会阻塞
 		log.Fatalf("failed to server: %v", err)
 	}
