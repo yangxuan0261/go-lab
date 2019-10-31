@@ -14,10 +14,27 @@ import (
 	"syscall"
 	"testing"
 	"time"
+	"unsafe"
 )
 
 // Golang常用包有哪些？- https://www.zhihu.com/question/22009370
 // https://godoc.org/
+
+func Test_default(t *testing.T) {
+	var a int32
+	var b bool
+	var c float32
+	var d string
+	var e1 *CPig
+	var e2 CPig
+
+	fmt.Printf("--- a:%+v\n", a) // 0
+	fmt.Printf("--- b:%+v\n", b) // false
+	fmt.Printf("--- c:%+v\n", c) // 0
+	fmt.Printf("--- d:%+v, len:%d\n", d, len(d)) // "", 0
+	fmt.Printf("--- e1:%+v\n", e1) // nil, 空指针
+	fmt.Printf("--- e2:%+v\n", e2) // {name:}
+}
 
 func Test_string_int_float(t *testing.T) {
 	// #string到int
@@ -268,13 +285,36 @@ func TestThreeCalc(t *testing.T) {
 }
 
 func TestDefer(t *testing.T) {
-	defer fmt.Println("aaa")
-	defer fmt.Println("bbb")
+	defer func() {
+		if err := recover(); err != nil {
+			log.Printf("--- err:%+v", err)
+		}
+	}()
+	defer log.Println("aaa")
+	defer log.Println("bbb")
 
-	log.Println("--- test")
+	log.Println("--- test 111")
 	/*
-	   bbb
-	   aaa // 栈, 后进先出
+		--- test 111
+		bbb
+		aaa
+		--- err:hello
+		// 后进先出
+	*/
+	panic("hello")
+	log.Println("--- test 222")
+}
+
+func TestEmptyStruct(t *testing.T) {
+	s1 := struct{}{}
+	a := 1
+	_ = a
+	s2 := struct{}{}
+	log.Printf("--- s1, len:%v, addr:%p\n", unsafe.Sizeof(s1), &s1)
+	log.Printf("--- s2, len:%v, addr:%p\n", unsafe.Sizeof(s2), &s2)
+	/* 长度为 0, 地址一样
+		2019/10/30 16:49:41 --- s1, len:0, addr:0x6777e8
+		2019/10/30 16:49:41 --- s2, len:0, addr:0x6777e8
 	*/
 }
 

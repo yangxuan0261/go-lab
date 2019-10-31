@@ -2,6 +2,8 @@ package test_chan
 
 import (
 	"fmt"
+	"log"
+	"sync"
 	"testing"
 	"time"
 )
@@ -198,3 +200,26 @@ c1 := make(chan int) // 缓冲区默认为1个, 存入和读取也就是混乱�
 ---v: 2
 程序结束 666
 */
+
+// 控制最大 协程并发数量
+func Test_goroutinueCtrl(t *testing.T) {
+	var ch chan struct{}
+	var wg sync.WaitGroup
+
+	work := func() {
+		defer wg.Done()
+		log.Println("--- work")
+		time.Sleep(time.Second * 3)
+		<-ch // 消费 ch
+	}
+
+	ch = make(chan struct{}, 3)
+	for i := 0; i < 9; i++ {
+		wg.Add(1)
+		ch <- struct{}{} // 满了 10 个之后将会阻塞, 直到 ch 被消费到 10 个以内
+		go work()
+	}
+
+	wg.Wait()
+	log.Println("--- exit")
+}
