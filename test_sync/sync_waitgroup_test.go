@@ -8,7 +8,7 @@ import (
 )
 
 func Test_waitGroup(t *testing.T) {
-	var wg sync.WaitGroup // struct, 不允许复制拷贝, 只能用指针的形式传递
+	var wg sync.WaitGroup // struct, 不允许复制拷贝, 只能用指针的形式传递,
 
 	for i := 0; i < 5; i++ {
 		// 计数加 1
@@ -24,4 +24,8 @@ func Test_waitGroup(t *testing.T) {
 	// 等待执行结束
 	wg.Wait()
 	fmt.Println("所有 goroutine 执行结束")
+}
+
+func run(wg *sync.WaitGroup)  { // 形参一定要是指针形式才能传递使用, 如果值传递的话会复制拷贝, 因为 sync.WaitGroup 是 struct
+	defer wg.Done()
 }

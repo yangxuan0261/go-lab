@@ -37,7 +37,7 @@ func pwrite() {
 
 func CheckError(err error) {
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("--- has err:", err.Error())
 		os.Exit(-1)
 	}
 }
