@@ -30,3 +30,10 @@ func Test_atomic(t *testing.T) {
 	wg.Wait()
 	fmt.Println(nA, nB)
 }
+
+func Test_atomicValue(t *testing.T) {
+	var config atomic.Value
+	config.Store("hello")
+	a := config.Load()
+	println(a.(string))
+}

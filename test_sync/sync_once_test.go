@@ -22,3 +22,24 @@ func Test_once(t *testing.T) {
 		<-done
 	}
 }
+
+// 单例
+type CDog struct {
+}
+
+var (
+	instance *CDog
+	once     sync.Once
+)
+
+func Instance() *CDog {
+	once.Do(func() {
+		instance = &CDog{}
+	})
+	return instance
+}
+
+func Test_singleton(t *testing.T) {
+	ins := Instance()
+	_ = ins
+}
