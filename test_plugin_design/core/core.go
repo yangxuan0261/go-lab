@@ -7,12 +7,6 @@ import (
 	"GoLab/test_plugin_design/broker"
 )
 
-type Options struct {
-	Broker  broker.Broker
-	Context context.Context
-}
-
-type Option func(*Options)
 
 type Service interface {
 	Init(...Option)
@@ -41,13 +35,4 @@ func NewService(opts ...Option) Service {
 func (s *srv) Init(opts ...Option) {
 	log.Println("--- Init")
 
-}
-
-// Broker 插件拔插
-func Broker(b broker.Broker, bOpts ...broker.Option) Option {
-	return func(o *Options) {
-		o.Broker = b
-		log.Println("--- replace Broker instance")
-		b.Init(bOpts...)
-	}
 }

@@ -1,16 +1,8 @@
 package broker
 
 import (
-	"context"
 	"log"
 )
-
-type Options struct {
-	Addrs   string
-	Context context.Context
-}
-
-type Option func(*Options)
 
 type Broker interface {
 	Init(...Option) error
@@ -45,10 +37,4 @@ func (h *httpBroker) Init(opts ...Option) error {
 	}
 
 	return nil
-}
-
-func Addrs(addr string) Option {
-	return func(o *Options) {
-		o.Addrs = addr
-	}
 }
