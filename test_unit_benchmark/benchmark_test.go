@@ -5,14 +5,6 @@ import (
 	"testing"
 )
 
-func Test_Run(t *testing.T) {
-	Run(111)
-}
-
-func Benchmark_Transport1(b *testing.B) {
-	Run(222)
-}
-
 type IActor interface {
 	Walk(speed int32)
 }
@@ -32,20 +24,26 @@ var dg IActor = &CDog{
 }
 
 func Benchmark_Cast(b *testing.B) {
-	var dgIns *CDog
 	for i := 0; i < b.N; i++ { // b.N, 次数
+
+		// 需要测试性能的接口
+		var dgIns *CDog
 		dgIns = dg.(*CDog)
+		_ = dgIns
+
 	}
-	_ = dgIns
 }
 
 // 测试并发效率
 func Benchmark_Parallel(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
+
+			// 需要测试性能的接口
 			dgIns := dg.(*CDog)
 			//dgIns.Walk(123)
 			_ = dgIns
+
 		}
 	})
 }
