@@ -189,3 +189,21 @@ func Test_006(t *testing.T) {
 
 	checkFn(0)
 }
+
+// --------------
+type IActor interface {
+	Walk(speed int)
+}
+
+type CDog struct {
+	Name string
+}
+
+func (d *CDog) Walk(speed int) {
+	fmt.Printf("--- CDog.Walk, name:%s\n", d.Name)
+}
+
+func Test_007(t *testing.T) {
+	dogMap := make(map[string]IActor)
+	dogMap["aaa"] = &CDog{Name: "aaa"}
+}
