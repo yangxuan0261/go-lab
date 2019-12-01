@@ -36,7 +36,7 @@ var (
 
 func init() {
 	var err error
-	conn, err = redis.Dial("tcp", "113.102.163.179:7379")
+	conn, err = redis.Dial("tcp", "wolegequ.wilker.cn:7379")
 	if err != nil {
 		fmt.Println("Connect to redis error", err)
 		return
