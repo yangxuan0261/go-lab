@@ -83,7 +83,6 @@ type Account struct {
 }
 
 func Test_map_struct(t *testing.T) {
-	fmt.Println("--- map to struct")
 	mapInstances := make(map[string]interface{})
 	mapInstances["Name"] = "amy"
 	mapInstances["ID"] = 7
@@ -94,10 +93,8 @@ func Test_map_struct(t *testing.T) {
 	if err != nil {
 		fmt.Println(err)
 	}
+	fmt.Println("--- map2struct", account1)
 
-	fmt.Println(account1)
-
-	fmt.Println("--- struct to map")
 	account2 := Account{
 		Name: "amy",
 		ID:   007,
@@ -111,6 +108,5 @@ func Test_map_struct(t *testing.T) {
 	for i := 0; i < obj1.NumField(); i++ {
 		data[obj1.Field(i).Name] = obj2.Field(i).Interface()
 	}
-
-	fmt.Println(data)
+	fmt.Println("--- struct2map", data)
 }
