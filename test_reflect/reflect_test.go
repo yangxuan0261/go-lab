@@ -6,7 +6,6 @@ import (
 	"testing"
 )
 
-
 // Go Reflect 性能 - https://colobu.com/2019/01/29/go-reflect-performance/
 // 优化, 可以通过 自定义的生成器脚本, 生成, 避免使用反射
 
@@ -64,5 +63,18 @@ func Test_type2Instance(t *testing.T) {
 		t := reflect.ValueOf(regStruct[str]).Type()
 		v := reflect.New(t).Elem()
 		fmt.Printf("--- aaa:%p\n", &v)
+	}
+}
+
+func Test_type2Instance2(t *testing.T) {
+	type T = Bar
+	data := T{}
+	obj := reflect.New(reflect.TypeOf(data)).Interface()
+
+	if ins, ok := obj.(*Bar); ok {
+		ins.Name = "hello"
+		fmt.Printf("--- ins:%+v\n", ins) // --- ins:&{Name:hello}
+	} else {
+		t.Error("--- type error")
 	}
 }
