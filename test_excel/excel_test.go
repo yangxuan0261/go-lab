@@ -14,7 +14,7 @@ func Test_excel(t *testing.T) {
 	dataArr := &dataconfig.SkinArray{}
 	_ = dataArr
 
-	file := "I:/workspace/go/GoWinEnv_new/src/GoLab/test_excel/gen/cfg_skin.data"
+	file := "F:/a_link_workspace/go/GoWinEnv_new/src/GoLab/test_excel/gen/cfg_skin.data"
 	data, err := ioutil.ReadFile(file)
 	if err != nil {
 		panic(err)

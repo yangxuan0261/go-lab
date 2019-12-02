@@ -28,12 +28,12 @@ func Test_default(t *testing.T) {
 	var e1 *CPig
 	var e2 CPig
 
-	fmt.Printf("--- a:%+v\n", a) // 0
-	fmt.Printf("--- b:%+v\n", b) // false
-	fmt.Printf("--- c:%+v\n", c) // 0
+	fmt.Printf("--- a:%+v\n", a)                 // 0
+	fmt.Printf("--- b:%+v\n", b)                 // false
+	fmt.Printf("--- c:%+v\n", c)                 // 0
 	fmt.Printf("--- d:%+v, len:%d\n", d, len(d)) // "", 0
-	fmt.Printf("--- e1:%+v\n", e1) // nil, 空指针
-	fmt.Printf("--- e2:%+v\n", e2) // {name:}
+	fmt.Printf("--- e1:%+v\n", e1)               // nil, 空指针
+	fmt.Printf("--- e2:%+v\n", e2)               // {name:}
 }
 
 func Test_string_int_float(t *testing.T) {
@@ -313,23 +313,12 @@ func TestEmptyStruct(t *testing.T) {
 	log.Printf("--- s1, len:%v, addr:%p\n", unsafe.Sizeof(s1), &s1)
 	log.Printf("--- s2, len:%v, addr:%p\n", unsafe.Sizeof(s2), &s2)
 	/* 长度为 0, 地址一样
-		2019/10/30 16:49:41 --- s1, len:0, addr:0x6777e8
-		2019/10/30 16:49:41 --- s2, len:0, addr:0x6777e8
+	2019/10/30 16:49:41 --- s1, len:0, addr:0x6777e8
+	2019/10/30 16:49:41 --- s2, len:0, addr:0x6777e8
 	*/
 }
 
-func main() {
-	// test_string_int_float()
-	// test_type()
-	// test_dynamicCast()
-	// testLambda()
-	// testString()
-	// testFor()
-	// testFuncPtr()
-	// testPtr()
-	// testPrintStack()
-	// testOsInterrupt()
-	// testOsInterrupt22()
-	// testThreeCalc()
-	// TestDefer()
+func TestCurrDir(t *testing.T) {
+	str, err := os.Getwd()
+	fmt.Println("--- pwd:", str, err)
 }
