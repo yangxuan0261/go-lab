@@ -47,3 +47,12 @@ func Test_timeout(t *testing.T) {
 	wg.Wait()
 	fmt.Println("--- over")
 }
+
+func Test_Unix(t *testing.T) {
+	tm := time.Now()
+	utime := tm.Unix()
+	fmt.Printf("--- utime:%+v\n", utime) // --- utime:1575288231
+
+	untime := tm.UnixNano()
+	fmt.Printf("--- untime:%+v\n", untime) // --- untime:1575288231652637100
+}

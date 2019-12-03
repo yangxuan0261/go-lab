@@ -69,9 +69,10 @@ func Test_type2Instance(t *testing.T) {
 func Test_type2Instance2(t *testing.T) {
 	type T = Bar
 	data := T{}
-	obj := reflect.New(reflect.TypeOf(data)).Interface()
+	ptr := reflect.New(reflect.TypeOf(data)).Interface() // 指针对象
+	//obj := reflect.New(reflect.TypeOf(data)).Elem().Interface() // 指针 指向的对象
 
-	if ins, ok := obj.(*Bar); ok {
+	if ins, ok := ptr.(*Bar); ok {
 		ins.Name = "hello"
 		fmt.Printf("--- ins:%+v\n", ins) // --- ins:&{Name:hello}
 	} else {

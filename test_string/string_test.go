@@ -52,3 +52,12 @@ func Test_replace(t *testing.T) {
 	//全部替换
 	fmt.Println(strings.Replace("oink oink oink", "oink", "moo", -1)) // moo moo moo
 }
+
+// 字面量
+func Test_literal(t *testing.T) {
+	extStr := `{"Name":"Xiao Ming","Age":16,"Guake":true,"Classes":["Math","English","Chinese"],"Price":9.99,"Speed":123}`
+	fmt.Println("--- extStr:", extStr)
+
+	extStr2 := `aaa \n bbb \n ccc`
+	fmt.Println("--- extStr2:", extStr2) // --- extStr2: aaa \n bbb \n ccc
+}
