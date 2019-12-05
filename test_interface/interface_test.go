@@ -46,6 +46,9 @@ func Test_001(t *testing.T) {
 	phone2 = new(IPhone)
 	phone2.call()
 
+	fmt.Printf("--- phone2 new:%+v\n", phone2) // --- phone2 new:&{}, new 出来是指针
+	fmt.Printf("--- phone2 struct:%+v\n", IPhone{}) // --- phone2 struct:{}
+
 	println(phone1, phone2) // (0x4ce940,0x54ee08) (0x4ce920,0x54ee08), 接口是一个指针, 第一个是指针的地址, 第二个是所指对象的地址
 
 	var i1 interface{}

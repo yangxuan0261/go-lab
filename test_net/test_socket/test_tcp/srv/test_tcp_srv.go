@@ -1,6 +1,7 @@
 package main
 
 import (
+	proto2 "GoLab/test_net/test_socket/proto"
 	"context"
 	"crypto/tls"
 	"crypto/x509"
@@ -9,8 +10,6 @@ import (
 	"net"
 	"os"
 	"os/signal"
-
-	stProto "GoLab/test_socket/proto"
 
 	"github.com/golang/protobuf/proto"
 )
@@ -51,7 +50,7 @@ func (this *CAgent) ReadMsg() {
 		return
 	}
 
-	stReceive := &stProto.UserInfo{}
+	stReceive := &proto2.UserInfo{}
 	pData := buf[:cnt]
 
 	err = proto.Unmarshal(pData, stReceive) //protobuf 解码

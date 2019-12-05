@@ -1,7 +1,7 @@
 package main
 
 import (
-	stProto "GoLab/test_socket/proto"
+	proto2 "GoLab/test_net/test_socket/proto"
 	"bufio"
 	"context"
 	"crypto/tls"
@@ -29,7 +29,7 @@ func send(info *CInfo) {
 		}
 
 		cnt++
-		stSend := &stProto.UserInfo{
+		stSend := &proto2.UserInfo{
 			Message: sender.Text(),
 			Length:  *proto.Int(len(sender.Text())),
 			Cnt:     *proto.Int(cnt),
@@ -60,7 +60,7 @@ func recv(info *CInfo) {
 		buf := make([]byte, 1024, 1024)
 		cnt, err := info.conn.Read(buf) //读消息
 		if err == nil {
-			stReceive := &stProto.UserInfo{}
+			stReceive := &proto2.UserInfo{}
 			pData := buf[:cnt]
 
 			err = proto.Unmarshal(pData, stReceive) //protobuf 解码

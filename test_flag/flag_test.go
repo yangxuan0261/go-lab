@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"testing"
 )
 
 /*
@@ -18,15 +19,15 @@ import (
    ],
 */
 
-func main() {
-	confPath := flag.String("conf", "", "Server configuration file path")
+func Test_001(t *testing.T) {
+	confPath := flag.String("conf", "default path", "Server configuration file path")
 
 	var log string
 	flag.StringVar(&log, "log", "default name", "help msg for name") // 参数为指针
 
 	flag.Parse() // 解析, 才能获取到参数
 
-	fmt.Println("confPath:", *confPath)
+	fmt.Printf("confPath:%v, len:%v\n", *confPath, len(*confPath))
 	fmt.Println("log:", log)
 
 }

@@ -26,7 +26,7 @@ func (dbw *DbWorker) insertData() {
 	stmt, _ := dbw.Db.Prepare(`INSERT INTO user (name, age) VALUES (?, ?)`)
 	defer stmt.Close()
 
-	ret, err := stmt.Exec("xys", 23)
+	ret, err := stmt.Exec("xys", 25)
 	if err != nil {
 		fmt.Printf("insert data error: %v\n", err)
 		return
@@ -79,7 +79,7 @@ func (dbw *DbWorker) queryData() {
 func Test_001(t *testing.T) {
 	var err error
 	dbw := DbWorker{
-		Dsn: "root:123456@tcp(113.102.163.179:4306)/testdb1?charset=utf8mb4",
+		Dsn: "root:123456@tcp(wolegequ.wilker.cn:4306)/testdb1?charset=utf8mb4",
 	}
 	dbw.Db, err = sql.Open("mysql", dbw.Dsn)
 	if err != nil {
@@ -103,4 +103,9 @@ CREATE TABLE IF NOT EXISTS `user`(
    `age` INT UNSIGNED NOT NULL,
    PRIMARY KEY ( `id` )
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+*/
+
+/*
+使 唯一 id 从某个值开始自增
+1. insert 一个
 */

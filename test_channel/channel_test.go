@@ -169,8 +169,8 @@ func Test_chan04(t *testing.T) {
 
 	fmt.Println("开始阻塞等待")
 	for index := 0; index < num; index++ {
-		v := <-c1
-		fmt.Println("---v:", v)
+		v, ok := <-c1
+		fmt.Println("---v:", v, ok)
 	}
 
 	fmt.Println("程序结束 666")
@@ -222,3 +222,21 @@ func Test_goroutinueCtrl(t *testing.T) {
 	wg.Wait()
 	log.Println("--- exit")
 }
+
+// https://juejin.im/post/5ca318e651882543db10d4ce
+// 测试死锁
+func Test_goroutinueDeadLock(t *testing.T) {
+	ch := make(chan int)
+	ch <- 5
+}
+
+/*
+fatal error: all goroutines are asleep - deadlock!
+
+goroutine 1 [chan receive]:
+testing.(*T).Run(0xc0000a8100, 0x5615e7, 0x17, 0x567ba0, 0x47c601)
+
+goroutine 6 [chan send]:
+GoLab/test_channel.Test_goroutinueDeadLock(0xc0000a8100)
+	F:/a_link_workspace/go/GoWinEnv_new/src/GoLab/test_channel/channel_test.go:228  ch <- 5
+*/
