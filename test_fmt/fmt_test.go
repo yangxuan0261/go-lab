@@ -4,11 +4,13 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"testing"
 )
 
 /*
 // 参考: https://www.liwenzhou.com/posts/Go/go_fmt/
+// 参考: https://www.cnblogs.com/yinzhengjie/p/7680829.html
 
 %v	值的默认格式表示
 %+v	类似%v，但输出结构体时会添加字段名
@@ -64,4 +66,6 @@ func TestFmt(t *testing.T) {
 	fmt.Printf("b f:%f\n", b)
 	fmt.Printf("b v:%v\n", b)
 	fmt.Printf("+b v:%+v\n", b)
+
+	fmt.Fprintf(os.Stdout, "hello %d\n", 123)
 }

@@ -51,7 +51,7 @@ func parseBasicAuth(auth string) (username, password string, ok bool) {
 
 // BasicAuth is the basic auth handler
 func BasicAuth(h fasthttp.RequestHandler, requiredUser, requiredPassword string) fasthttp.RequestHandler {
-	return fasthttp.RequestHandler(func(ctx *fasthttp.RequestCtx) {
+	return func(ctx *fasthttp.RequestCtx) {
 		// Get the Basic Authentication credentials
 		user, password, hasAuth := basicAuth(ctx)
 
@@ -60,15 +60,21 @@ func BasicAuth(h fasthttp.RequestHandler, requiredUser, requiredPassword string)
 			h(ctx)
 			return
 		}
+
 		// Request Basic Authentication otherwise
 		ctx.Error(fasthttp.StatusMessage(fasthttp.StatusUnauthorized), fasthttp.StatusUnauthorized)
 		ctx.Response.Header.Set("WWW-Authenticate", "Basic realm=Restricted")
-	})
+	}
 }
 
 // Index is the index handler
 func Index222(ctx *fasthttp.RequestCtx) {
-	fmt.Fprint(ctx, "Not protected!\n")
+	uri := ctx.URI().String()
+	fmt.Printf("--- uri 111:%s\n", uri) // http://localhost:8001/asd, 全路径
+	uri = string(ctx.RequestURI())
+	fmt.Printf("--- uri 222:%s\n", uri) // /asd, 相对路径
+
+	fmt.Fprintf(ctx, "Not protected!\n")
 }
 
 // Protected is the Protected handler
@@ -81,8 +87,8 @@ func Test_SrvFasthttpAuth(t *testing.T) {
 	pass := "secret!"
 
 	router := fasthttprouter.New()
-	router.GET("/", Index222)
-	router.POST("/protected", BasicAuth(Protected, user, pass))
+	router.GET("/asd", Index222)
+	router.POST("/protected", BasicAuth(Protected, user, pass)) // hook, 合法才执行 Protected
 
 	log.Fatal(fasthttp.ListenAndServe(":8001", router.Handler))
 }
