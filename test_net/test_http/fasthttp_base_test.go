@@ -13,6 +13,8 @@ http 测试最后在命令行工具中执行 $ go test -v -run ^(Test_SrvFasthtt
 在 goland 中可能 fmt.Printf 不能输出日志
 */
 
+// 参考官方示例: https://github.com/buaazp/fasthttprouter/tree/master/examples/basic
+
 // index 页
 func Index(ctx *fasthttp.RequestCtx) {
 	fmt.Printf("--- Index")
@@ -27,7 +29,6 @@ func Hello(ctx *fasthttp.RequestCtx) {
 
 // 获取GET请求json数据
 // 使用 ctx.QueryArgs() 方法
-// Peek类似与python中dict的pop方法，取某个键对应的值
 func GetTest(ctx *fasthttp.RequestCtx) {
 	fmt.Printf("--- GetTest")
 	values := ctx.QueryArgs()
@@ -36,18 +37,30 @@ func GetTest(ctx *fasthttp.RequestCtx) {
 	//--- get ret abc:123
 }
 
+// 获取 url 中 占位符 的值
+func MultiParams(ctx *fasthttp.RequestCtx) {
+	fmt.Printf("--- MultiParams")
+	fmt.Fprintf(ctx, "hi, %s, %s!\n", ctx.UserValue("name"), ctx.UserValue("word"))
+	// http://localhost:8001/multi/aaa/bbb
+	// hi, aaa, bbb!
+
+	// http://localhost:8001/multi/aaa 则获取不到
+	// Not Found
+}
+
 // 获取post的请求json数据
 func PostTest(ctx *fasthttp.RequestCtx) {
 	fmt.Printf("--- PostTest\n")
 
-	//if true { // 设置返回码跟返回信息
-	//	ctx.SetStatusCode(fasthttp.StatusMethodNotAllowed)
-	//	ctx.SetBodyString(fasthttp.StatusMessage(fasthttp.StatusMethodNotAllowed))
-	//	return
-	//}
-	postValues := ctx.PostArgs()       // 貌似木有乱用
+	postValues := ctx.PostArgs() // 貌似木有卵用
+	fmt.Printf("--- postValues:%+v\n", string(postValues.Peek("bbb")))
+	/*
+		// PostArgs returns POST arguments.
+		// It doesn't return query arguments from RequestURI - use QueryArgs for this.
+		// Returned arguments are valid until returning from RequestHandler.
+	*/
+
 	formValues := ctx.FormValue("aaa") // ?aaa=111&bbb=222 请求参数 (表单数据)
-	fmt.Printf("--- postValues:%+v\n", postValues.String())
 	fmt.Printf("--- formValues aaa:%+v\n", string(formValues))
 
 	ck := ctx.Request.Header.Peek("ccc") // 获取 token 之类的数据, 等价于官方 http 的 req.Header.Get("ccc")
@@ -58,12 +71,30 @@ func PostTest(ctx *fasthttp.RequestCtx) {
 	fmt.Fprint(ctx, "--- post ret abc:"+string(postBody))
 }
 
+// 测试 设置返回码跟返回信息
+func Post403(ctx *fasthttp.RequestCtx) {
+	fmt.Printf("--- Post403\n")
+
+	if false { // 复杂 接口
+		ctx.SetStatusCode(fasthttp.StatusMethodNotAllowed)
+		ctx.SetBodyString(fasthttp.StatusMessage(fasthttp.StatusMethodNotAllowed))
+		return
+	}
+
+	if true { // 简洁 接口
+		ctx.Error("--- Forbidden", fasthttp.StatusForbidden)
+		return
+	}
+}
+
 func Test_SrvFasthttp01(t *testing.T) {
 	router := fasthttprouter.New()
 	router.GET("/", Index)
 	router.GET("/hello", Hello)
 	router.GET("/get", GetTest)
+	router.GET("/multi/:name/:word", MultiParams)
 	router.POST("/post", PostTest)
+	router.POST("/test403", Post403)
 
 	log.Fatal(fasthttp.ListenAndServe(":8001", router.Handler))
 }
@@ -114,10 +145,10 @@ func Test_PostFasthttp02(t *testing.T) {
 	url := `http://httpbin.org/post?key=123`
 
 	req := fasthttp.AcquireRequest()
-	resp := fasthttp.AcquireResponse()
+	rsp := fasthttp.AcquireResponse()
 	defer func() {
 		// 用完需要释放资源
-		fasthttp.ReleaseResponse(resp)
+		fasthttp.ReleaseResponse(rsp)
 		fasthttp.ReleaseRequest(req)
 	}()
 
@@ -130,11 +161,11 @@ func Test_PostFasthttp02(t *testing.T) {
 	requestBody := []byte(`{"request":"test"}`)
 	req.SetBody(requestBody)
 
-	if err := fasthttp.Do(req, resp); err != nil {
+	if err := fasthttp.Do(req, rsp); err != nil {
 		fmt.Println("请求失败:", err.Error())
 		return
 	}
 
-	b := resp.Body()
+	b := rsp.Body()
 	fmt.Println("--- rsp", string(b))
 }
