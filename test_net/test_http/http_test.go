@@ -5,16 +5,27 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"strings"
 	"testing"
+	"time"
 
 	proto "github.com/golang/protobuf/proto"
 )
 
-func SayHello(w http.ResponseWriter, req *http.Request) {
+type myHandler struct {
+}
+
+// 自定义 handler 必须要实现的方法
+func (hdl *myHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	fmt.Printf("--- ServeHTTP, aaa")
+	w.Write([]byte("ServeHTTP aaa"))
+}
+
+func (hdl *myHandler) SayHello(w http.ResponseWriter, req *http.Request) {
 	reqBytes, _ := ioutil.ReadAll(req.Body)
 	fmt.Fprintf(os.Stderr, "\n--- %s", reqBytes)
 	// w.Write([]byte("Hello world"))
@@ -59,17 +70,20 @@ func SayHello(w http.ResponseWriter, req *http.Request) {
 	w.Write(buffer2)
 }
 
-func SayWorld(w http.ResponseWriter, req *http.Request) {
+func (hdl *myHandler) SayWorld(w http.ResponseWriter, req *http.Request) {
+	ck := req.Header.Get("ccc") // 获取 token 之类的数据
+	fmt.Printf("--- Cookie ccc:%+v\n", ck)
+
 	reqBytes, _ := ioutil.ReadAll(req.Body)
-	req.Header.Get("aaa")
 	fmt.Printf("req body:%s, path:%s\n", string(reqBytes), req.URL.Path)
 
 	w.Write([]byte("Hello world"))
 }
 
 func Test_Srv001(t *testing.T) {
-	http.HandleFunc("/hello", SayHello)
-	http.HandleFunc("/world", SayWorld)
+	hdl := &myHandler{}
+	http.HandleFunc("/hello", hdl.SayHello)
+	http.HandleFunc("/world", hdl.SayWorld)
 	// http.HandleFunc("/hello_json", SayHello)
 	http.ListenAndServe(":8001", nil)
 	fmt.Println("---------------")
@@ -77,11 +91,28 @@ func Test_Srv001(t *testing.T) {
 }
 
 func Test_SrvMux(t *testing.T) {
-	m := &http.ServeMux{}
-	m.HandleFunc("/world", SayWorld)
-	http.ListenAndServe(":8001", m)
+	hdl := &myHandler{}
+
+	mux := &http.ServeMux{}
+	mux.HandleFunc("/world", hdl.SayWorld) // 注册 指定的方法
+	mux.Handle("/hello", hdl)              // 注册 Handle, 会调用实现的 ServeHTTP 方法
+
+	http.ListenAndServe(":8001", mux)
 }
 
+func Test_SrvCustom(t *testing.T) {
+	hdl := &myHandler{}
+	s := &http.Server{
+		Addr:           ":8001",
+		Handler:        hdl,
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
+		MaxHeaderBytes: 1 << 20,
+	}
+	log.Fatal(s.ListenAndServe())
+}
+
+// -----------------------
 func Test_ReqGet(t *testing.T) {
 	Url, err := url.Parse("http://baidu.com?fd=fdsf")
 	if err != nil {

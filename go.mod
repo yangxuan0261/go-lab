@@ -3,6 +3,7 @@ module GoLab
 go 1.13
 
 require (
+	github.com/buaazp/fasthttprouter v0.1.1
 	github.com/eclipse/paho.mqtt.golang v1.2.0
 	github.com/garyburd/redigo v1.6.0
 	github.com/go-sql-driver/mysql v1.4.1
@@ -13,6 +14,7 @@ require (
 	github.com/micro/go-micro v1.13.1 // indirect
 	github.com/olzhy/quote v1.0.0
 	github.com/satori/go.uuid v1.2.0
+	github.com/valyala/fasthttp v1.6.0
 	go.uber.org/zap v1.10.0
 	golang.org/x/net v0.0.0-20191011234655-491137f69257
 	google.golang.org/grpc v1.24.0
