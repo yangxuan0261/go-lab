@@ -305,6 +305,20 @@ func TestDefer(t *testing.T) {
 	log.Println("--- test 222")
 }
 
+func TestDefer02(t *testing.T) {
+	ok := true
+	if ok { //会根据运行时调用不同的 defer
+		defer log.Println("bbb")
+	} else {
+		defer log.Println("ccc")
+	}
+	log.Println("aaa")
+	/*
+		2019/12/07 14:39:54 aaa
+		2019/12/07 14:39:54 bbb
+	*/
+}
+
 func TestEmptyStruct(t *testing.T) {
 	s1 := struct{}{}
 	a := 1

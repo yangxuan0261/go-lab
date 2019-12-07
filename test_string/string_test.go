@@ -44,6 +44,14 @@ func Test_index(t *testing.T) {
 	fmt.Println(i) // 12
 	i = strings.Index(s, "")
 	fmt.Println(i) // 0
+
+	addr := "127.0.0.1:57068"
+	pos := strings.Index(addr, ":")
+	if pos > 0 {
+		fmt.Printf("--- ip:%s\n", addr[:pos])
+	} else {
+		fmt.Println("--- error, pos:", pos)
+	}
 }
 
 func Test_replace(t *testing.T) {

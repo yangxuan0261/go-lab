@@ -115,8 +115,8 @@ func main() {
 	var conn net.Conn
 	var err error
 
-	// for conn, err = tls.Dial("tcp", addr, getTls()); err != nil; conn, err = net.Dial("tcp", addr) {
-	for conn, err = net.Dial("tcp", addr); err != nil; conn, err = net.Dial("tcp", addr) {
+	for conn, err = tls.Dial("tcp", addr, getTls()); err != nil; conn, err = net.Dial("tcp", addr) {
+	//for conn, err = net.Dial("tcp", addr); err != nil; conn, err = net.Dial("tcp", addr) {
 		log.Printf("--- connect addr:%s fail\n", addr)
 		time.Sleep(time.Second)
 		log.Println("reconnect...")

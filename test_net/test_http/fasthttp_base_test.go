@@ -1,6 +1,7 @@
 package test_http
 
 import (
+	syserr "GoLab/common/error"
 	"fmt"
 	"github.com/buaazp/fasthttprouter"
 	"github.com/valyala/fasthttp"
@@ -25,6 +26,9 @@ func Index(ctx *fasthttp.RequestCtx) {
 func Hello(ctx *fasthttp.RequestCtx) {
 	fmt.Printf("--- Hello")
 	fmt.Fprintf(ctx, "hello")
+
+	defer syserr.Recover()
+	panic("wolegequ") // 再请求中 defer 才有效, 每一个请求都是一个 gor, 只能在当前 gor 中 recover()
 }
 
 // 获取GET请求json数据
@@ -88,6 +92,7 @@ func Post403(ctx *fasthttp.RequestCtx) {
 }
 
 func Test_SrvFasthttp01(t *testing.T) {
+
 	router := fasthttprouter.New()
 	router.GET("/", Index)
 	router.GET("/hello", Hello)
