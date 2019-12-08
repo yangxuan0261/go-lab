@@ -24,7 +24,6 @@ func TestUuid002(t *testing.T) {
 	u1 := uuid.Must(uuid.FromString("123e4567-e89b-12d3-a456-426655440000"))
 	fmt.Printf("u1: %s\n", u1)
 
-	// or error handling
 	u2 := uuid.NewV4()
 	fmt.Printf("u2: %s\n", u2.String())
 
