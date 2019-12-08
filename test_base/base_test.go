@@ -3,11 +3,13 @@
 package test_base
 
 import (
+	syserr "GoLab/common/error"
 	"fmt"
 	"log"
 	"os"
 	"os/signal"
 	"reflect"
+	"runtime"
 	"runtime/debug"
 	"strconv"
 	"strings"
@@ -34,6 +36,10 @@ func Test_default(t *testing.T) {
 	fmt.Printf("--- d:%+v, len:%d\n", d, len(d)) // "", 0
 	fmt.Printf("--- e1:%+v\n", e1)               // nil, 空指针
 	fmt.Printf("--- e2:%+v\n", e2)               // {name:}
+
+	fmt.Println("--- NumCPU:", runtime.NumCPU()) // 8, cpu 线程数量
+	fmt.Println("--- NumGoroutine:", runtime.NumGoroutine())
+	runtime.GOMAXPROCS(runtime.NumCPU()) // 正确姿势, 指定为 cpu 的线程数量
 }
 
 func Test_string_int_float(t *testing.T) {
@@ -237,6 +243,7 @@ func TestPrintStack(t *testing.T) {
 	func1 := func() {
 		log.Println("--- fucn1")
 		debug.PrintStack()
+		log.Printf("--- stackInfo:%s\n", string(debug.Stack()))
 	}
 	func2 := func() {
 		func1()
@@ -279,9 +286,15 @@ func TestOsInterrupt22(t *testing.T) {
 	fmt.Println("exiting")
 }
 
-func TestThreeCalc(t *testing.T) {
-	// b := true
-	// a = b ? "aaa" || "bbb" // go 木有 三元运算
+func TestSyserr(t *testing.T) {
+	defer func() { // 即使 panic 了也是可以在调用到 defer
+		fmt.Println("--- 333")
+		syserr.Recover()
+	}()
+
+	fmt.Println("--- 111")
+	panic("--- wolegequ")
+	fmt.Println("--- 222")
 }
 
 func TestDefer(t *testing.T) {

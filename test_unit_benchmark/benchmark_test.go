@@ -2,6 +2,7 @@ package cat
 
 import (
 	"fmt"
+	"sync/atomic"
 	"testing"
 )
 
@@ -15,7 +16,7 @@ type CDog struct {
 }
 
 func (d *CDog) Walk(speed int32) {
-	fmt.Printf("--- CDog.Walk, name:%s, age:%d\n", d.Name, d.Age)
+	//fmt.Printf("--- CDog.Walk, name:%s, age:%d\n", d.Name, d.Age)
 }
 
 var dg IActor = &CDog{
@@ -24,9 +25,15 @@ var dg IActor = &CDog{
 }
 
 func Benchmark_Cast(b *testing.B) {
+	b.ReportAllocs() // 在report中包含内存分配信息，例如结果是:
+	// Benchmark_Cast-3        1000000000               0.567 ns/op           0 B/op          0 allocs/op
+
 	for i := 0; i < b.N; i++ { // b.N, 次数
 
 		// 需要测试性能的接口
+		d := CDog{}
+		d.Walk(123)
+
 		var dgIns *CDog
 		dgIns = dg.(*CDog)
 		_ = dgIns
@@ -36,9 +43,13 @@ func Benchmark_Cast(b *testing.B) {
 
 // 测试并发效率
 func Benchmark_Parallel(b *testing.B) {
+	b.ReportAllocs()
+
+	cnt := uint64(1)
+
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-
+			fmt.Println("--- cnt:", atomic.AddUint64(&cnt, 1))
 			// 需要测试性能的接口
 			dgIns := dg.(*CDog)
 			//dgIns.Walk(123)
