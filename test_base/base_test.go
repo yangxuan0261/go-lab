@@ -3,6 +3,7 @@
 package test_base
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -277,6 +278,22 @@ func TestOsInterrupt22(t *testing.T) {
 	fmt.Println("awaiting signal")
 	<-done
 	fmt.Println("exiting")
+}
+
+func TestReturn(t *testing.T) {
+	fn := func(num int) (str string, err error) {
+		if num > 5 {
+			str = "aaa"
+			err = errors.New("111")
+			return
+		} else {
+			str = "ccc" // 无效
+			return "bbb", errors.New("222")
+		}
+	}
+
+	str, err := fn(1)
+	fmt.Println("--- ret:", str, err)
 }
 
 func TestThreeCalc(t *testing.T) {
