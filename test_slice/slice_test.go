@@ -187,7 +187,7 @@ func Test_slice04(t *testing.T) {
 
 }
 
-// 防止切除来的切片修改 原有切片的数据, 需要指定第三个参数
+// 防止切出来的切片修改 原有切片的数据, 需要指定第三个参数
 func Test_slice05(t *testing.T) {
 	slice := []int{10, 20, 30, 40, 50}
 	newSlice1 := slice[1:2:2]
@@ -204,30 +204,89 @@ type CDog struct {
 }
 
 func Test_emptySlice(t *testing.T) {
+	var dogArr2 []*CDog                                                                                                 // 这样声明为 nil, 有地址, 可以 append, 正确的数组声明方式
+	fmt.Printf("--- dogArr2 len:%d, cap:%d, addr:%p, isnil:%v\n", len(dogArr2), cap(dogArr2), &dogArr2, dogArr2 == nil) // len:0, cap:0, addr:0xc000004540, isnil:true
+	dogArr2 = append(dogArr2, &CDog{}, &CDog{}, &CDog{})
+	fmt.Printf("--- dogArr2 len:%d, cap:%d, addr:%p\n", len(dogArr2), cap(dogArr2), &dogArr2) // len:3, cap:4, addr:0xc000004540, 地址居然还没变
+	fmt.Printf("--- dog:%v\n", dogArr2[0])
 
-	var dogArr []*CDog
-	if dogArr == nil {
-		fmt.Println("--- is nil") // is nil, dogArr 所指向的对象 为 nil, 用 len 判断即可
-	}
-	fmt.Printf("--- dogArr:%p\n", &dogArr)         // 0xc000064440 有地址
-	fmt.Printf("--- dogArr len:%d\n", len(dogArr)) // len:0
+	println()
+	var arr1 []int = nil                                                                                 // 这样声明为 nil, 有地址, 可以 append
+	fmt.Printf("--- arr1 len:%d, cap:%d, addr:%p, isnil:%v\n", len(arr1), cap(arr1), &arr1, arr1 == nil) // len:0, cap:0, addr:0xc000004600, isnil:true
+	var arr2 []int = make([]int, 0)                                                                      // make 生成的数组 不为 nil, 正确的数组声明方式
+	fmt.Printf("--- arr2 len:%d, cap:%d, addr:%p, isnil:%v\n", len(arr2), cap(arr2), &arr2, arr2 == nil) // arr2 len:0, cap:0, addr:0xc0000046a0, isnil:false
+	var arr3 = []int{}                                                                                   // {} 初始化的 不为 nil
+	fmt.Printf("--- arr3 len:%d, cap:%d, addr:%p, isnil:%v\n", len(arr3), cap(arr3), &arr3, arr3 == nil) // arr2 len:0, cap:0, addr:0xc0000046c0, isnil:false
+}
 
-	dogArr2 := []*CDog{}                             // 空数组
-	fmt.Printf("--- dogArr2 len:%d\n", len(dogArr2)) // len:0
+// 清空数组
+func Test_clearSlice(t *testing.T) {
+	// ------------ test2
+	arr1 := make([]int, 0, 10)
+	arr2 := arr1
+	fmt.Printf("--- arr1, len:%d, cap:%d, addr:%p\n", len(arr1), cap(arr1), arr1) // len:0, cap:10, addr:0xc0000122d0
+	fmt.Printf("--- arr2, len:%d, cap:%d, addr:%p\n", len(arr2), cap(arr2), arr2) // len:0, cap:10, addr:0xc0000122d0 // 地址未变
+
+	println("aaa")
+	arr1 = append(arr1, 1, 2, 3)
+	fmt.Printf("--- arr1, len:%d, cap:%d, addr:%p\n", len(arr1), cap(arr1), arr1) // len:3, cap:10, addr:0xc0000122d0
+	fmt.Printf("--- arr2, len:%d, cap:%d, addr:%p\n", len(arr2), cap(arr2), arr2) // len:0, cap:10, addr:0xc0000122d0 // arr2 不受 arr1 的影响, 依旧是 len:0 // TODO: 这个有点不明白为什么 不受 arr1 的影响
+
+	println("bbb")
+	//参考:
+	// https://programming.guide/go/clear-slice.html
+	// https://yourbasic.org/golang/clear-slice/
+	// 错误 的清空方式
+	arr1 = arr1[:0]                                                               // 清空数组, 但是是 错误 的, 元素会继续占据内存
+	fmt.Printf("--- arr1, len:%d, cap:%d, addr:%p\n", len(arr1), cap(arr1), arr1) // len:0, cap:10, addr:0xc0000122d0 // 地址未变, 虽然长度 len 为 0, 但依旧可以切出 原来的数据
+	fmt.Printf("--- arr1, reappears:%v\n", arr1[:2])                              // [1 2], 重新出现原来的数据, If the slice is extended again, the original data reappears.
+	fmt.Printf("--- arr2, len:%d, cap:%d, addr:%p\n", len(arr2), cap(arr2), arr2) // len:0, cap:10, addr:0xc0000122d0
+	arr1 = append(arr1, 4, 5, 6)
+	fmt.Printf("--- arr1, len:%d, cap:%d, addr:%p\n", len(arr1), cap(arr1), arr1) // len:3, cap:10, addr:0xc0000122d0 // 地址未变
+	arr6 := append(arr1, 4, 5, 6)                                                 // 新的数组变量, 地址改变 ****************
+	fmt.Printf("--- arr6, len:%d, cap:%d, addr:%p\n", len(arr6), cap(arr6), arr6) // len:6, cap:10, addr:0xc0000122d0 // 地址未变
+	arr6[1] = 999
+	fmt.Printf("--- arr1[1]:%v\n", arr1) // [4 999 6] // 会修改到 arr1 的数据
+	fmt.Printf("--- arr6[1]:%v\n", arr6) // [4 999 6 4 5 6]
+
+	// 正确 的清空方式
+	println("bbb 222")
+	arr1 = nil                                                                    // 清空数组, 正确的姿势
+	fmt.Printf("--- arr1, len:%d, cap:%d, addr:%p\n", len(arr1), cap(arr1), arr1) // len:0, cap:0, addr:0x0 // 空地址
+	arr1 = append(arr1, 4, 5, 6)                                                  // 即使为 nil, 除了索引元素之外, 几乎其他 api 都可以使用, 如: append
+	fmt.Printf("--- arr1, len:%d, cap:%d, addr:%p\n", len(arr1), cap(arr1), arr1) // len:3, cap:4, addr:0xc0000104e0 // 会分配到一个新内存
+
+	//fmt.Printf("--- arr1, not reappears:%v\n", arr1[:2])                               // 不可用切出数据, 不然会数组越界崩溃
+
+	// ------------ test2
+	println("ccc")
+	arr3 := make([]int, 0, 10)
+	arr3 = append(arr3, 1, 2, 3)
+	fmt.Printf("--- arr3, len:%d, cap:%d, addr:%p\n", len(arr3), cap(arr3), arr3) // len:3, cap:10, addr:0xc000012320
+
+	arr3 = arr3[:cap(arr3)]                                                       // 填满数组
+	fmt.Printf("--- arr3, len:%d, cap:%d, addr:%p\n", len(arr3), cap(arr3), arr3) // len:10, cap:10, addr:0xc000012320
+	arr3 = append(arr3, 1, 2, 3)                                                  // 动态扩容, 导致地址改变
+	fmt.Printf("--- arr3, len:%d, cap:%d, addr:%p\n", len(arr3), cap(arr3), arr3) // len:13, cap:20, addr:0xc0000a4000
 }
 
 func Test_copy(t *testing.T) {
-	arr1 := []*CDog{
-		&CDog{name: "aaa"},
-		&CDog{name: "bbb"},
-	}
+	// 错误姿势
+	arr3 := []int{1, 2, 3}
+	arr4 := arr3
+	arr4[2] = 777
+	fmt.Printf("--- arr3, addr:%p, arr:%v\n", &arr3, arr3) // [1 2 777]
+	fmt.Printf("--- arr4, addr:%p, arr:%v\n", &arr4, arr4) // [1 2 777] // 会修改到 arr3 的数据
 
-	arr2 := make([]*CDog, len(arr1))
+	// 正确姿势
+	arr1 := []int{1, 2, 3}
+
+	arr2 := make([]int, len(arr1))
 	copy(arr2, arr1)
 
-	for _, val := range arr2 {
-		fmt.Printf("--- name:%s\n", val.name)
-	}
+	arr2[2] = 666
+	fmt.Printf("--- arr1, addr:%p, arr:%v\n", &arr1, arr1) // [1 2 3]
+	fmt.Printf("--- arr2, addr:%p, arr:%v\n", &arr2, arr2) // [1 2 666] // 不会修改到 arr1 的数据
 }
 
 func Test_arrAppendArr(t *testing.T) {

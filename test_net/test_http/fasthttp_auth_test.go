@@ -18,6 +18,8 @@ import (
 // See RFC 2617, Section 2.
 func basicAuth(ctx *fasthttp.RequestCtx) (username, password string, ok bool) {
 	auth := ctx.Request.Header.Peek("Authorization")
+	fmt.Printf("--- Authorization:%s\n", string(auth))
+
 	if auth == nil {
 		return
 	}
@@ -79,12 +81,12 @@ func Index222(ctx *fasthttp.RequestCtx) {
 
 // Protected is the Protected handler
 func Protected(ctx *fasthttp.RequestCtx) {
-	fmt.Fprint(ctx, "Protected!\n")
+	fmt.Fprint(ctx, "Auth ok, hello world!\n")
 }
 
 func Test_SrvFasthttpAuth(t *testing.T) {
-	user := "gordon"
-	pass := "secret!"
+	user := "Aladdin"
+	pass := "open sesame"
 
 	router := fasthttprouter.New()
 	router.GET("/asd", Index222)
