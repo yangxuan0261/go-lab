@@ -98,7 +98,7 @@ func Test_json_map(t *testing.T) {
 }
 
 type Account struct {
-	Name string `json:"user_name"`
+	Name string `json:"user_name"` // 这样可以映射为 Marshal 后的 string 的 key 值, 反之可以 Unmarshal 成对应的属性字段
 	ID   int32  `json:"user_id"`
 	Age  uint32 `json:"user_age"`
 	Flag bool   `json:"user_age"`
@@ -169,4 +169,26 @@ func Test_beautifyJson(t *testing.T) {
 	}
 
 	ioutil.WriteFile(jfile, bytes, os.ModePerm)
+}
+
+func Test_parseArr(t *testing.T) {
+	var arr1 []*Account
+	arr1 = append(arr1, &Account{ID: 1}, &Account{ID: 2}, &Account{ID: 3})
+
+	//bts, _ := json.Marshal(arr1) // 这里可以存 数组 或者 数组的地址
+	bts, _ := json.Marshal(&arr1) // 这里可以存 数组 或者 数组的地址
+	fmt.Printf("--- str:%s\n", string(bts))
+
+	var arr2 []*Account                // 可以直接用声明的数组
+	json.Unmarshal([]byte(bts), &arr2) // 这里一定要传数组的地址, 否则解码失败
+	for k, v := range arr2 {
+		fmt.Printf("--- k:%+v, v:%+v\n", k, v)
+	}
+
+	/*
+		--- str:[{"user_name":"","user_id":1,"Arr":null},{"user_name":"","user_id":2,"Arr":null},{"user_name":"","user_id":3,"Arr":null}]
+		--- k:0, v:&{Name: ID:1 Age:0 Flag:false Arr:[]}
+		--- k:1, v:&{Name: ID:2 Age:0 Flag:false Arr:[]}
+		--- k:2, v:&{Name: ID:3 Age:0 Flag:false Arr:[]}
+	*/
 }

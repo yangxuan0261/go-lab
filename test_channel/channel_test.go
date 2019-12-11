@@ -253,3 +253,19 @@ func Test_ch(t *testing.T) {
 	val := <-ch
 	fmt.Println("--- val:", val)
 }
+
+func Test_chEqual(t *testing.T) {
+	ch1 := make(chan bool)
+	ch2 := make(chan bool)
+	ch3 := make(chan bool)
+
+	var chArr []chan bool
+	chArr = append(chArr, ch1, ch2, ch3)
+
+	for k, v := range chArr {
+		if v == ch2 {
+			fmt.Printf("--- isEqual, k:%d\n", k)
+		}
+	}
+
+}

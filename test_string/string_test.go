@@ -9,6 +9,9 @@ import (
 // https://studygolang.com/articles/5769
 
 func Test_001(t *testing.T) {
+	var x string                                            // var 声明是个空串
+	fmt.Printf("--- x len:%d, isnil:%v\n", len(x), x == "") // len:0, isnil:true
+
 	s := "Hello,世界!!!!!"
 	n := strings.Count(s, "!")
 	fmt.Println(n) // 5
@@ -68,4 +71,15 @@ func Test_literal(t *testing.T) {
 
 	extStr2 := `aaa \n bbb \n ccc`
 	fmt.Println("--- extStr2:", extStr2) // --- extStr2: aaa \n bbb \n ccc
+}
+
+func Test_split(t *testing.T) {
+	as := "aaa bbb"
+	args := strings.Split(as, " ")
+	fmt.Printf("--- args:%+v\n", args)
+}
+
+func Test_join(t *testing.T) {
+	reg := []string{"a", "b", "c"}
+	fmt.Printf("--- args:%+v\n", strings.Join(reg[1:], " "))
 }
