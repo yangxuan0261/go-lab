@@ -2,6 +2,10 @@ package pkg001
 
 import "fmt"
 
+func init() {
+	fmt.Println("--- init testpkg01")
+}
+
 func SayHello() { // 外部访问需要首字母大写
 	fmt.Println("hello world")
 }

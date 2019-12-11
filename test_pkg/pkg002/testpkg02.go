@@ -2,6 +2,10 @@ package pkg00234
 
 import "fmt"
 
+func init() {
+	fmt.Println("--- init testpkg02")
+}
+
 type Dog struct {
 	Name string // 外部访问需要首字母大写
 	Age  int8   // 首字母小写只能内部访问

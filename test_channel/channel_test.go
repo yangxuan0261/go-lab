@@ -240,3 +240,16 @@ goroutine 6 [chan send]:
 GoLab/test_channel.Test_goroutinueDeadLock(0xc0000a8100)
 	F:/a_link_workspace/go/GoWinEnv_new/src/GoLab/test_channel/channel_test.go:228  ch <- 5
 */
+
+func Test_ch(t *testing.T) {
+	ch := make(chan bool)
+
+	go func() {
+		ch <- true
+	}()
+
+	//ch <- true // 错误, fatal error: all goroutines are asleep - deadlock!
+
+	val := <-ch
+	fmt.Println("--- val:", val)
+}

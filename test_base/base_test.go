@@ -95,6 +95,11 @@ type CPig struct {
 	name string
 }
 
+type CBigPig struct {
+	CPig
+	isMale bool
+}
+
 func (self *CPig) Run(speed int) {
 	fmt.Printf("--- CPig.Run, name:%s, speed:%d\n", self.name, speed)
 }
@@ -145,6 +150,24 @@ func Test_dynamicCast(t *testing.T) {
 	} else {
 		fmt.Println("--- cast IActor fail")
 	}
+
+	fmt.Println("--- aaa")
+	bg1 := new(CBigPig)
+	var bg2 interface{}
+	bg2 = bg1
+	bg3, ok := bg2.(*CPig)
+	fmt.Println("--- bg3 res:", bg3 == nil, ok) // true false, 父类不能匹配成子类
+
+	var bg4 interface{}
+	bg4 = bg1.CPig                              // 是 对象
+	bg5, ok := bg4.(*CPig)                      // 匹配成 指针, 匹配失败
+	fmt.Println("--- bg5 res:", bg5 == nil, ok) // true false, 父类不能匹配成子类
+
+	// 子类 匹配成 父类 的正确姿势
+	var bg7 interface{}
+	bg7 = &bg1.CPig                             // 是 指针
+	bg8, ok := bg7.(*CPig)                      // 匹配成 指针, 匹配成功
+	fmt.Println("--- bg8 res:", bg8 == nil, ok) // false true
 }
 
 // https://studygolang.com/articles/5769

@@ -37,3 +37,8 @@ func Test_BufferString01(t *testing.T) {
 	buf.WriteString(s)        //将 s 这个 string 写到 buf 的尾部
 	fmt.Println(buf.String()) // hello world
 }
+
+
+func Test_bytes(t *testing.T) {
+	buff := make([]byte, 0, 100)
+}
