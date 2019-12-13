@@ -1,6 +1,9 @@
 package test_chan
 
 import (
+	"GoLab/common"
+	"GoLab/common/pprof"
+	"context"
 	"fmt"
 	"log"
 	"sync"
@@ -268,4 +271,31 @@ func Test_chEqual(t *testing.T) {
 		}
 	}
 
+}
+
+func Test_gorLeak(t *testing.T) {
+	pprof.StartPprof(":60321") // 开启 pprof
+
+	//chValid := make(chan bool) // 错误姿势
+	chValid := make(chan bool, 1) // 正确的姿势, 指定 size 为 1, 容许没有 select 的情况下丢 1 条数据而不会阻塞.
+
+	go func() {
+		defer fmt.Println("--- handshake defer")
+		time.Sleep(time.Second * 4)
+		chValid <- false
+
+	}()
+
+	tmoCtx, _ := context.WithTimeout(context.TODO(), time.Second*3)
+
+	var isValid bool
+	select {
+	case isValid = <-chValid:
+	case <-tmoCtx.Done():
+		fmt.Printf("--- tmoCtx isValid:%v\n", isValid)
+	}
+
+	fmt.Printf("--- ret:%+v\n", isValid)
+	common.WaitSignal()
+	fmt.Printf("--- exit\n")
 }

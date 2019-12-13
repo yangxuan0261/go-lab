@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"reflect"
 	"testing"
 )
 
@@ -18,25 +19,25 @@ func Test_001(t *testing.T) {
 
 func Test_002(t *testing.T) {
 	fn1 := func(num int, args ...interface{}) {
-		fmt.Printf("addr2:%p\n", args)
+		fmt.Printf("len:%d, addr2:%p, args:%+v, num:%d\n", len(args), args, args, num)
 		if args == nil {
 			fmt.Println("args is nil")
 		}
-		fmt.Print(num, args, "\n")
+		at := reflect.TypeOf(args)
+		fmt.Printf("at:%+v\n", at, ) // at:[]interface {}, 数组
+		if len(args) > 0 {
+			fmt.Printf("[0]:%+v\n", args[0])
+		}
 	}
 
-	fn1(1, "123", true) // 1 [123 true]
-	fn1(1)              // 1 [] // 切片时是空地址
+	fn1(1, "123", true) // len:2, addr2:0xc000004520, args:[123 true], num:1
+	fn1(1)              // len:0, addr2:0x0, args:[], num:1, args is nil // 切片时是空地址
 
-	// nums := []int{1, 2, 3, 4} // 错误写法
+	println()
+	// nums := []int{1, 2, 3, 4} // 错误写法,  必须是 interface{} 类型数组
 	nums := []interface{}{1, 2, 3, 4} // 正确写法
-	fmt.Printf("addr1:%p\n", nums)
-	fn1(1, nums...) // 1 [1 2 3 4]
-
-	/*
-		addr1:0xc0420600c0
-		addr2:0xc0420600c0 // 地址相同
-	*/
+	fmt.Printf("addr1:%p\n", nums)    // addr1:0xc00001a6c0
+	fn1(1, nums...)                   // len:4, addr2:0xc00001a6c0, args:[1 2 3 4], num:1 // 地址相同, 数组必须要通过 ... 展开
 }
 
 type Actor struct {
@@ -103,4 +104,19 @@ func Test_004(t *testing.T) {
 
 	arr0 = append(arr0, arr1...) // 正确
 	func1(arr0...)
+}
+
+func Test_parse(t *testing.T) {
+	func1 := func(nums ...interface{}) {
+		fmt.Printf("--- nums:%+v\n", nums)
+
+		if len(nums) > 0 {
+			if a, ok := nums[0].(*Actor); ok {
+				fmt.Printf("--- a.name:%+v\n", a.name)
+			}
+		}
+	}
+
+	a1 := &Actor{name: "hello"}
+	func1(a1, 222)
 }

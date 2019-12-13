@@ -10,10 +10,18 @@ import (
 type EnumType int32
 
 const (
-	EPolicyMIN EnumType = iota
+	EPolicyMIN EnumType = iota // 从 0 开始递增
 	EPolicyMAX
 	EPolicyMID
 	EPolicyAVG
+)
+
+type EnumActor int32
+
+const (
+	EAHello EnumActor = iota + 1000 // 从 1000 开始递增
+	EAWorld
+	EARun
 )
 
 var enumMap = map[EnumType]string{
@@ -38,14 +46,14 @@ var enumMap = map[EnumType]string{
 // 		return "UNKNOWN"
 // 	}
 // }
-
-func (p EnumType) String() string {
-	if val, ok := enumMap[p]; ok {
-		return val
-	} else {
-		return "Unknown enum"
-	}
-}
+//
+//func (p EnumType) String() string {
+//	if val, ok := enumMap[p]; ok {
+//		return val
+//	} else {
+//		return "Unknown enum"
+//	}
+//}
 
 func foo(p EnumType) {
 	fmt.Printf("--- ccc: %v\n", p) // MAX
@@ -56,7 +64,30 @@ func foo2(p string) {
 	fmt.Printf("--- bbb: %s\n", p) // MAX
 }
 
-func Test_main(t *testing.T) {
+func Test_String(t *testing.T) {
 	foo(EPolicyMAX)
-	foo2(EPolicyMAX.String())
+	//foo2(EPolicyMAX.String())
+}
+
+func Test_Print(t *testing.T) {
+	fmt.Printf("--- EPolicyMIN:%+v\n", EPolicyMIN)
+	fmt.Printf("--- EPolicyMAX:%+v\n", EPolicyMAX)
+	fmt.Printf("--- EPolicyMID:%+v\n", EPolicyMID)
+	fmt.Printf("--- EPolicyAVG:%+v\n", EPolicyAVG)
+
+	println()
+	fmt.Printf("--- EAHello:%+v\n", EAHello)
+	fmt.Printf("--- EAWorld:%+v\n", EAWorld)
+	fmt.Printf("--- EARun:%+v\n", EARun)
+
+	/* 只要不重写 String() 方法即可
+	--- EPolicyMIN:0
+	--- EPolicyMAX:1
+	--- EPolicyMID:2
+	--- EPolicyAVG:3
+
+	--- EAHello:1000
+	--- EAWorld:1001
+	--- EARun:1002
+	*/
 }

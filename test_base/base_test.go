@@ -168,6 +168,10 @@ func Test_dynamicCast(t *testing.T) {
 	bg7 = &bg1.CPig                             // 是 指针
 	bg8, ok := bg7.(*CPig)                      // 匹配成 指针, 匹配成功
 	fmt.Println("--- bg8 res:", bg8 == nil, ok) // false true
+
+	var bg9 interface{}
+	pIns, ok := bg9.(*CPig)
+	fmt.Println("--- try cast nil:", pIns, ok)
 }
 
 // https://studygolang.com/articles/5769
