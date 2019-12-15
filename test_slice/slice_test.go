@@ -380,4 +380,17 @@ func Test_sort(t *testing.T) {
 	fmt.Println(people)
 }
 
+func Test_Append(t *testing.T) {
+	var arr1 []*Person
+	fmt.Printf("--- arr1, len:%d, isnil:%v\n", len(arr1), arr1 == nil) // arr1, len:0, isnil:true
+
+	arr1 = append(arr1, nil)
+	fmt.Printf("--- arr1, len:%d, isnil:%v\n", len(arr1), arr1 == nil) // arr1, len:1, isnil:false, 有一个 nil 在 0 位置
+
+	var arr2 []*Person
+	var arr3 []*Person
+	arr3 = append(arr3, arr2...)
+	fmt.Printf("--- arr3, len:%d, isnil:%v\n", len(arr3), arr3 == nil) // arr3, len:0, isnil:true, nil append nil 还是 nil
+}
+
 // 类似 c++ stl 中的 vector, 动态增长数组

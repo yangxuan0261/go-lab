@@ -22,6 +22,9 @@ const (
 	EAHello EnumActor = iota + 1000 // 从 1000 开始递增
 	EAWorld
 	EARun
+
+	EAWalk EnumActor = iota + 2000 // *** 这里并不是 2000 开头, 而是 iota = 3 了, 所以这里是 2003
+	EAFly
 )
 
 var enumMap = map[EnumType]string{
@@ -79,6 +82,8 @@ func Test_Print(t *testing.T) {
 	fmt.Printf("--- EAHello:%+v\n", EAHello)
 	fmt.Printf("--- EAWorld:%+v\n", EAWorld)
 	fmt.Printf("--- EARun:%+v\n", EARun)
+	fmt.Printf("--- EAWalk:%+v\n", EAWalk)
+	fmt.Printf("--- EAFly:%+v\n", EAFly)
 
 	/* 只要不重写 String() 方法即可
 	--- EPolicyMIN:0
@@ -89,5 +94,7 @@ func Test_Print(t *testing.T) {
 	--- EAHello:1000
 	--- EAWorld:1001
 	--- EARun:1002
+	--- EAWalk:2003
+	--- EAFly:2004
 	*/
 }

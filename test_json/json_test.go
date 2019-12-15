@@ -192,3 +192,40 @@ func Test_parseArr(t *testing.T) {
 		--- k:2, v:&{Name: ID:3 Age:0 Flag:false Arr:[]}
 	*/
 }
+
+func Test_parseInterface(t *testing.T) {
+	type CShoe struct {
+		Size int
+	}
+
+	type CPhone struct {
+		Num  int
+		Shoe CShoe // 如果需要 json 解码的 结构体数据, 其 成员变量 不能使用 指针变量, mapstructure.Decode 会报错: * Shoe: unsupported type: ptr
+		// 使用 值类型 就没有问题
+	}
+
+	type CPack struct {
+		Name string
+		Meta interface{}
+	}
+
+	pIns := &CPack{
+		Name: "hello",
+		Meta: &CPhone{Num: 666, Shoe: CShoe{Size: 777}},
+	}
+
+	res1, _ := json.Marshal(&pIns)             // 这里可以存 数组 或者 数组的地址
+	fmt.Printf("--- res1:%+v\n", string(res1)) // res1:{"Name":"hello","Meta":{"Num":666,"Shoe":{"Size":777}}}
+
+	pIns2 := &CPack{}
+	json.Unmarshal(res1, pIns2)
+	fmt.Printf("--- pIns2:%+v\n", pIns2) // pIns2:&{Name:hello Meta:map[Num:666 Shoe:map[Size:777]]} // 可以看到解码出来的 interface{} 类型是一个 map
+
+	// 错误的转换姿势
+	//ph, ok := pIns2.Meta.(*CPhone)
+
+	// 正确的转换姿势
+	ph := &CPhone{} // 需要先实例化一个对象, 在把对象地址丢进 mapstructure 解码
+	err := mapstructure.Decode(pIns2.Meta, ph)
+	fmt.Printf("--- err:%v, ph:%+v\n", err, ph) // err:<nil>, ph:&{Num:666 Shoe:{Size:777}}
+}

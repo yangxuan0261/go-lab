@@ -393,3 +393,77 @@ func TestCurrDir(t *testing.T) {
 	str, err := os.Getwd()
 	fmt.Println("--- pwd:", str, err)
 }
+
+func Test_FnEqual(t *testing.T) {
+
+	fn1 := func() {
+
+	}
+
+	fn2 := func() {
+
+	}
+
+	fn3 := fn1
+
+	fmt.Printf("--- fn1:%p\n", fn1)
+	fmt.Printf("--- fn2:%p\n", fn2)
+	fmt.Printf("--- fn3:%p\n", fn3)
+	/*
+		--- fn1:0x50bf60
+		--- fn2:0x50bf70
+		--- fn3:0x50bf60 // 与 fn1 地址相同
+	*/
+
+	//fmt.Printf("--- fn3 == fn1::%v\n", fn3 == fn1) // 编译报错, 方法只能与 nil 比较 (func can only be compared to nil)
+
+	// 利用反射获取函数地址
+	sf1 := reflect.ValueOf(fn1)
+	sf2 := reflect.ValueOf(fn1)
+	fmt.Println("--- aaa:", sf1.Pointer() == sf2.Pointer()) // true
+
+	sf3 := reflect.ValueOf(fn2)
+	fmt.Println("--- bbb:", sf1.Pointer() == sf3.Pointer()) // false
+
+	// 直接使用函数地址
+	ptr1 := &fn1
+	ptr2 := &fn1
+	fmt.Println("--- ccc:", ptr1 == ptr2) // true
+
+	ptr3 := &fn2
+	fmt.Println("--- ddd:", ptr1 == ptr3) // false
+}
+
+func Test_Ptr(t *testing.T) {
+
+	type CPhone struct {
+		Num int
+	}
+
+	type CPack struct {
+		CPhone
+		Name string
+	}
+
+	ins := &CPack{CPhone: CPhone{Num: 123}, Name: "123"}
+	fmt.Printf("--- ptr1:%p\n", &ins.CPhone.Num)
+	fmt.Printf("--- ptr2:%p\n", &(ins.CPhone.Num))
+	/*
+	   --- ptr1:0xc000004520
+	   --- ptr2:0xc000004520 // 地址一样, 说明不用加 () 也可以去到最后一个字段的地址
+	*/
+}
+
+func Test_copyStruct(t *testing.T) {
+	var bArr1 []*CBall
+	b1 := &CBall{name: "hello"}
+	bArr1 = append(bArr1, b1)
+
+	var bArr2 []*CBall
+	b2 := *bArr1[0] // * 取到对象, 然后 值的复制拷贝, b2 新的一个对象
+	bArr2 = append(bArr2, &(b2))
+	bArr2[0].name = "world"
+
+	fmt.Printf("--- bArr1:%+v\n", bArr1[0]) // bArr1:&{name:hello}
+	fmt.Printf("--- bArr2:%+v\n", bArr2[0]) // bArr2:&{name:world} // 可以看到修改 bArr2[0] 不会影响到 bArr1[0]
+}
