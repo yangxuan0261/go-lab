@@ -14,12 +14,8 @@ type DbWorker struct {
 }
 type userTB struct {
 	Id   int
-	Name sql.NullString
-	Age  sql.NullInt64
-}
-
-func init() {
-
+	Name string
+	Age  uint64
 }
 
 func (dbw *DbWorker) insertData() {
@@ -61,13 +57,7 @@ func (dbw *DbWorker) queryData() {
 			fmt.Printf(err.Error())
 			continue
 		}
-		if !dbw.UserInfo.Name.Valid {
-			dbw.UserInfo.Name.String = ""
-		}
-		if !dbw.UserInfo.Age.Valid {
-			dbw.UserInfo.Age.Int64 = 0
-		}
-		fmt.Println("get data, id: ", dbw.UserInfo.Id, " name: ", dbw.UserInfo.Name.String, " age: ", int(dbw.UserInfo.Age.Int64))
+		fmt.Printf("--- data:%+v\n", dbw.UserInfo)
 	}
 
 	err = rows.Err()

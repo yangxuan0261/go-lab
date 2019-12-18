@@ -11,6 +11,7 @@ import (
 
 // 参考:
 // - https://blog.csdn.net/qq_17308321/article/details/89417493
+// - https://www.tizi365.com/archives/306.html
 
 func fn1(tp string, msg []byte) {
 	fmt.Printf("--- fn1, tp:%s, msg:%s\n", tp, string(msg))
