@@ -79,7 +79,7 @@ func (dbw *DbWorker) queryData() {
 func Test_001(t *testing.T) {
 	var err error
 	dbw := DbWorker{
-		Dsn: "root:123456@tcp(wolegequ.wilker.cn:4306)/testdb1?charset=utf8mb4",
+		Dsn: "root:123456@tcp(127.0.0.1:6306)/testdb1?charset=utf8mb4",
 	}
 	dbw.Db, err = sql.Open("mysql", dbw.Dsn)
 	if err != nil {

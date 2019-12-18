@@ -2,6 +2,7 @@ package test_redis
 
 import (
 	syslog "GoLab/test_log_zap/log"
+	"encoding/json"
 	"fmt"
 	"os"
 	"testing"
@@ -14,6 +15,7 @@ import (
 // - https://blog.csdn.net/wangshubo1989/article/details/75050024
 // - https://www.jianshu.com/p/89ca34b84101
 // - https://blog.csdn.net/weixin_37696997/article/details/78634145
+// - https://juejin.im/post/5d9ea1bcf265da5bab5bc6fb
 
 /*
 常见命令
@@ -53,7 +55,7 @@ func errCheck(tp string, err error) {
 }
 
 func Test_pool(t *testing.T) {
-	addr := "113.102.163.179:7379"
+	addr := "127.0.0.1:7379"
 	rp := &redis.Pool{
 		MaxIdle:     3,
 		IdleTimeout: 240 * time.Second,
@@ -83,7 +85,7 @@ func Test_pool(t *testing.T) {
 		return
 	}
 
-	_, err = conn2.Do("SET", "mykey2", "superWang2")
+	_, err = conn2.Do("SET", "mykey3", "superWang2")
 	if err != nil {
 		fmt.Println("redis set failed:", err)
 	}
@@ -95,6 +97,7 @@ func Test_pool(t *testing.T) {
 		fmt.Printf("Get mykey2: %v \n", username)
 	}
 }
+
 /*
 --- connect success, addr:113.102.163.179:7379
 Get mykey2: superWang2
@@ -113,11 +116,12 @@ func Test_setget(t *testing.T) {
 		fmt.Printf("Get mykey: %v \n", username)
 	}
 }
+
 // Get mykey: superWang
 
 // hmset 和 hgetall 命令的使用：
 func Test_hmsethgetall(t *testing.T) {
-	//构造实际场景的hash结构体
+	// 方式一, 结构体
 	var p1, p2 struct {
 		Description string `redis:"description"`
 		Url         string `redis:"url"`
@@ -131,6 +135,7 @@ func Test_hmsethgetall(t *testing.T) {
 	_, hmsetErr := conn.Do("hmset", redis.Args{}.Add("hao123").AddFlat(&p1)...)
 	errCheck("hmset", hmsetErr)
 
+	// 方式二, map 映射
 	m := map[string]string{
 		"description": "oschina",
 		"url":         "http://my.oschina.net/myblog",
@@ -141,32 +146,38 @@ func Test_hmsethgetall(t *testing.T) {
 	errCheck("hmset1", hmset1Err)
 
 	for _, key := range []string{"hao123", "hao"} {
+		println("key:", key)
+		// 返回每个 key 对应的 value 的数组
+		hashV2, _ := redis.Strings(conn.Do("hmget", key, "description", "url", "author"))
+		for k, hashv := range hashV2 {
+			fmt.Println("--- hashv, kv:", k, hashv)
+		}
+
+		// 映射到一个 struct 中
 		v, err := redis.Values(conn.Do("hgetall", key))
 		errCheck("hmgetV", err)
-		//等同于hgetall的输出类型，输出字符串为k/v类型
-		//hashV,_ := redis.StringMap(c.Do("hgetall",key))
-		//fmt.Println(hashV)
-		//等同于hmget 的输出类型，输出字符串到一个字符串列表
-		hashV2, _ := redis.Strings(conn.Do("hmget", key, "description", "url", "author"))
-		for _, hashv := range hashV2 {
-			fmt.Println(hashv)
-		}
 		if err := redis.ScanStruct(v, &p2); err != nil {
 			fmt.Println(err)
 			return
 		}
 		fmt.Printf("--- p2:%+v\n", p2)
+		println()
 	}
 }
+
 /*
-my blog
-http://xxbandy.github.io
-bgbiao
+key: hao123
+--- hashv, kv: 0 my blog
+--- hashv, kv: 1 http://xxbandy.github.io
+--- hashv, kv: 2 bgbiao
 --- p2:{Description:my blog Url:http://xxbandy.github.io Author:bgbiao}
-oschina
-http://my.oschina.net/myblog
-xxbandy
+
+key: hao
+--- hashv, kv: 0 oschina
+--- hashv, kv: 1 http://my.oschina.net/myblog
+--- hashv, kv: 2 xxbandy
 --- p2:{Description:oschina Url:http://my.oschina.net/myblog Author:xxbandy}
+
 */
 
 // hset 和 hget 的使用：
@@ -179,6 +190,37 @@ func Test_hsethget(t *testing.T) {
 		fmt.Println("book name:", r)
 	}
 }
+
 // book name: golang
 
+func Test_json(t *testing.T) {
+	var err error
+	// 写入数据
+	imap := map[string]string{"name": "zhang", "sex": "男"}
+	// 序列化json数据
+	value, _ := json.Marshal(imap)
+	_, err = conn.Do("SETNX", "jsonkey", value)
+	if err != nil {
+		fmt.Println("redis 8  SETNX jsonkey failed:", err)
+	}
+	// 读取数据
+	var imapGet map[string]string
+	valueGet, err := redis.Bytes(conn.Do("GET", "jsonkey"))
+	if err != nil {
+		fmt.Println(err)
+	}
 
+	errShal := json.Unmarshal(valueGet, &imapGet)
+	if errShal != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println("imapGet", imapGet)
+	fmt.Println("imapGet", imapGet["name"])
+	fmt.Println("imapGet", imapGet["sex"])
+	/*
+		imapGet map[name:zhang sex:男]
+		imapGet zhang
+		imapGet 男
+	*/
+}

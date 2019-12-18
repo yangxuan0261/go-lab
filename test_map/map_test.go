@@ -177,3 +177,13 @@ func Test_sort(t *testing.T) {
 	sort.Sort(sort.StringSlice(keys))
 	fmt.Printf("--- keys sort:%+v\n", keys)
 }
+
+func Test_foreachEmpty(t *testing.T) {
+	var m1 map[int]string
+
+	fmt.Printf("--- isnil:%t\n", m1 == nil)
+
+	for k, v := range m1 { // nil 也是可以直接遍历
+		fmt.Println("--- kv:", k, v)
+	}
+}
