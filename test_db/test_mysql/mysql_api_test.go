@@ -159,7 +159,7 @@ func Test_Transaction(t *testing.T) {
 		}
 	}
 
-	res1, err1 = tx.Exec(sqlStr, "wangwu333", "asdasd")
+	res1, err1 = tx.Exec(sqlStr, "wangwu333", "asdasd") // 传入错误的数据测试回滚
 	if err1 != nil {
 		fmt.Printf("--- exec 3 err1:%+v\n", err1)
 		err2 := tx.Rollback()
