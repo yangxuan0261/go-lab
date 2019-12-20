@@ -17,21 +17,6 @@ import (
 // - https://blog.csdn.net/weixin_37696997/article/details/78634145
 // - https://juejin.im/post/5d9ea1bcf265da5bab5bc6fb
 
-/*
-常见命令
-hset(key, field, value)：向名称为key的hash中添加元素field
-hget(key, field)：返回名称为key的hash中field对应的value
-hmget(key, (fields))：返回名称为key的hash中field i对应的value
-hmset(key, (fields))：向名称为key的hash中添加元素field
-hincrby(key, field, integer)：将名称为key的hash中field的value增加integer
-hexists(key, field)：名称为key的hash中是否存在键为field的域
-hdel(key, field)：删除名称为key的hash中键为field的域
-hlen(key)：返回名称为key的hash中元素个数
-hkeys(key)：返回名称为key的hash中所有键
-hvals(key)：返回名称为key的hash中所有键对应的value
-hgetall(key)：返回名称为key的hash中所有的键（field）及其对应的value
-*/
-
 var (
 	conn redis.Conn
 )
@@ -103,6 +88,9 @@ func Test_pool(t *testing.T) {
 Get mykey2: superWang2
 */
 
+/*
+[key] = xxx
+*/
 func Test_setget(t *testing.T) {
 	_, err := conn.Do("SET", "mykey", "superWang")
 	if err != nil {
@@ -120,6 +108,20 @@ func Test_setget(t *testing.T) {
 // Get mykey: superWang
 
 // hmset 和 hgetall 命令的使用：
+/*
+常见命令
+hset(key, field, value)：向名称为key的hash中添加元素field
+hget(key, field)：返回名称为key的hash中field对应的value
+hmget(key, (fields))：返回名称为key的hash中field i对应的value
+hmset(key, (fields))：向名称为key的hash中添加元素field
+hincrby(key, field, integer)：将名称为key的hash中field的value增加integer
+hexists(key, field)：名称为key的hash中是否存在键为field的域
+hdel(key, field)：删除名称为key的hash中键为field的域
+hlen(key)：返回名称为key的hash中元素个数
+hkeys(key)：返回名称为key的hash中所有键
+hvals(key)：返回名称为key的hash中所有键对应的value
+hgetall(key)：返回名称为key的hash中所有的键（field）及其对应的value
+*/
 func Test_hmsethgetall(t *testing.T) {
 	// 方式一, 结构体
 	var p1, p2 struct {
@@ -181,6 +183,9 @@ key: hao
 */
 
 // hset 和 hget 的使用：
+/*
+[key] = map[string]xxx
+*/
 func Test_hsethget(t *testing.T) {
 	// core functions
 	_, err := conn.Do("hset", "books", "name", "golang")
@@ -192,7 +197,9 @@ func Test_hsethget(t *testing.T) {
 }
 
 // book name: golang
-
+/*
+[key] = []byte
+*/
 func Test_json(t *testing.T) {
 	var err error
 	// 写入数据
@@ -223,4 +230,29 @@ func Test_json(t *testing.T) {
 		imapGet zhang
 		imapGet 男
 	*/
+}
+
+func Test_exist(t *testing.T) {
+	//b, err := redis.Bool(conn.Do("EXISTS", "runoobkey"))
+	b, err := redis.Bool(conn.Do("EXISTS", "jsonkey"))
+	if err != nil {
+		fmt.Println("--- error:", err)
+	} else {
+		fmt.Printf("--- exists:%v \n", b)
+	}
+}
+
+func Test_Del(t *testing.T) {
+	reply, rerr := conn.Do("SET", "delkey", "hello")
+	fmt.Printf("--- set reply:%v, rerr:%v\n", reply, rerr)
+
+	b, berr := redis.Bool(conn.Do("EXISTS", "delkey"))
+	fmt.Printf("--- b:%v, berr:%v\n", b, berr)
+
+	// 删除key
+	reply, rerr = conn.Do("DEL", "delkey")
+	fmt.Printf("--- del reply:%v, rerr:%v\n", reply, rerr)
+
+	b, berr = redis.Bool(conn.Do("EXISTS", "delkey"))
+	fmt.Printf("--- b:%v, berr:%v\n", b, berr)
 }
