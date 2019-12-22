@@ -23,11 +23,23 @@ var (
 
 func init() {
 	var err error
-	conn, err = redis.Dial("tcp", "wolegequ.wilker.cn:7379")
+	passwd := ""
+	conn, err = redis.Dial("tcp", "192.168.2.222:7379")
 	if err != nil {
-		fmt.Println("Connect to redis error", err)
-		return
+		panic(err)
 	}
+
+	if passwd != "" {
+		if res, err := conn.Do("AUTH", passwd); err != nil {
+			conn.Close()
+			panic(err)
+		} else {
+			fmt.Printf("--- AUTH, res%v, err:%v\n", res, err)
+		}
+	}
+
+	reply, rerr := conn.Do("PING")
+	fmt.Printf("--- PING, reply%v, rerr:%v\n", reply, rerr)
 	// defer conn.Close() // 用完要关掉
 }
 
@@ -88,21 +100,22 @@ func Test_pool(t *testing.T) {
 Get mykey2: superWang2
 */
 
+// 参考 key 命令: https://www.runoob.com/redis/redis-keys.html
 /*
 [key] = xxx
 */
 func Test_setget(t *testing.T) {
-	_, err := conn.Do("SET", "mykey", "superWang")
-	if err != nil {
-		fmt.Println("redis set failed:", err)
-	}
+	reply, err := conn.Do("SET", "mykey", "superWang")
+	fmt.Printf("--- SET, reply:%v, err:%v\n", reply, err) // reply:OK, err:<nil>
 
 	username, err := redis.String(conn.Do("GET", "mykey"))
-	if err != nil {
-		fmt.Println("redis get failed:", err)
-	} else {
-		fmt.Printf("Get mykey: %v \n", username)
-	}
+	fmt.Printf("--- GET, username:%v, err:%v\n", username, err) // username:superWang, err:<nil>
+
+	reply, err = conn.Do("SET", "mykey", "superWang", "NX") // reply:<nil>, err:<nil>, NX 是指只有不存在这个 key 的情况下, 才会操作成功, 所以现在是操作失败的, 返回 nil
+	fmt.Printf("--- SET, reply:%v, err:%v\n", reply, err)
+
+	reply, err = conn.Do("SET", "mykey", "superWangXX", "XX") // eply:OK, err:<nil>, XX 与 NX 相反, 是指只有存在这个 key 的情况下, 才会操作成功
+	fmt.Printf("--- SET, reply:%v, err:%v\n", reply, err)
 }
 
 // Get mykey: superWang
@@ -202,14 +215,14 @@ func Test_hsethget(t *testing.T) {
 */
 func Test_json(t *testing.T) {
 	var err error
+	var reply interface{}
 	// 写入数据
 	imap := map[string]string{"name": "zhang", "sex": "男"}
 	// 序列化json数据
 	value, _ := json.Marshal(imap)
-	_, err = conn.Do("SETNX", "jsonkey", value)
-	if err != nil {
-		fmt.Println("redis 8  SETNX jsonkey failed:", err)
-	}
+	reply, err = conn.Do("SET", "jsonkey", value)
+	fmt.Printf("--- SETNX, reply:%v, err:%v\n", reply, err)
+
 	// 读取数据
 	var imapGet map[string]string
 	valueGet, err := redis.Bytes(conn.Do("GET", "jsonkey"))
