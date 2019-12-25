@@ -1,6 +1,7 @@
-package main
+package test_tail
 
 import (
+	"GoLab/common"
 	syslog "GoLab/common/log"
 	"fmt"
 	"github.com/hpcloud/tail"
@@ -46,10 +47,6 @@ func Test_tail(t *testing.T) {
 	go writeLog()
 	go listenLog()
 
-	//common.WaitSignal()
+	common.WaitSignal()
 	fmt.Println("--- exit Test_tail")
-}
-
-func main() {
-	Test_tail(nil)
 }
