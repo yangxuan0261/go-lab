@@ -11,7 +11,7 @@ var dbIns *sql.DB
 func init() {
 	var err error
 
-	addr := "root:123456@tcp(127.0.0.1:6306)/testdb1?charset=utf8mb4"
+	addr := "root:123456@tcp(192.168.1.177:6306)/testdb1?charset=utf8mb4"
 	dbIns, err = sql.Open("mysql", addr)
 	if err != nil {
 		panic(err)

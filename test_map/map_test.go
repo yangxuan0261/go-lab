@@ -3,6 +3,7 @@ package test_map
 import (
 	"fmt"
 	"sort"
+	"sync"
 	"testing"
 )
 
@@ -185,5 +186,66 @@ func Test_foreachEmpty(t *testing.T) {
 
 	for k, v := range m1 { // nil 也是可以直接遍历
 		fmt.Println("--- kv:", k, v)
+	}
+}
+
+/*
+参考:
+- Go 1.9 sync.Map揭秘 - https://colobu.com/2017/07/11/dive-into-sync-Map/#sync-Map%E7%9A%84%E6%80%A7%E8%83%BD
+- 由浅入深聊聊Golang的sync.Map - https://juejin.im/post/5d36a7cbf265da1bb47da444
+线程安全的 map: sync.Map
+*/
+func Test_syncMap(t *testing.T) {
+	type userInfo struct {
+		Name string
+		Age  int
+	}
+
+	var m sync.Map
+
+	vv, ok := m.LoadOrStore("1", "one")
+	fmt.Println(vv, ok) //one false, ok 表示是否已经存在这个 key
+
+	vv, ok = m.Load("1")
+	fmt.Println(vv, ok) //one true
+
+	vv, ok = m.LoadOrStore("1", "oneone")
+	fmt.Println(vv, ok) //one true
+
+	vv, ok = m.Load("1")
+	fmt.Println(vv, ok) //one true
+
+	m.Store("1", "oneone")
+	vv, ok = m.Load("1")
+	fmt.Println(vv, ok) // oneone true
+
+	m.Store("2", "two")
+	m.Range(func(k, v interface{}) bool {
+		fmt.Println(k, v)
+		return true
+	})
+
+	m.Delete("1")
+	m.Range(func(k, v interface{}) bool {
+		fmt.Println(k, v)
+		return true
+	})
+
+	map1 := make(map[string]userInfo)
+	var user1 userInfo
+	user1.Name = "ChamPly"
+	user1.Age = 24
+	map1["user1"] = user1
+
+	var user2 userInfo
+	user2.Name = "Tom"
+	user2.Age = 18
+	m.Store("map_test", map1)
+
+	mapValue, _ := m.Load("map_test")
+
+	for k, v := range mapValue.(map[string]userInfo) {
+		fmt.Println(k, v)
+		fmt.Println("name:", v.Name)
 	}
 }

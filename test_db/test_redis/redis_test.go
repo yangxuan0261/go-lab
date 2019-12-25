@@ -24,7 +24,7 @@ var (
 func init() {
 	var err error
 	passwd := ""
-	conn, err = redis.Dial("tcp", "192.168.2.222:7379")
+	conn, err = redis.Dial("tcp", "192.168.1.177:7379")
 	if err != nil {
 		panic(err)
 	}

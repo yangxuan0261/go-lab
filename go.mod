@@ -11,11 +11,13 @@ require (
 	github.com/golang/protobuf v1.3.2
 	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/google/uuid v1.1.1
+	github.com/hpcloud/tail v1.0.0
 	github.com/micro/go-micro v1.13.1 // indirect
 	github.com/olzhy/quote v1.0.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/valyala/fasthttp v1.6.0
 	go.uber.org/zap v1.10.0
+	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
 	golang.org/x/net v0.0.0-20191011234655-491137f69257
 	google.golang.org/grpc v1.24.0
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22

@@ -64,7 +64,7 @@ func PostTest(ctx *fasthttp.RequestCtx) {
 		// Returned arguments are valid until returning from RequestHandler.
 	*/
 
-	formValues := ctx.FormValue("aaa") // ?aaa=111&bbb=222 请求参数 (表单数据)
+	formValues := ctx.FormValue("aaa") // ?aaa=111&bbb=222 请求参数
 	fmt.Printf("--- formValues aaa:%+v\n", string(formValues))
 
 	ck := ctx.Request.Header.Peek("ccc") // 获取 token 之类的数据, 等价于官方 http 的 req.Header.Get("ccc")
@@ -72,6 +72,7 @@ func PostTest(ctx *fasthttp.RequestCtx) {
 
 	// 这两行可以获取PostBody数据，在上传数据文件的时候有用
 	postBody := ctx.PostBody()
+	fmt.Printf("--- recv:%v\n", string(postBody)) // 如果是 表单数据, 结果是 recv:name=test&age=18; 如果是 json 数据, 则是 recv:{"request":"test"}
 	fmt.Fprint(ctx, "--- post ret abc:"+string(postBody))
 }
 
