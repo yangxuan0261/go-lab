@@ -31,7 +31,7 @@ func pwrite() {
 	}
 
 	defer f.Close()
-	buffer, err := proto.Marshal(msg)
+	buffer, err := proto.Marshal(msg) // 必须是
 	f.Write(buffer)
 }
 

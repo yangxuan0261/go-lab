@@ -249,3 +249,22 @@ func Test_syncMap(t *testing.T) {
 		fmt.Println("name:", v.Name)
 	}
 }
+
+func Test_interfaceKey(t *testing.T) {
+	aMap := make(map[interface{}]interface{})
+	aMap[1] = "aaa"
+	aMap[2] = "bbb"
+	aMap["xxx"] = "ccc"
+
+	var key1 interface{} = 2
+
+	fmt.Printf("--- v:%v\n", aMap[2])     // v:bbb
+	fmt.Printf("--- v:%v\n", aMap[key1])  // v:bbb
+	fmt.Printf("--- v:%v\n", aMap["xxx"]) // v:ccc // 值类型的 key 可以直接使用
+
+	d1 := new(CDog)
+	d2 := new(CDog)
+	aMap[d1] = "dog111"
+	fmt.Printf("--- d1:%v\n", aMap[d1]) // d1:dog111 // 指针类型必须用对应的指针才能获取到
+	fmt.Printf("--- d2:%v\n", aMap[d2]) // d2:<nil>
+}

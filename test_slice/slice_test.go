@@ -393,4 +393,16 @@ func Test_Append(t *testing.T) {
 	fmt.Printf("--- arr3, len:%d, isnil:%v\n", len(arr3), arr3 == nil) // arr3, len:0, isnil:true, nil append nil 还是 nil
 }
 
+func Test_Reverse(t *testing.T) {
+	a := []int{
+		1, 2, 3, 4, 5,
+	}
+	fmt.Printf("--- a:%+v\n", a)
+
+	for i, j := 0, len(a)-1; i < j; i, j = i+1, j-1 {
+		a[i], a[j] = a[j], a[i]
+	}
+	fmt.Printf("--- a:%+v\n", a)
+}
+
 // 类似 c++ stl 中的 vector, 动态增长数组

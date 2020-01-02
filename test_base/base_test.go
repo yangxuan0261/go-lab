@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"os/signal"
 	"reflect"
@@ -341,41 +342,6 @@ func TestReturn(t *testing.T) {
 	fmt.Println("--- ret:", str, err)
 }
 
-func TestDefer(t *testing.T) {
-	defer func() {
-		if err := recover(); err != nil {
-			log.Printf("--- err:%+v", err)
-		}
-	}()
-	defer log.Println("aaa")
-	defer log.Println("bbb")
-
-	log.Println("--- test 111")
-	/*
-		--- test 111
-		bbb
-		aaa
-		--- err:hello
-		// 后进先出
-	*/
-	panic("hello")
-	log.Println("--- test 222")
-}
-
-func TestDefer02(t *testing.T) {
-	ok := true
-	if ok { //会根据运行时调用不同的 defer
-		defer log.Println("bbb")
-	} else {
-		defer log.Println("ccc")
-	}
-	log.Println("aaa")
-	/*
-		2019/12/07 14:39:54 aaa
-		2019/12/07 14:39:54 bbb
-	*/
-}
-
 func TestEmptyStruct(t *testing.T) {
 	s1 := struct{}{}
 	a := 1
@@ -466,4 +432,55 @@ func Test_copyStruct(t *testing.T) {
 
 	fmt.Printf("--- bArr1:%+v\n", bArr1[0]) // bArr1:&{name:hello}
 	fmt.Printf("--- bArr2:%+v\n", bArr2[0]) // bArr2:&{name:world} // 可以看到修改 bArr2[0] 不会影响到 bArr1[0]
+}
+
+func Test_swtich(t *testing.T) {
+	random := func(min, max int) int {
+		rand.Seed(time.Now().Unix())
+		return rand.Intn(max-min) + min
+	}
+
+	num := random(4, 8)
+	fmt.Println("--- num:", num)
+
+	switch { // 没有表达式的情况下 等价于 if else if else, 往下匹配到 true 就中断
+	case num == 3:
+		fmt.Println("--- aaa")
+	case num == 4:
+		fmt.Println("--- bbb")
+	case num == 5:
+		fmt.Println("--- ccc")
+	default:
+		fmt.Println("--- ddd")
+	}
+
+	switch num { // 有表达式的情况下, 匹配到就中断, 不需要 break 关键字, 且匹配目标可以用 , 分开
+	case 3, 7:
+		fmt.Println("--- aaa")
+	case 4:
+		fmt.Println("--- bbb")
+	case 5:
+		fmt.Println("--- ccc")
+	default:
+		fmt.Println("--- ddd")
+	}
+}
+
+func Test_loopFlag(t *testing.T) {
+	num := 3
+	arr := []int{1, 2, 3, 4, 5}
+
+Loop:
+	for key, value := range arr {
+		println("--- k,v:", key, value)
+		if value == num {
+			break Loop
+		}
+	}
+}
+
+func Test_new(t *testing.T) {
+	p1 := new(CPig)
+	fmt.Printf("--- p1 isnil:%v\n", p1 == nil) // false
+	fmt.Printf("--- p1 isnil:%p\n", p1)
 }
