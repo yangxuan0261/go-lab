@@ -194,6 +194,7 @@ func Test_foreachEmpty(t *testing.T) {
 - Go 1.9 sync.Map揭秘 - https://colobu.com/2017/07/11/dive-into-sync-Map/#sync-Map%E7%9A%84%E6%80%A7%E8%83%BD
 - 由浅入深聊聊Golang的sync.Map - https://juejin.im/post/5d36a7cbf265da1bb47da444
 线程安全的 map: sync.Map
+- go sync.Map使用和介绍 - https://blog.csdn.net/u010230794/article/details/82143179
 */
 func Test_syncMap(t *testing.T) {
 	type userInfo struct {

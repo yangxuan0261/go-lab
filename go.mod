@@ -3,6 +3,7 @@ module GoLab
 go 1.13
 
 require (
+	github.com/DataDog/zstd v1.4.4 // indirect
 	github.com/buaazp/fasthttprouter v0.1.1
 	github.com/eclipse/paho.mqtt.golang v1.2.0
 	github.com/garyburd/redigo v1.6.0
@@ -18,6 +19,9 @@ require (
 	github.com/satori/go.uuid v1.2.0
 	github.com/tidwall/evio v1.0.3
 	github.com/valyala/fasthttp v1.6.0
+	github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c // indirect
+	github.com/xdg/stringprep v1.0.0 // indirect
+	go.mongodb.org/mongo-driver v1.2.0
 	go.uber.org/zap v1.10.0
 	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
 	golang.org/x/net v0.0.0-20191011234655-491137f69257
