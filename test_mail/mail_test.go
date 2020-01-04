@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"gopkg.in/gomail.v2"
 	"testing"
-
-	_ "gopkg.in/gomail.v2"
 )
 
 func Test_aliyun(t *testing.T) {
