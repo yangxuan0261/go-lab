@@ -1,51 +1,52 @@
 package test_mail
 
 import (
+	"crypto/tls"
 	"fmt"
-	"net/smtp"
-	"strings"
+	"gopkg.in/gomail.v2"
 	"testing"
+
+	_ "gopkg.in/gomail.v2"
 )
 
-func SendMail(user, password, host, to, subject, body, mailtype string) error {
-	hp := strings.Split(host, ":")
-	auth := smtp.PlainAuth("", user, password, hp[0])
-	var contentType string
-	if mailtype == "html" {
-		contentType = "Content-Type: text/html; charset=UTF-8"
-	} else {
-		contentType = "Content-Type: text/plain; charset=UTF-8"
-	}
+func Test_aliyun(t *testing.T) {
+	from := "rmg02@rmgstation.com"
+	to := "364105996@qq.com"
+	content := "Thank you for being one of our royal members."
 
-	msg := []byte("To: " + to + "\r\nFrom: " + user + "<" + user + ">\r\nSubject: " + subject + "\r\n" + contentType + "\r\n\r\n" + body)
-	sendTo := strings.Split(to, ";")
-	err := smtp.SendMail(host, auth, user, sendTo, msg)
-	return err
+	m := gomail.NewMessage()
+	m.SetAddressHeader("From", from, "RMG")
+	m.SetAddressHeader("To", to, "")
+	m.SetHeader("Subject", "Welcome to RMG Station")
+	m.SetBody("text/html", content)
+
+	d := gomail.NewDialer("smtp.mxhichina.com", 465, from, "password")
+	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+	err := d.DialAndSend(m)
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Println("--- Test_aliyun send success")
+	}
 }
 
-func Test_qq(t *testing.T) {
-	user := "553972977@qq.com"
-	password := "asdasdasd" // qq 邮箱的 授权码, 不是 qq 密码
-	host := "smtp.qq.com:25"
-	to := "364105996@qq.com" // 364105996@qq.com;364105996@qq.com, 用 ; 分割
+func Test_qq02(t *testing.T) {
+	from := "553972977@qq.com"
+	to := "364105996@qq.com"
+	content := "Thank you for being one of our royal members."
 
-	subject := "Test send email by golang"
+	m := gomail.NewMessage()
+	m.SetAddressHeader("From", from, "RMG")
+	m.SetAddressHeader("To", to, "")
+	m.SetHeader("Subject", "Welcome to RMG Station")
+	m.SetBody("text/html", content)
 
-	body := `
-    <html>
-    <body>
-    <h3>
-    "这是GO语言写的测试邮件。"
-    </h3>
-    </body>
-    </html>
-    `
-	fmt.Println("send email")
-	err := SendMail(user, password, host, to, subject, body, "html")
+	d := gomail.NewDialer("smtp.qq.com", 25, from, "password")
+	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+	err := d.DialAndSend(m)
 	if err != nil {
-		fmt.Println("send mail error!")
-		fmt.Println(err)
+		panic(err)
 	} else {
-		fmt.Println("send mail success!")
+		fmt.Println("--- Test_qq02 send success")
 	}
 }

@@ -17,7 +17,25 @@ import (
 // 参考
 // - MongoDB 官方文档: https://www.mongodb.com/blog/post/mongodb-go-driver-tutorial
 // - 翻译后的文档: http://www.mongoing.com/archives/27257
+
 // - mongodb官方的golang驱动基础使用 - https://www.jianshu.com/p/0344a21e8040
+// - GitHub 代码: https://github.com/hwholiday/learning_tools/blob/master/mongodb/mongo-go-driver/main.go
+
+/*
+D系列的类型使用原生的Go类型简单地构建BSON对象。这可以非常有用的来创建传递给MongoDB的命令。 D系列包含4种类型：
+- D：一个BSON文档。这个类型应该被用在顺序很重要的场景， 比如MongoDB命令。
+- M: 一个无需map。 它和D是一样的， 除了它不保留顺序。
+- A: 一个BSON数组。
+- E: 在D里面的一个单一的子项。
+
+bson.D{{
+    "name",
+    bson.D{{
+        "$in",
+        bson.A{"Alice", "Bob"}
+    }}
+}}
+*/
 
 type Trainer struct {
 	Name string
@@ -78,8 +96,8 @@ func Test_InsertOne(t *testing.T) {
 }
 
 func Test_InsertMulti(t *testing.T) {
-	misty := Trainer{"Misty", 10, "Cerulean City"}
-	brock := Trainer{"Brock", 15, "Pewter City"}
+	misty := Trainer{"Tom", 18, "Cerulean City"}
+	brock := Trainer{"Betty", 11, "Pewter City"}
 	trainers := []interface{}{misty, brock}
 
 	insertManyResult, err := collection.InsertMany(context.TODO(), trainers)
@@ -104,6 +122,18 @@ func Test_Update(t *testing.T) {
 	fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
 }
 
+func Test_Update02(t *testing.T) {
+	var result Trainer
+	filter := bson.D{{"name", "Betty"}}
+	update := bson.M{"$set": bson.M{"name": "BettyModify"}}
+
+	err := collection.FindOneAndUpdate(context.TODO(), filter, update).Decode(&result)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("FindOneAndUpdate:%v\n", result) // result 是查询到修改之前的数据
+}
+
 func Test_QueryOne(t *testing.T) {
 	// create a value into which the result can be decoded
 	var result Trainer
@@ -122,8 +152,19 @@ func Test_QueryMulti(t *testing.T) {
 
 	var results []*Trainer
 
-	// bson.D{{}} 表示所有
-	cur, err := collection.Find(context.TODO(), bson.D{{}}, findOptions)
+	// 查询所有
+	// filter := bson.D{{}}
+
+	// 查询指定名字
+	filter := bson.D{{
+		"name",
+		bson.D{{
+			"$in",
+			bson.A{"Misty", "Brock"},
+		}},
+	}}
+
+	cur, err := collection.Find(context.TODO(), filter, findOptions)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -160,6 +201,13 @@ func Test_Delete(t *testing.T) {
 		log.Fatal(err)
 	}
 	fmt.Printf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)
+}
+
+func Test_DeleteCollection(t *testing.T) {
+	err := collection.Drop(context.TODO())
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func Test_Close(t *testing.T) {
