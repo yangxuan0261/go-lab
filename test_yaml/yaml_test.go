@@ -1,6 +1,4 @@
-// 参考: https://blog.51cto.com/xingej/2115258
-
-package main
+package test_yaml
 
 import (
 	"fmt"
@@ -9,6 +7,9 @@ import (
 	"os"
 	"testing"
 )
+
+// 参考:
+// - Go语言之读取yaml配置文件，转换成struct结构，json形式输出 - https://blog.51cto.com/xingej/2115258
 
 type KafkaCluster struct {
 	ApiVersion string   `yaml:"apiVersion"`

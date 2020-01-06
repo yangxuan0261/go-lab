@@ -1,4 +1,4 @@
-package main
+package json_test
 
 import (
 	"encoding/json"
@@ -10,12 +10,6 @@ import (
 
 	"github.com/goinggo/mapstructure"
 )
-
-func main() {
-	// test_json_struct()
-	// test_json_map()
-	// test_map_struct()
-}
 
 // 结构体字段必须 首字母大写 (public)
 type Student struct {
