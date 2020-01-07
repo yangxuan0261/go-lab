@@ -48,11 +48,12 @@ bson.D{{
 
 type Trainer struct {
 	//Bid   string             `bson:"_id,omitempty"` // 映射  mongo 中的字段
-	ObjId primitive.ObjectID `bson:"_id,omitempty"` // 字段只能有一个映射
-	Name  string             `bson:"name,omitempty"`
-	Age   int                `bson:"age,omitempty"`
-	City  string             `bson:"city,omitempty"`
-	Desc  string             `bson:"-"` // 取消映射字段
+	ObjId  primitive.ObjectID `bson:"_id,omitempty"` // 字段只能有一个映射
+	Name   string             `bson:"name,omitempty"`
+	Age    int                `bson:"age,omitempty"`
+	Salary float64            `bson:"salary,omitempty"`
+	City   string             `bson:"city,omitempty"`
+	Desc   string             `bson:"-"` // 取消映射字段
 }
 
 var client *mongo.Client
@@ -67,7 +68,6 @@ func init() {
 		return
 	}
 	wc := writeconcern.New(writeconcern.WMajority())
-	readconcern.Majority()
 	opt := options.Client().ApplyURI("mongodb://wilker:123456@192.168.1.177:28017/myblog")
 	opt.SetLocalThreshold(3 * time.Second)     //只使用与mongo操作耗时小于3秒的
 	opt.SetMaxConnIdleTime(5 * time.Second)    //指定连接可以保持空闲的最大毫秒数
@@ -101,7 +101,7 @@ func Test_ConnCol(t *testing.T) {
 }
 
 func Test_InsertOne(t *testing.T) {
-	ash := Trainer{Name: "Ash", Age: 10, City: "Pallet Town"}
+	ash := Trainer{Name: "Ash", Age: 10, City: "Pallet Town", Salary: 21.35}
 
 	res, err := collection.InsertOne(context.TODO(), ash)
 	if err != nil {
@@ -138,8 +138,8 @@ func Test_InsertOne(t *testing.T) {
 }
 
 func Test_InsertMulti(t *testing.T) {
-	misty := Trainer{Name: "Tom333", Age: 18, City: "Cerulean City"}
-	brock := Trainer{Name: "Betty333", Age: 11, City: "Pewter City"}
+	misty := Trainer{Name: "Tom333", Age: 18, City: "Cerulean City", Salary: 11.21}
+	brock := Trainer{Name: "Betty333", Age: 11, City: "Pewter City", Salary: 53.35}
 	trainers := []interface{}{misty, brock}
 
 	res, err := collection.InsertMany(context.TODO(), trainers)
@@ -307,6 +307,32 @@ func filterCond09() interface{} {
 	return nil
 }
 
+func printResults(cur *mongo.Cursor) {
+	log.Println("--- printResults")
+
+	var results []*Trainer
+	for cur.Next(context.TODO()) {
+		var elem Trainer
+		err := cur.Decode(&elem)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		results = append(results, &elem)
+	}
+
+	if err := cur.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	cur.Close(context.TODO()) // 关闭游标
+
+	fmt.Printf("--- result len:%d\n", len(results))
+	for k, v := range results {
+		fmt.Printf("--- k:%d, v:%+v\n", k, v)
+	}
+}
+
 func Test_QueryMulti(t *testing.T) {
 	// Pass these options to the Find method
 	findOpts := options.Find()
@@ -328,34 +354,19 @@ func Test_QueryMulti(t *testing.T) {
 	//findOpts.Projection = bson.D{{"name", 1}, {"city", 1}}
 
 	cur, err := collection.Find(context.TODO(), filterCond02(), findOpts)
+	defer cur.Close(context.TODO())
+
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
 
-	log.Println("aaa") // 找不到结果也会跑到这里来
-
-	var results []*Trainer
-	for cur.Next(context.TODO()) {
-		var elem Trainer
-		err := cur.Decode(&elem)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		results = append(results, &elem)
-	}
-
 	if err := cur.Err(); err != nil {
 		log.Fatal(err)
+		return
 	}
 
-	cur.Close(context.TODO()) // 关闭游标
-
-	fmt.Printf("Found multiple documents (array of pointers): %d\n", len(results))
-	for k, v := range results {
-		fmt.Printf("--- k:%d, v:%+v\n", k, v)
-	}
+	printResults(cur)
 }
 
 func Test_QueryMultiPage(t *testing.T) {
@@ -373,16 +384,83 @@ func Test_QueryMultiPage(t *testing.T) {
 	}
 
 	cur, err := collection.Find(context.TODO(), filterCond02(), findOpts)
+	defer cur.Close(context.TODO())
+
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
 
-	log.Println("aaa") // 找不到结果也会跑到这里来
+	if err := cur.Err(); err != nil {
+		log.Fatal(err)
+		return
+	}
 
-	var results []*Trainer
+	printResults(cur)
+}
+
+func Test_QueryCount(t *testing.T) {
+	//查询集合里面有多少数据
+	filter := bson.M{"age": bson.M{"$lte": 11}}
+	size, err := collection.CountDocuments(context.TODO(), filter)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("Count里面有 %d 条数据:\n", size)
+}
+
+func Test_QueryGroupBy(t *testing.T) {
+	// 参考: https://juejin.im/post/5e0b58de6fb9a0481467cc5f
+	// 聚合语句, 类似 mysql 的 group by
+	matchStage := bson.D{ // where, 对数据进行条件搜索
+		{"$match", bson.D{
+			{"age", bson.M{"$gte": 15}},
+		}},
+	}
+
+	groupStage := bson.D{ // group by, 对数据进行分组聚合
+		{"$group", bson.D{
+			{"_id", bson.M{"age": "$age"}},
+			{"age", bson.M{"$first": "$age"}},
+			{"total", bson.M{"$sum": 1}},
+			{"avgSalary", bson.M{"$avg": "$salary"}},
+		}},
+	}
+
+	projectStage := bson.D{ // select, 选择数据字段
+		{"$project", bson.D{
+			{"_id", 0},
+			{"age", 1},
+			{"total", 1},
+			{"avgSalary", 1},
+		}},
+	}
+
+	opts := options.Aggregate().SetMaxTime(15 * time.Second)
+	cur, err := collection.Aggregate(context.TODO(), mongo.Pipeline{matchStage, groupStage, projectStage}, opts)
+	defer cur.Close(context.TODO())
+
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	if err := cur.Err(); err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	type OutPut struct {
+		Age       int32   `bson:"age"`
+		Total     int32   `bson:"total"`
+		AvgSalary float64 `bson:"avgSalary"`
+	}
+
+	log.Println("--- printResults")
+
+	var results []*OutPut
 	for cur.Next(context.TODO()) {
-		var elem Trainer
+		var elem OutPut
 		err := cur.Decode(&elem)
 		if err != nil {
 			log.Fatal(err)
@@ -391,31 +469,16 @@ func Test_QueryMultiPage(t *testing.T) {
 		results = append(results, &elem)
 	}
 
-	if err := cur.Err(); err != nil {
-		log.Fatal(err)
-	}
-
-	cur.Close(context.TODO()) // 关闭游标
-
-	fmt.Printf("Test_QueryMultiPage (array of pointers): %d\n", len(results))
+	fmt.Printf("--- result len:%d\n", len(results))
 	for k, v := range results {
 		fmt.Printf("--- k:%d, v:%+v\n", k, v)
 	}
 }
 
-func Test_QueryCount(t *testing.T) {
-	//查询集合里面有多少数据
-	size, err := collection.CountDocuments(context.TODO(), bson.M{"age": bson.M{"$lte": 11}})
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("Count里面有 %d 条数据:\n", size)
-}
-
 func Test_DeleteById(t *testing.T) {
 	objID, err := primitive.ObjectIDFromHex("5e104697b3b35f3df14655e2")
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 		return
 	}
 
@@ -433,6 +496,7 @@ func Test_DeleteFindOneAndDelete(t *testing.T) {
 	err := collection.FindOneAndDelete(context.TODO(), filter).Decode(&result)
 	if err != nil {
 		log.Fatal(err)
+		return
 	}
 	fmt.Printf("FindOneAndDelete:%+v\n", result) // result 是查询到修改之前的数据
 }
@@ -447,6 +511,7 @@ func Test_DeleteMany(t *testing.T) {
 	res, err := collection.DeleteMany(context.TODO(), filter)
 	if err != nil {
 		log.Fatal(err)
+		return
 	}
 	fmt.Printf("Deleted %v documents in the trainers collection\n", res.DeletedCount)
 }
@@ -455,13 +520,15 @@ func Test_DeleteCollection(t *testing.T) {
 	err := collection.Drop(context.TODO())
 	if err != nil {
 		log.Fatal(err)
+		return
 	}
 }
 
 func Test_Close(t *testing.T) {
 	err := client.Disconnect(context.TODO())
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
+		return
 	}
 	fmt.Println("--- Connection to MongoDB closed.")
 }
@@ -482,6 +549,7 @@ func Test_BsonA(t *testing.T) {
 
 }
 
+// 只有副本集才能使用 事务, 单机不能使用
 func UseSession(client *mongo.Client) {
 	client.UseSession(context.TODO(), func(sctx mongo.SessionContext) error {
 		err := sctx.StartTransaction(options.Transaction().
