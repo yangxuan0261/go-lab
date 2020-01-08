@@ -9,14 +9,15 @@ import (
 )
 
 func Test1ue4(ctx *fasthttp.RequestCtx) {
-	fmt.Printf("--- Test1ue4\n")
 	postBody := ctx.PostBody()
+	fmt.Printf("--- Test1ue4, len:(%d)\n", len(postBody))
 	fmt.Fprint(ctx, postBody)
 }
 
 func Test2ue4(ctx *fasthttp.RequestCtx) {
-	fmt.Printf("--- Test1ue4\n")
-	//fmt.Fprint(ctx, "--- post ret abc:"+string(postBody))
+	postBody := ctx.PostBody()
+	fmt.Printf("--- Test2ue4, len:(%d)\n", len(postBody))
+	fmt.Fprint(ctx, postBody)
 }
 
 func main() {
