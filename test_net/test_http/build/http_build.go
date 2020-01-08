@@ -11,7 +11,7 @@ import (
 func Test1ue4(ctx *fasthttp.RequestCtx) {
 	fmt.Printf("--- Test1ue4\n")
 	postBody := ctx.PostBody()
-	fmt.Fprint(ctx, "--- post ret abc:"+string(postBody))
+	fmt.Fprint(ctx, postBody)
 }
 
 func Test2ue4(ctx *fasthttp.RequestCtx) {
@@ -24,6 +24,6 @@ func main() {
 
 	router := fasthttprouter.New()
 	router.GET("/test1ue4", Test1ue4)
-	router.POST("/test2ue4", Test1ue4)
+	router.POST("/test2ue4", Test2ue4)
 	log.Fatal(fasthttp.ListenAndServe(":8002", router.Handler))
 }
