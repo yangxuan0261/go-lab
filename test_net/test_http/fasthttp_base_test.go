@@ -2,9 +2,11 @@ package test_http
 
 import (
 	syserr "GoLab/common/error"
+	goprotobuf "GoLab/test_protobuf/proto"
 	"encoding/json"
 	"fmt"
 	"github.com/buaazp/fasthttprouter"
+	"github.com/golang/protobuf/proto"
 	"github.com/valyala/fasthttp"
 	"log"
 	"testing"
@@ -102,8 +104,6 @@ func PostTest(ctx *fasthttp.RequestCtx) {
 func Testue4(ctx *fasthttp.RequestCtx) {
 	fmt.Printf("--- Testue4\n")
 
-
-
 }
 
 // 测试 设置返回码跟返回信息
@@ -179,7 +179,8 @@ func Test_PostFasthttp01(t *testing.T) {
 }
 
 func Test_PostFasthttp02(t *testing.T) {
-	url := `http://httpbin.org/post?key=123`
+	//url := `http://httpbin.org/post?key=123`
+	url := `http://192.168.1.200:8002/test2ue4`
 
 	req := fasthttp.AcquireRequest()
 	rsp := fasthttp.AcquireResponse()
@@ -195,8 +196,17 @@ func Test_PostFasthttp02(t *testing.T) {
 
 	req.SetRequestURI(url)
 
-	requestBody := []byte(`{"request":"test"}`)
-	req.SetBody(requestBody)
+	msg := &goprotobuf.HelloWorld{
+		Id:  proto.Int32(996),
+		Str: proto.String("what the fuck"),
+	}
+	buffer1, _ := proto.Marshal(msg) // 必须是
+
+	//content := `{"request":"test"}`
+	//requestBody := []byte(content)
+	req.SetBody(buffer1)
+
+	//fmt.Printf("--- req len:(%d)\n", len(requestBody))
 
 	if err := fasthttp.Do(req, rsp); err != nil {
 		fmt.Println("请求失败:", err.Error())
@@ -204,5 +214,11 @@ func Test_PostFasthttp02(t *testing.T) {
 	}
 
 	b := rsp.Body()
-	fmt.Println("--- rsp", string(b))
+	fmt.Println("--- rsp", string(b), len(b))
+	msg2 := &goprotobuf.HelloWorld{}
+	err := proto.Unmarshal(b, msg2)
+	if err != nil {
+		fmt.Printf("--- err:%+v\n", err)
+	}
+	fmt.Printf("--- data:%+v\n", msg2)
 }
