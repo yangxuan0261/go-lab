@@ -1,17 +1,16 @@
 package main
 
 import (
+	"GoLab/common"
 	proto2 "GoLab/test_net/test_socket/proto"
+	"GoLab/test_net/test_socket/test_tcp"
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"github.com/golang/protobuf/proto"
 	"io/ioutil"
 	"log"
 	"net"
-	"os"
-	"os/signal"
-
-	"github.com/golang/protobuf/proto"
 )
 
 // 参考: https://segmentfault.com/a/1190000009277748
@@ -23,45 +22,55 @@ type CAgent struct {
 	cancel context.CancelFunc
 }
 
-func (this *CAgent) Run() {
+func (a *CAgent) Run() {
 	for {
 		select {
-		case <-this.ctx.Done():
-			this.Done()
+		case <-a.ctx.Done():
+			a.Done()
 			return
 		default:
-			this.ReadMsg()
+			a.ReadMsg()
 		}
 	}
 }
 
-func (this *CAgent) Done() {
-	log.Printf("--- CAgent.Done, %d exit\n", this.uid)
-	this.conn.Close()
+func (a *CAgent) Done() {
+	log.Printf("--- CAgent.Done, %d exit\n", a.uid)
+	a.conn.Close()
 }
 
-func (this *CAgent) ReadMsg() {
-	buf := make([]byte, 4096, 4096)
-
-	cnt, err := this.conn.Read(buf) //读消息
-	if err != nil {                 // 客户端主动断线
+func (a *CAgent) ReadMsg() {
+	pData, err := test_tcp.ReadBuff(a.conn)
+	if err != nil { // 客户端主动断线
 		log.Println("--- CAgent.ReadMsg, err:", err)
-		this.cancel()
+		a.cancel()
 		return
 	}
 
 	stReceive := &proto2.UserInfo{}
-	pData := buf[:cnt]
 
 	err = proto.Unmarshal(pData, stReceive) //protobuf 解码
 	if err != nil {
 		log.Println("--- proto.Unmarshal, err:", err)
+		a.cancel()
 		return
 	}
 
-	log.Println("receive", this.conn.RemoteAddr(), stReceive)
-	if stReceive.Message == "stop" {
-		this.cancel()
+	log.Printf("--- receive: addr:%s, data:%+v\n", a.conn.RemoteAddr(), stReceive)
+
+	stReceive.Message = "srv pong"
+	pData, err = proto.Marshal(stReceive)
+	if err != nil {
+		log.Println("--- proto.Marshal, err:", err)
+		a.cancel()
+		return
+	}
+
+	err = test_tcp.WriteBuff(a.conn, pData)
+	if err != nil {
+		log.Println("--- WriteBuff, err:", err)
+		a.cancel()
+		return
 	}
 }
 
@@ -92,12 +101,12 @@ func getTlsCfg() *tls.Config {
 }
 
 func main() {
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, _ := context.WithCancel(context.Background())
 
 	//监听
 	addr := "localhost:6600"
-	// listener, err := net.Listen("tcp", addr)
-	listener, err := tls.Listen("tcp", addr, getTlsCfg())
+	listener, err := net.Listen("tcp", addr)
+	//listener, err := tls.Listen("tcp", addr, getTlsCfg())
 	if err != nil {
 		panic(err)
 	}
@@ -125,9 +134,6 @@ func main() {
 	}()
 
 	log.Println("--- lintening addr:", addr)
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt, os.Kill)
-	s := <-c
-	cancel()
-	log.Println("--- exist, signal 222:", s)
+	common.WaitSignal()
+	log.Println("--- exist, signal 222:")
 }

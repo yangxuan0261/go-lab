@@ -2,6 +2,7 @@ package main
 
 import (
 	proto2 "GoLab/test_net/test_socket/proto"
+	"GoLab/test_net/test_socket/test_tcp"
 	"bufio"
 	"context"
 	"crypto/tls"
@@ -24,6 +25,11 @@ func send(info *CInfo) {
 	cnt := 0
 	sender := bufio.NewScanner(os.Stdin)
 	for sender.Scan() {
+		if sender.Text() == "stop" {
+			info.conn.Close()
+			return
+		}
+
 		if info.conn == nil {
 			return
 		}
@@ -42,8 +48,9 @@ func send(info *CInfo) {
 		}
 
 		//发送
-		info.conn.Write(pData)
-		if sender.Text() == "stop" {
+
+		err = test_tcp.WriteBuff(info.conn, pData)
+		if err != nil {
 			info.conn.Close()
 			return
 		}
@@ -57,25 +64,23 @@ func recv(info *CInfo) {
 	info.wg.Done() // 抵消 main 中的 Add
 
 	for {
-		buf := make([]byte, 1024, 1024)
-		cnt, err := info.conn.Read(buf) //读消息
-		if err == nil {
-			stReceive := &proto2.UserInfo{}
-			pData := buf[:cnt]
-
-			err = proto.Unmarshal(pData, stReceive) //protobuf 解码
-			if err != nil {
-				log.Println("--- proto.Unmarshal, err:", err)
-				return
-			}
-
-			log.Println("receive", info.conn.RemoteAddr(), stReceive)
-		} else {
+		pData, err := test_tcp.ReadBuff(info.conn)
+		if err != nil { // 客户端主动断线
 			log.Println("--- conn.Read, err:", err)
 			info.conn.Close()
 			info.conn = nil
 			return
 		}
+
+		stReceive := &proto2.UserInfo{}
+		err = proto.Unmarshal(pData, stReceive) //protobuf 解码
+		if err != nil {
+			log.Println("--- proto.Unmarshal, err:", err)
+			return
+		}
+
+		log.Println("receive", info.conn.RemoteAddr(), stReceive)
+
 	}
 }
 
@@ -111,7 +116,7 @@ func getTls() *tls.Config {
 }
 
 func main() {
-	addr := "localhost:5000"
+	addr := "localhost:6600"
 	var conn net.Conn
 	var err error
 
