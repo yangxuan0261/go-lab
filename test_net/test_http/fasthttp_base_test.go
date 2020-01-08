@@ -2,6 +2,7 @@ package test_http
 
 import (
 	syserr "GoLab/common/error"
+	"encoding/json"
 	"fmt"
 	"github.com/buaazp/fasthttprouter"
 	"github.com/valyala/fasthttp"
@@ -56,6 +57,28 @@ func MultiParams(ctx *fasthttp.RequestCtx) {
 func PostTest(ctx *fasthttp.RequestCtx) {
 	fmt.Printf("--- PostTest\n")
 
+	if true { // 测试代码
+		type SAbc struct {
+			Plat     uint32
+			Os       uint32
+			Appid    uint32
+			Deviceid string
+		}
+
+		buff := ctx.PostBody()
+
+		aIns := new(SAbc)
+		err := json.Unmarshal(buff, aIns)
+		if err != nil {
+			fmt.Printf("--- err:%+v\n", err)
+		} else {
+			fmt.Printf("--- success, data:%+v\n", aIns)
+		}
+
+		fmt.Fprint(ctx, buff) // 原封不动返回去
+		return
+	}
+
 	postValues := ctx.PostArgs() // 貌似木有卵用
 	fmt.Printf("--- postValues:%+v\n", string(postValues.Peek("bbb")))
 	/*
@@ -74,6 +97,13 @@ func PostTest(ctx *fasthttp.RequestCtx) {
 	postBody := ctx.PostBody()
 	fmt.Printf("--- recv:%v\n", string(postBody)) // 如果是 表单数据, 结果是 recv:name=test&age=18; 如果是 json 数据, 则是 recv:{"request":"test"}
 	fmt.Fprint(ctx, "--- post ret abc:"+string(postBody))
+}
+
+func Testue4(ctx *fasthttp.RequestCtx) {
+	fmt.Printf("--- Testue4\n")
+
+
+
 }
 
 // 测试 设置返回码跟返回信息
@@ -100,6 +130,7 @@ func Test_SrvFasthttp01(t *testing.T) {
 	router.GET("/get", GetTest)
 	router.GET("/multi/:name/:word", MultiParams)
 	router.POST("/post", PostTest)
+	router.POST("/testue4", Testue4)
 	router.POST("/test403", Post403)
 
 	log.Fatal(fasthttp.ListenAndServe(":8001", router.Handler))

@@ -1,34 +1,47 @@
 package cat
 
 import (
-	"errors"
 	"fmt"
-	"log"
 	"testing"
 )
 
-func Run(speed int) {
-	log.Printf("--- Run, speed:%+v\n", speed)
+// 参考: https://books.studygolang.com/The-Golang-Standard-Library-by-Example/chapter09/09.1.html#%E6%8A%A5%E5%91%8A%E6%96%B9%E6%B3%95
+
+func Test_Log(t *testing.T) {
+	fmt.Printf("Test_Log 1\n")
+	t.Log("aaa")
+	t.Logf("aaa:%d", 123)
+	/* 带行号输出日志
+		unit_test.go:12: aaa
+	    unit_test.go:13: aaa:123
+	*/
 }
 
-func Test_Run(t *testing.T) {
-	Run(111)
+func Test_Fail(t *testing.T) {
+	fmt.Printf("Test_Fail 1\n")
+	t.Fail() // 会标记为 测试失败, 但不会中断测试
+	fmt.Printf("Test_Fail 2\n")
+	t.FailNow() // 会标记为 测试失败, 同时中断测试
+	fmt.Printf("Test_Fail 3\n")
+
 }
 
-func Division(a int, b int) (int, error) {
-
-	if b == 0 {
-		return 0, errors.New("b cant be zero")
-	} else {
-		return a / b, nil
-	}
+func Test_Error(t *testing.T) {
+	fmt.Printf("Test_Error 1\n")
+	t.Error("bbb") // 等价于 Log + Fail, 会标记为 测试失败, 但不会中断测试
+	t.Errorf("bbb:%d", 123)
+	fmt.Printf("Test_Error 2\n")
 }
 
-func Test_Division(t *testing.T) {
-	if _, e := Division(6, 0); e != nil { //try a unit test on function
-		t.Error("--- Division did not work as expected.") // 带行号的错误日志, 如果不是如预期的那么就报错,
-	}
-	t.Log("--- bbb") // 带行号的日志, 记录一些你期望记录的信息
+func Test_Fatal(t *testing.T) {
+	fmt.Printf("Test_Fatal 1\n")
+	t.Fatal("ccc") // 等价于 Log + FailNow, 会标记为 测试失败, 同时中断测试
+	t.Fatalf("ccc:%d", 123)
+	fmt.Printf("Test_Fatal 2\n")
+}
 
-	fmt.Println("--- aaa") // 无行号日志
+func Test_SkipNow(t *testing.T) {
+	fmt.Printf("Test_SkipNow 1\n")
+	t.SkipNow() // 会中断测试, 但不会标记为 测试失败
+	fmt.Printf("Test_SkipNow 2\n")
 }

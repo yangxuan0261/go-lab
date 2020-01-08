@@ -58,3 +58,14 @@ func Benchmark_Parallel(b *testing.B) {
 		}
 	})
 }
+
+func Benchmark_ResetTimer(b *testing.B) {
+	b.ReportAllocs()
+
+	d := CDog{}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		d.Walk(123)
+	}
+}

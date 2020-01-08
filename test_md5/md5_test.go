@@ -46,7 +46,7 @@ func Test_file(t *testing.T) {
 }
 
 func Test_str(t *testing.T) {
-	str := "wolegequ"
+	str := "b2af71c4de723783"
 	if md5Str, err := GetStringMD51(str); err != nil {
 		panic(fmt.Sprintf("--- err:%+v\n", err))
 	} else {
