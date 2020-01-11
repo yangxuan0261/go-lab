@@ -59,28 +59,6 @@ func MultiParams(ctx *fasthttp.RequestCtx) {
 func PostTest(ctx *fasthttp.RequestCtx) {
 	fmt.Printf("--- PostTest\n")
 
-	if true { // 测试代码
-		type SAbc struct {
-			Plat     uint32
-			Os       uint32
-			Appid    uint32
-			Deviceid string
-		}
-
-		buff := ctx.PostBody()
-
-		aIns := new(SAbc)
-		err := json.Unmarshal(buff, aIns)
-		if err != nil {
-			fmt.Printf("--- err:%+v\n", err)
-		} else {
-			fmt.Printf("--- success, data:%+v\n", aIns)
-		}
-
-		fmt.Fprint(ctx, buff) // 原封不动返回去
-		return
-	}
-
 	postValues := ctx.PostArgs() // 貌似木有卵用
 	fmt.Printf("--- postValues:%+v\n", string(postValues.Peek("bbb")))
 	/*
@@ -95,10 +73,36 @@ func PostTest(ctx *fasthttp.RequestCtx) {
 	ck := ctx.Request.Header.Peek("ccc") // 获取 token 之类的数据, 等价于官方 http 的 req.Header.Get("ccc")
 	fmt.Printf("--- Cookie ccc:%+v\n", string(ck))
 
-	// 这两行可以获取PostBody数据，在上传数据文件的时候有用
+	// 获取 post 内容
 	postBody := ctx.PostBody()
 	fmt.Printf("--- recv:%v\n", string(postBody)) // 如果是 表单数据, 结果是 recv:name=test&age=18; 如果是 json 数据, 则是 recv:{"request":"test"}
+
+	// 返回 json/字符串 内容
 	fmt.Fprint(ctx, "--- post ret abc:"+string(postBody))
+
+	// 返回 二进制 内容
+	//ctx.Response.SetBody(postBody)
+}
+
+func PostRummy(ctx *fasthttp.RequestCtx) {
+	type SAbc struct {
+		Plat     uint32
+		Os       uint32
+		Appid    uint32
+		Deviceid string
+	}
+
+	buff := ctx.PostBody()
+
+	aIns := new(SAbc)
+	err := json.Unmarshal(buff, aIns)
+	if err != nil {
+		fmt.Printf("--- err:%+v\n", err)
+	} else {
+		fmt.Printf("--- success, data:%+v\n", aIns)
+	}
+
+	fmt.Fprint(ctx, buff) // 原封不动返回去
 }
 
 func Testue4(ctx *fasthttp.RequestCtx) {
@@ -131,6 +135,7 @@ func Test_SrvFasthttp01(t *testing.T) {
 	router.GET("/multi/:name/:word", MultiParams)
 	router.POST("/post", PostTest)
 	router.POST("/testue4", Testue4)
+	router.POST("/rummy", PostRummy)
 	router.POST("/test403", Post403)
 
 	log.Fatal(fasthttp.ListenAndServe(":8001", router.Handler))
@@ -180,7 +185,7 @@ func Test_PostFasthttp01(t *testing.T) {
 
 func Test_PostFasthttp02(t *testing.T) {
 	//url := `http://httpbin.org/post?key=123`
-	url := `http://192.168.1.200:8002/test2ue4`
+	url := `http://192.168.1.177:8002/test2ue4`
 
 	req := fasthttp.AcquireRequest()
 	rsp := fasthttp.AcquireResponse()

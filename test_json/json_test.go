@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/goinggo/mapstructure"
+	"github.com/mitchellh/mapstructure"
 )
 
 // 结构体字段必须 首字母大写 (public)
@@ -157,7 +157,7 @@ func Test_beautifyJson(t *testing.T) {
 		Descr: "hello",
 	}
 
-	bytes, err := json.MarshalIndent(in, "", "    ") // 带缩进
+	bytes, err := json.MarshalIndent(in, "", "    ") // beauty
 	if err != nil {
 		panic(err)
 	}

@@ -232,8 +232,7 @@ func Test_004(t *testing.T) {
 
 	log.Println("--- start")
 	// wg.Wait()
-	for {
-	}
+	select {}
 	log.Println("--- end")
 }
 

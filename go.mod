@@ -8,13 +8,15 @@ require (
 	github.com/eclipse/paho.mqtt.golang v1.2.0
 	github.com/garyburd/redigo v1.6.0
 	github.com/go-sql-driver/mysql v1.4.1
-	github.com/goinggo/mapstructure v0.0.0-20140717182941-194205d9b4a9
+	github.com/goinggo/mapstructure v0.0.0-20140717182941-194205d9b4a9 // indirect
 	github.com/golang/protobuf v1.3.2
 	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/google/uuid v1.1.1
 	github.com/hpcloud/tail v1.0.0
+	github.com/json-iterator/go v1.1.7
 	github.com/kavu/go_reuseport v1.4.0 // indirect
 	github.com/micro/go-micro v1.13.1 // indirect
+	github.com/mitchellh/mapstructure v1.1.2
 	github.com/olzhy/quote v1.0.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/tidwall/evio v1.0.3
