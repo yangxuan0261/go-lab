@@ -43,6 +43,7 @@ class Excel2Pb:
         os.chdir(XlsToolDir)
 
         # 生成 xxx.pb.go
+        os.system("protoc --version")
         os.system("protoc -I . --go_out=. ./*.proto")
 
         # 移动文件到目的文件夹
