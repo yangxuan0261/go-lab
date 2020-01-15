@@ -11,10 +11,10 @@ import (
 // gen 里面的数据由 xls_deploy_tool.py 工具生成
 
 func Test_excel(t *testing.T) {
-	dataArr := &dataconfig.SkinArray{}
+	dataArr := &datacfg.SkinArray{}
 	_ = dataArr
 
-	file := "F:/a_link_workspace/go/GoWinEnv_new/src/GoLab/test_excel/gen/cfg_skin.data"
+	file := "./gen/cfg_skin.bytes"
 	data, err := ioutil.ReadFile(file)
 	if err != nil {
 		panic(err)

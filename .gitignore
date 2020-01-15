@@ -19,3 +19,4 @@
 /vendor
 **/temp_**
 temp_**
+*.pyc
