@@ -365,7 +365,6 @@ class SheetInterpreter:
 
     def _LayoutComment(self, comment) :
         # 改用C风格的注释，防止会有分行
-        aaa :str = "sdf"
         if not self._is_layout :
             return
         if str.count(comment, "\n") > 1 :
@@ -842,3 +841,11 @@ if __name__ == '__main__' :
 
         print("Parse Success!!!")
 
+
+################# 升级到 py3 踩坑 #################
+# 1. py3 已支持中文, 不需要 unicode 转换, 干掉
+# 2. 字符串 count 修改, comment.count("\n") 修改为 str.count(comment, "\n")
+# 3. print "" 需要 () 改为 print("")
+# 4. 异常处理 except BaseException, e 改为 except BaseException as e
+# 5. protoc 需要使用 3.0 以上, 才能生成 xx_pb2.py 中 serialized_pb=b'sss' 字符串的二进制数据, 参考: https://github.com/protocolbuffers/protobuf/issues/4272
+###################################################
