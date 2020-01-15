@@ -9,7 +9,7 @@ import utils as utils
 
 SelfPath = sys.path[0]
 XlsToolDir = os.path.join(SelfPath, "xlsx")
-XlsToolPath = os.path.join(XlsToolDir, "xls_deploy_tool.py")
+XlsToolPath = os.path.join(XlsToolDir, "xls_deploy_tool_py3.py")
 
 TempSheet = "skin"
 TempXls = os.path.join(SelfPath, "../角色表.xlsx")
@@ -31,7 +31,7 @@ class Excel2Pb:
         if not os.path.exists(xlsPath):
             raise Exception("--- xls path dont exist, path:%s" % xlsPath)
 
-        cmd = "python %s %s %s %s" % (XlsToolPath, sheetName, xlsPath, flag)
+        cmd = "python3 %s %s %s %s" % (XlsToolPath, sheetName, xlsPath, flag)
         print("--- cmd:", cmd)
         utils.execute(cmd)
 

@@ -364,6 +364,7 @@ class SheetInterpreter:
         self._output.append("\n")
 
     def _LayoutComment(self, comment) :
+        print "--- comment%s", comment, type(comment)
         # 改用C风格的注释，防止会有分行
         if not self._is_layout :
             return
