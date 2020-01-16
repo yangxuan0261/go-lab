@@ -8,32 +8,35 @@ import (
 	"testing"
 )
 
-func Test_001(t *testing.T) {
-	//cmd := exec.Command("/bin/bash", "-c")
-	cmd := exec.Command("cmd.exe")
+func execCmd(command string) ([]byte, error) {
+	//cmd := exec.Command("/bin/bash") // linux
+	cmd := exec.Command("cmd") // windows
 
 	stdin, _ := cmd.StdinPipe()
 	stdout, _ := cmd.StdoutPipe()
 
 	if err := cmd.Start(); err != nil {
-		fmt.Println("Execute failed when Start:" + err.Error())
-		return
+		return nil, err
 	}
 
-	stdin.Write([]byte("ipconfig\n"))
-	stdin.Write([]byte("dir\n"))
+	stdin.Write([]byte(fmt.Sprintf("%s\n", command)))
 	stdin.Close()
 
 	outBytes, _ := ioutil.ReadAll(stdout)
 	stdout.Close()
 
 	if err := cmd.Wait(); err != nil {
-		fmt.Println("--- Execute failed when Wait:" + err.Error())
-		return
+		return nil, err
+	}
+	return outBytes, nil
+}
+
+func Test_001(t *testing.T) {
+	outBytes, err := execCmd("dir")
+	if err != nil {
+		panic(err)
 	}
 
-	cmdRe := convert.Byte2String(outBytes, convert.GB18030)
-	fmt.Println(cmdRe)
-
-	fmt.Printf("\n\n--- Execute finished:\n%s\n", cmdRe)
+	outStr := convert.Byte2String(outBytes, convert.GB18030)
+	fmt.Printf("\n\n--- Execute finished:\n%s\n", outStr)
 }
