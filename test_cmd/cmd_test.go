@@ -5,12 +5,23 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os/exec"
+	"runtime"
 	"testing"
 )
 
 func execCmd(command string) ([]byte, error) {
-	//cmd := exec.Command("/bin/bash") // linux
-	cmd := exec.Command("cmd") // windows
+	var cmd *exec.Cmd
+
+	switch runtime.GOOS {
+	case "darwin":
+		cmd = exec.Command("/bin/bash")
+	case "windows":
+		cmd = exec.Command("cmd")
+	case "linux":
+		cmd = exec.Command("/bin/bash")
+	default:
+		return nil, fmt.Errorf("--- no platform:%s", runtime.GOOS)
+	}
 
 	stdin, _ := cmd.StdinPipe()
 	stdout, _ := cmd.StdoutPipe()
