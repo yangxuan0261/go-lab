@@ -69,4 +69,4 @@ func TestReadFromMap(t *testing.T) {
 	}
 }
 
-// 如果把 锁 相关的代码注释掉, 会报错: fatal error: concurrent map read and map write
+// 如果把 锁 相关的代码注释掉, 测试这个go文件, 会报错: fatal error: concurrent map read and map write

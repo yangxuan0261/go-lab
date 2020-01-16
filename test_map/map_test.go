@@ -269,3 +269,7 @@ func Test_interfaceKey(t *testing.T) {
 	fmt.Printf("--- d1:%v\n", aMap[d1]) // d1:dog111 // 指针类型必须用对应的指针才能获取到
 	fmt.Printf("--- d2:%v\n", aMap[d2]) // d2:<nil>
 }
+
+func Test_parallelReadWrite(t *testing.T) {
+	// 参考: unit_parallel_test.go
+}
