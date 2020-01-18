@@ -484,3 +484,26 @@ func Test_new(t *testing.T) {
 	fmt.Printf("--- p1 isnil:%v\n", p1 == nil) // false
 	fmt.Printf("--- p1 isnil:%p\n", p1)
 }
+
+func Test_ptrArg(t *testing.T) {
+	p1 := &CPig{name: "hello"}
+
+	fn1 := func(p *CPig) { // 指针是复制拷贝对象
+		p = &CPig{name: "world 111"} // 这里只是 p指针 指向了新的对象, p1指针 还是指向原来的对象
+	}
+
+	fn2 := func(p *CPig) {
+		*p = CPig{name: "world 222"} // p,p1 指针都指向了新的对象
+	}
+
+	fn1(p1)
+	fmt.Printf("--- fn1 p1:%+v\n", p1)
+
+	fn2(p1)
+	fmt.Printf("--- fn2 p1:%+v\n", p1)
+
+	/*
+		--- fn1 p1:&{name:hello}
+		--- fn2 p1:&{name:world 222}
+	*/
+}

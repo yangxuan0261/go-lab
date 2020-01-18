@@ -13,8 +13,8 @@ import (
 )
 
 func main() {
-	// go test_01()
-	go test_02()
+	// go Test_01(nil)
+	go Test_02(nil)
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, os.Kill)
@@ -141,4 +141,45 @@ func Test_03(t *testing.T) {
 	for _, file := range xfiles {
 		fmt.Printf("获取的文件为[%s]\n", file)
 	}
+}
+
+func Exists(path string) bool {
+	info, err := os.Stat(path) //os.Stat获取文件信息
+	fmt.Printf("--- isDir:%v, info:%+v\n", info.IsDir(), info)
+
+	if err != nil {
+		if os.IsExist(err) {
+			return true
+		}
+		return false
+	}
+	return true
+}
+
+func ExistsDir(path string) bool {
+	info, err := os.Stat(path) //os.Stat获取文件信息
+	if err == nil && info.IsDir() {
+		return true
+	}
+	return false
+}
+
+func ExistsFile(path string) bool {
+	info, err := os.Stat(path) //os.Stat获取文件信息
+	if err == nil && !info.IsDir() {
+		return true
+	}
+	return false
+}
+
+func Test_api(t *testing.T) {
+	//fmt.Println("--- path:", os.Args[0]) // C:\Users\wolegequ\AppData\Local\Temp\___Test_api_in_GoLab_test_file.exe
+
+	path1 := "F:/a_link_workspace/go/GoWinEnv_new/src/GoLab/test_file/"
+	path2 := "F:/a_link_workspace/go/GoWinEnv_new/src/GoLab/test_file/file_test.go"
+	fmt.Printf("--- exist: %v\n", ExistsDir(path1))
+	fmt.Printf("--- filepath.Base: %v\n", filepath.Base(path2))
+	fmt.Printf("--- filepath.Dir: %v\n", filepath.Dir(path2))
+	fmt.Printf("--- filepath.Ext: %v\n", filepath.Ext(path2))
+	fmt.Printf("--- filepath.Join: %v\n", filepath.Join(filepath.Dir(path2), filepath.Base(path2)))
 }

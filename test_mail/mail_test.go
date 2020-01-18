@@ -8,7 +8,7 @@ import (
 )
 
 func Test_aliyun(t *testing.T) {
-	from := "rmg02@rmgstation.com"
+	from := "rmg10@rmgstation.com"
 	to := "364105996@qq.com"
 	content := "Thank you for being one of our royal members."
 
