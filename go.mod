@@ -20,6 +20,8 @@ require (
 	github.com/olzhy/quote v1.0.0
 	github.com/pkg/errors v0.8.1
 	github.com/satori/go.uuid v1.2.0
+	github.com/steakknife/bloomfilter v0.0.0-20180922174646-6819c0d2a570
+	github.com/steakknife/hamming v0.0.0-20180906055917-c99c65617cd3 // indirect
 	github.com/tidwall/evio v1.0.3
 	github.com/valyala/fasthttp v1.6.0
 	github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c // indirect

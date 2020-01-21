@@ -29,7 +29,7 @@ func tryLock(pool *redis.Pool, lockKey string, ex uint, retry int) error {
 		if i > 1 { // 睡眠一下, 因为其他线程释放锁需要时间
 			time.Sleep(time.Second)
 		}
-		v, err := conn.Do("SET", lockKey, ts, "EX", retry, "NX")
+		v, err := conn.Do("SET", lockKey, ts, "EX", retry, "NX", "EX", 5)
 		if err == nil {
 			if v == nil {
 				fmt.Println("get lock failed, retry times:", i)
