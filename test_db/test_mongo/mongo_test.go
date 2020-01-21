@@ -68,7 +68,7 @@ func init() {
 		return
 	}
 	wc := writeconcern.New(writeconcern.WMajority())
-	opt := options.Client().ApplyURI("mongodb://wilker:123456@192.168.1.177:28017/myblog")
+	opt := options.Client().ApplyURI("mongodb://wilker:123456@192.168.2.233:28017/myblog")
 	opt.SetLocalThreshold(3 * time.Second)     //只使用与mongo操作耗时小于3秒的
 	opt.SetMaxConnIdleTime(5 * time.Second)    //指定连接可以保持空闲的最大毫秒数
 	opt.SetMaxPoolSize(200)                    //使用最大的连接数

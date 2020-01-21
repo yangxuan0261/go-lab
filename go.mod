@@ -18,6 +18,7 @@ require (
 	github.com/micro/go-micro v1.13.1 // indirect
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/olzhy/quote v1.0.0
+	github.com/pkg/errors v0.8.1
 	github.com/satori/go.uuid v1.2.0
 	github.com/tidwall/evio v1.0.3
 	github.com/valyala/fasthttp v1.6.0
