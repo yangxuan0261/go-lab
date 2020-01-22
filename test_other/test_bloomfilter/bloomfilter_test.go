@@ -11,6 +11,7 @@ import (
 布隆过滤器
 参考:
 - https://github.com/steakknife/bloomfilter
+Face-meltingly fast, thread-safe, marshalable, unionable, probability- and optimal-size-calculating Bloom filter in go
 */
 
 func Test_bf01(t *testing.T) {
