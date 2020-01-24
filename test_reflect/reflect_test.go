@@ -66,6 +66,7 @@ func Test_type2Instance(t *testing.T) {
 	}
 }
 
+// 根据类型实例化对象, 需要浪费一个对象的空间, 错误姿势
 func Test_type2Instance2(t *testing.T) {
 	type T = Bar
 	data := T{}
@@ -77,5 +78,54 @@ func Test_type2Instance2(t *testing.T) {
 		fmt.Printf("--- ins:%+v\n", ins) // --- ins:&{Name:hello}
 	} else {
 		t.Error("--- type error")
+	}
+}
+
+// 根据类型实例化对象, 不需要浪费一个对象的空间, 正确姿势
+/*
+灵感来自 protobuf 生产的代码. proto.RegisterType((*Skin)(nil), "datacfg.skin")
+*/
+func Test_type2Instance3(t *testing.T) {
+	x := (*Bar)(nil)
+	fmt.Printf("--- x:%+v\n", x) // --- x:<nil>
+
+	t1 := reflect.TypeOf(x)
+	fmt.Printf("--- t1:%+v\n", t1) // --- t1:*test_reflect.Bar
+
+	v1 := reflect.ValueOf(x)
+	fmt.Printf("--- v1:%+v\n", v1)          // --- v1:<nil>
+	fmt.Printf("--- Kind:%+v\n", v1.Kind()) // --- Kind:ptr, 居然可以答应成字符串
+	fmt.Printf("--- Pointer:%+v\n", v1.Pointer())
+	fmt.Printf("--- t1:%+v\n", v1.Kind() == reflect.Ptr)
+
+	println()
+	name1 := reflect.Zero(t1).Interface().(*Bar)
+	fmt.Printf("--- name1:%+v\n", name1) // --- name1:<nil>
+
+	println()
+	ptr := reflect.New(t1.Elem()).Interface() // 指针对象, t1 是个指针类型, 所以实例化时要用
+	fmt.Printf("--- ptr:%+v\n", ptr)          // --- t2:*test_reflect.Bar
+
+	t2 := reflect.TypeOf(ptr)
+	fmt.Printf("--- t2:%+v\n", t2) // --- t2:*test_reflect.Bar
+
+	if ins, ok := ptr.(*Bar); ok {
+		ins.Name = "hello"
+		fmt.Printf("--- ins:%+v\n", ins) // --- ins:&{Name:hello}
+	} else {
+		t.Error("--- type error")
+	}
+
+	println()
+	// 分装成一个方法
+	instanceFn := func(x interface{}) interface{} {
+		return reflect.New(reflect.TypeOf(x).Elem()).Interface()
+	}
+
+	itf1 := instanceFn((*Bar)(nil))
+	if ins, ok := itf1.(*Bar); ok {
+		ins.Name = "world"
+		fmt.Printf("--- ins:%+v\n", ins)
+	} else {
 	}
 }
