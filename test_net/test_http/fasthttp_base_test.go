@@ -1,8 +1,8 @@
 package test_http
 
 import (
-	syserr "GoLab/common/error"
-	goprotobuf "GoLab/test_protobuf/proto"
+	syserr "go_lab/common/error"
+	goprotobuf "go_lab/test_protobuf/proto"
 	"encoding/json"
 	"fmt"
 	"github.com/buaazp/fasthttprouter"

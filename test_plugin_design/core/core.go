@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"GoLab/test_plugin_design/broker"
+	"go_lab/test_plugin_design/broker"
 )
 
 

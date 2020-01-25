@@ -1,9 +1,9 @@
 package test_excel
 
 import (
-	"GoLab/test_excel/gen"
 	"fmt"
 	"github.com/golang/protobuf/proto"
+	"go_lab/test_excel/gen"
 	"io/ioutil"
 	"testing"
 )

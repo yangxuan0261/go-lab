@@ -1,7 +1,7 @@
 package test_http
 
 import (
-	goprotobuf "GoLab/test_protobuf/proto"
+	goprotobuf "go_lab/test_protobuf/proto"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"

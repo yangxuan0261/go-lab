@@ -3,7 +3,7 @@
 package test_base
 
 import (
-	syserr "GoLab/common/error"
+	syserr "go_lab/common/error"
 	"errors"
 	"fmt"
 	"log"

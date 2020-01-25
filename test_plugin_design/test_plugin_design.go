@@ -1,10 +1,10 @@
 package main
 
 import (
-	"GoLab/test_plugin_design/broker"
-	"GoLab/test_plugin_design/core"
+	"go_lab/test_plugin_design/broker"
+	"go_lab/test_plugin_design/core"
 	"log"
-	"GoLab/test_plugin_design/plugins/broker/grpc"
+	"go_lab/test_plugin_design/plugins/broker/grpc"
 )
 
 // package test_base

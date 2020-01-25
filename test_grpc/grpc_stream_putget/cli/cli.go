@@ -3,7 +3,7 @@ package main
 import (
 	"google.golang.org/grpc"
 
-	pro "GoLab/test_grpc/grpc_stream_putget/proto"
+	pro "go_lab/test_grpc/grpc_stream_putget/proto"
 	"context"
 	"log"
 	"time"

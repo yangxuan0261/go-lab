@@ -1,7 +1,7 @@
 package main
 
 import (
-	"GoLab/test_mqtt/work"
+	"go_lab/test_mqtt/work"
 	"flag"
 	"fmt"
 

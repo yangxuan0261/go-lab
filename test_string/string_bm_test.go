@@ -204,10 +204,10 @@ func BenchmarkStringPlusOperator(b *testing.B) {
 
 /*
 结果:
-F:\a_link_workspace\go\GoWinEnv_new\src\GoLab\test_string>go test -run=xxx -bench=. -benchtime=3s
+F:\a_link_workspace\go\GoWinEnv_new\src\go_lab\test_string>go test -run=xxx -bench=. -benchtime=3s
 goos: windows
 goarch: amd64
-pkg: GoLab/test_string
+pkg: go_lab/test_string
 BenchmarkCopyPreAllocate-8                 49311             62112 ns/op          344065 B/op          2 allocs/op
 BenchmarkAppendPreAllocate-8               56575             63727 ns/op          344065 B/op          2 allocs/op
 BenchmarkBufferPreAllocate-8               41299             87250 ns/op          344065 B/op          2 allocs/op
@@ -219,6 +219,6 @@ BenchmarkStringBuilderWriteBytes-8         26404            139114 ns/op        
 BenchmarkBufferWriteString-8               25032            156461 ns/op          862371 B/op         14 allocs/op
 BenchmarkStringPlusOperator-8                 51          68346584 ns/op        885204123 B/op     10032 allocs/op
 PASS
-ok      GoLab/test_string       45.104s
+ok      go_lab/test_string       45.104s
 
 */

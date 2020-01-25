@@ -1,8 +1,8 @@
 package main
 
 import (
-	proto2 "GoLab/test_net/test_socket/proto"
-	"GoLab/test_net/test_socket/test_tcp"
+	proto2 "go_lab/test_net/test_socket/proto"
+	"go_lab/test_net/test_socket/test_tcp"
 	"bufio"
 	"context"
 	"crypto/tls"

@@ -1,7 +1,7 @@
 package test_cmd
 
 import (
-	"GoLab/common/convert"
+	"go_lab/common/convert"
 	"fmt"
 	"io/ioutil"
 	"os/exec"

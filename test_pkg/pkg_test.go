@@ -1,8 +1,8 @@
 package test_pkg
 
 import (
-	"GoLab/test_pkg/pkg001"
-	pkg002 "GoLab/test_pkg/pkg002"
+	"go_lab/test_pkg/pkg001"
+	pkg002 "go_lab/test_pkg/pkg002"
 	"fmt"
 	"testing"
 )
@@ -14,7 +14,7 @@ func init() {
 /*
 需要指定 launch.json 中的参数为
 
-"program": "${workspaceRoot}/src/GoLab/test_pkg/test_pkg.go", // 指定入口文件
+"program": "${workspaceRoot}/src/go_lab/test_pkg/test_pkg.go", // 指定入口文件
 
 */
 

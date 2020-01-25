@@ -1,7 +1,7 @@
 package test_redis
 
 import (
-	"GoLab/common"
+	"go_lab/common"
 	"fmt"
 	"testing"
 	"time"

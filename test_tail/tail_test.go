@@ -1,8 +1,8 @@
 package test_tail
 
 import (
-	"GoLab/common"
-	syslog "GoLab/common/log"
+	"go_lab/common"
+	syslog "go_lab/common/log"
 	"fmt"
 	"github.com/hpcloud/tail"
 	"testing"

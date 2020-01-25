@@ -1,7 +1,7 @@
 package profiler_test
 
 import (
-	"GoLab/common/pprof"
+	"go_lab/common/pprof"
 	"fmt"
 	"net/http"
 	_ "net/http/pprof"

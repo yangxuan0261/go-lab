@@ -1,10 +1,10 @@
 package test_chan
 
 import (
-	"GoLab/common"
-	"GoLab/common/pprof"
 	"context"
 	"fmt"
+	"go_lab/common"
+	"go_lab/common/pprof"
 	"log"
 	"sync"
 	"testing"
@@ -240,8 +240,8 @@ goroutine 1 [chan receive]:
 testing.(*T).Run(0xc0000a8100, 0x5615e7, 0x17, 0x567ba0, 0x47c601)
 
 goroutine 6 [chan send]:
-GoLab/test_channel.Test_goroutinueDeadLock(0xc0000a8100)
-	F:/a_link_workspace/go/GoWinEnv_new/src/GoLab/test_channel/channel_test.go:228  ch <- 5
+go_lab/test_channel.Test_goroutinueDeadLock(0xc0000a8100)
+	F:/a_link_workspace/go/GoWinEnv_new/src/go_lab/test_channel/channel_test.go:228  ch <- 5
 */
 
 func Test_ch(t *testing.T) {
