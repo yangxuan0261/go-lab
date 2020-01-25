@@ -22,6 +22,11 @@ func Test_001(t *testing.T) {
 	println("mt:", mt)
 	println("msgID:", msgID) //msgID: Msg
 
+	/* .Elem() 方法
+	// Elem returns a type's element type.
+	// It panics if the type's Kind is not Array, Chan, Map, Ptr, or Slice.
+	*/
+
 	var m2 interface{}
 	m2 = Msg{"aaa"}
 	mt2 := reflect.TypeOf(m2)
@@ -117,7 +122,7 @@ func Test_type2Instance3(t *testing.T) {
 	}
 
 	println()
-	// 分装成一个方法
+	// 封装成一个方法
 	instanceFn := func(x interface{}) interface{} {
 		return reflect.New(reflect.TypeOf(x).Elem()).Interface()
 	}
