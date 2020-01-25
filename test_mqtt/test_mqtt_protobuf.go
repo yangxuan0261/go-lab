@@ -1,11 +1,11 @@
 package main
 
 import (
-	"go_lab/test_mqtt/work"
+	"go-lab/test_mqtt/work"
 	"encoding/json"
 	"fmt"
 
-	goprotobuf "go_lab/test_protobuf/proto"
+	goprotobuf "go-lab/test_protobuf/proto"
 
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 	"github.com/golang/protobuf/proto"

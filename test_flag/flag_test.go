@@ -11,7 +11,7 @@ import (
 
 需要指定 launch.json 中的参数为
 
-   "program": "${workspaceRoot}/src/go_lab/test_flag/test_flag.go", // 指定入口文件
+   "program": "${workspaceRoot}/src/go-lab/test_flag/test_flag.go", // 指定入口文件
    "args": [
        "-conf=../../bin/conf/server.json",
        "--log",

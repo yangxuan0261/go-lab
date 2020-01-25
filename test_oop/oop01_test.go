@@ -5,7 +5,7 @@ package test_oop
 // Go 面向对象编程（译） - https://juejin.im/post/5d065cad51882523be6a92f2
 
 import (
-	"go_lab/test_oop/oop2"
+	"go-lab/test_oop/oop2"
 	"fmt"
 	"testing"
 )

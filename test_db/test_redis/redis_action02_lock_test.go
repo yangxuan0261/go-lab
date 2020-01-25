@@ -3,7 +3,7 @@ package test_redis
 // Redis 分布式锁, 参考: https://blog.didiyun.com/index.php/2019/01/14/redis-3/
 
 import (
-	"go_lab/common/redistool"
+	"go-lab/common/redistool"
 	"fmt"
 	"github.com/gomodule/redigo/redis"
 	"github.com/pkg/errors"

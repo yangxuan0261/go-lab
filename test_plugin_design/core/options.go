@@ -1,7 +1,7 @@
 package core
 
 import (
-	"go_lab/test_plugin_design/broker"
+	"go-lab/test_plugin_design/broker"
 	"context"
 	"log"
 )

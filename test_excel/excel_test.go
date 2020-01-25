@@ -3,7 +3,7 @@ package test_excel
 import (
 	"fmt"
 	"github.com/golang/protobuf/proto"
-	"go_lab/test_excel/gen"
+	"go-lab/test_excel/gen"
 	"io/ioutil"
 	"testing"
 )

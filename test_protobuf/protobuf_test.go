@@ -1,7 +1,7 @@
 package test_protobuf
 
 import (
-	goprotobuf "go_lab/test_protobuf/proto"
+	goprotobuf "go-lab/test_protobuf/proto"
 	"fmt"
 	"io"
 	"os"

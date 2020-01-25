@@ -1,7 +1,7 @@
 package log
 
 import (
-	syslog "go_lab/test_log_zap/log"
+	syslog "go-lab/test_log_zap/log"
 	"testing"
 
 	"go.uber.org/zap"

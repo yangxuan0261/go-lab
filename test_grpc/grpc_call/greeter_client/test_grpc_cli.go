@@ -1,7 +1,7 @@
 package main
 
 import (
-	pb "go_lab/test_grpc/grpc_call/aaa"
+	pb "go-lab/test_grpc/grpc_call/aaa"
 	"context"
 	"crypto/tls"
 	"crypto/x509"

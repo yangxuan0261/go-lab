@@ -175,8 +175,8 @@ func ExistsFile(path string) bool {
 func Test_api(t *testing.T) {
 	//fmt.Println("--- path:", os.Args[0]) // C:\Users\wolegequ\AppData\Local\Temp\___Test_api_in_GoLab_test_file.exe
 
-	path1 := "F:/a_link_workspace/go/GoWinEnv_new/src/go_lab/test_file/"
-	path2 := "F:/a_link_workspace/go/GoWinEnv_new/src/go_lab/test_file/file_test.go"
+	path1 := "F:/a_link_workspace/go/GoWinEnv_new/src/go-lab/test_file/"
+	path2 := "F:/a_link_workspace/go/GoWinEnv_new/src/go-lab/test_file/file_test.go"
 	fmt.Printf("--- exist: %v\n", ExistsDir(path1))
 	fmt.Printf("--- filepath.Base: %v\n", filepath.Base(path2))
 	fmt.Printf("--- filepath.Dir: %v\n", filepath.Dir(path2))

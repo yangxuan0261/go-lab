@@ -1,9 +1,9 @@
 package main
 
 import (
-	"go_lab/common"
-	proto2 "go_lab/test_net/test_socket/proto"
-	"go_lab/test_net/test_socket/test_tcp"
+	"go-lab/common"
+	proto2 "go-lab/test_net/test_socket/proto"
+	"go-lab/test_net/test_socket/test_tcp"
 	"context"
 	"crypto/tls"
 	"crypto/x509"

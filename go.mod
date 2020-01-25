@@ -1,4 +1,4 @@
-module go_lab
+module go-lab
 
 go 1.13
 
