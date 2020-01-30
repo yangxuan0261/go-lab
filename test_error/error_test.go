@@ -14,6 +14,13 @@ import (
 	"time"
 )
 
+/*
+
+var ErrCouldNotOpen = errors.New("could not open") // errors.New 对于简单静态字符串的错误, 不用每次遇到相同的错误都返回新实例
+fmt.Errorf 用于返回需要格式化的错误
+
+*/
+
 func main() {
 	// test_001()
 	// test_0012()

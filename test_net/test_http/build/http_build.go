@@ -1,10 +1,10 @@
 package main
 
 import (
-	syslog "go-lab/test_log_zap/log"
 	"fmt"
 	"github.com/buaazp/fasthttprouter"
 	"github.com/valyala/fasthttp"
+	syslog "go-lab/test_log_zap/log"
 	"log"
 )
 
@@ -26,5 +26,6 @@ func main() {
 	router := fasthttprouter.New()
 	router.GET("/hello", hello)
 	router.POST("/test2ue4", Test2ue4)
+	fmt.Printf("--- fasthttp ListenAndServe: 8002\n")
 	log.Fatal(fasthttp.ListenAndServe(":8002", router.Handler))
 }
