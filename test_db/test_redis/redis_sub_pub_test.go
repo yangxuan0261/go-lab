@@ -1,7 +1,7 @@
 package test_redis
 
 import (
-	"go-lab/common"
+	"go-lab/lib"
 	"fmt"
 	"testing"
 	"time"
@@ -70,7 +70,7 @@ func Test_AnotherConn(t *testing.T) {
 	println("--- close sub")
 	suber.Close()
 
-	common.WaitSignal()
+	lib.WaitSignal()
 	fmt.Println("--- exit Test_AnotherConn")
 }
 
@@ -103,6 +103,6 @@ func Test_AnotherConn(t *testing.T) {
 //	println("--- close sub")
 //	suber.Close()
 //
-//	common.WaitSignal()
+//	lib.WaitSignal()
 //	fmt.Println("--- exit Test_SameConn")
 //}

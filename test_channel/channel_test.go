@@ -3,8 +3,8 @@ package test_chan
 import (
 	"context"
 	"fmt"
-	"go-lab/common"
-	"go-lab/common/pprof"
+	"go-lab/lib"
+	"go-lab/lib/pprof"
 	"log"
 	"sync"
 	"testing"
@@ -296,6 +296,6 @@ func Test_gorLeak(t *testing.T) {
 	}
 
 	fmt.Printf("--- ret:%+v\n", isValid)
-	common.WaitSignal()
+	lib.WaitSignal()
 	fmt.Printf("--- exit\n")
 }

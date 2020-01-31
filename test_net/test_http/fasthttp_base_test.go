@@ -1,7 +1,7 @@
 package test_http
 
 import (
-	syserr "go-lab/common/error"
+	syserr "go-lab/lib/error"
 	goprotobuf "go-lab/test_protobuf/proto"
 	"encoding/json"
 	"fmt"

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"go-lab/common"
+	"go-lab/lib"
 	proto2 "go-lab/test_net/test_socket/proto"
 	"go-lab/test_net/test_socket/test_tcp"
 	"context"
@@ -134,6 +134,6 @@ func main() {
 	}()
 
 	log.Println("--- lintening addr:", addr)
-	common.WaitSignal()
+	lib.WaitSignal()
 	log.Println("--- exist, signal 222:")
 }

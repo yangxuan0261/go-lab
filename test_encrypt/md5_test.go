@@ -1,4 +1,4 @@
-package test_md5
+package test_encrypt
 
 import (
 	"crypto/md5"
@@ -50,7 +50,7 @@ func Test_str(t *testing.T) {
 	if md5Str, err := GetStringMD51(str); err != nil {
 		panic(fmt.Sprintf("--- err:%+v\n", err))
 	} else {
-		fmt.Println("--- md5Str:", md5Str) // cf7be73c856c99c0fe02a78a562375c5
+		fmt.Println("--- md5Str 111:", md5Str) // cf7be73c856c99c0fe02a78a562375c5
 	}
 
 	fmt.Println("--- md5Str 222:", GetStringMD52(str)) // cf7be73c856c99c0fe02a78a562375c5

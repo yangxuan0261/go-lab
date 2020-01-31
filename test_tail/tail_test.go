@@ -1,8 +1,8 @@
 package test_tail
 
 import (
-	"go-lab/common"
-	syslog "go-lab/common/log"
+	"go-lab/lib"
+	syslog "go-lab/lib/log"
 	"fmt"
 	"github.com/hpcloud/tail"
 	"testing"
@@ -47,6 +47,6 @@ func Test_tail(t *testing.T) {
 	go writeLog()
 	go listenLog()
 
-	common.WaitSignal()
+	lib.WaitSignal()
 	fmt.Println("--- exit Test_tail")
 }
