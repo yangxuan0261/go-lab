@@ -1,13 +1,13 @@
 package test_http
 
 import (
-	syserr "go-lab/lib/error"
-	goprotobuf "go-lab/test_protobuf/proto"
 	"encoding/json"
 	"fmt"
 	"github.com/buaazp/fasthttprouter"
 	"github.com/golang/protobuf/proto"
 	"github.com/valyala/fasthttp"
+	syserr "go-lab/lib/error"
+	goprotobuf "go-lab/test_protobuf/proto"
 	"log"
 	"testing"
 )

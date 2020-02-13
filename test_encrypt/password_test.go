@@ -13,7 +13,7 @@ const (
 	NumStr     = "0123456789"
 	CharUpStr  = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	CharLowStr = "abcdefghijklmnopqrstuvwxyz"
-	SpecStr    = "~!@#$%^&*()_+-=?,."
+	SpecStr    = "~!@#$%^&*()_+-=?"
 )
 
 var StrArr1 = [][]byte{[]byte(NumStr), []byte(CharUpStr), []byte(CharLowStr), []byte(SpecStr)}

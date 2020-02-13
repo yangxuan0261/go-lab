@@ -3,10 +3,12 @@ module go-lab
 go 1.13
 
 require (
+	firebase.google.com/go v3.12.0+incompatible
 	github.com/DataDog/zstd v1.4.4 // indirect
 	github.com/buaazp/fasthttprouter v0.1.1
 	github.com/eclipse/paho.mqtt.golang v1.2.0
 	github.com/garyburd/redigo v1.6.0
+	github.com/gin-gonic/gin v1.5.0
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/goinggo/mapstructure v0.0.0-20140717182941-194205d9b4a9 // indirect
 	github.com/golang/protobuf v1.3.2
@@ -15,6 +17,7 @@ require (
 	github.com/hpcloud/tail v1.0.0
 	github.com/json-iterator/go v1.1.7
 	github.com/kavu/go_reuseport v1.4.0 // indirect
+	github.com/labstack/echo/v4 v4.1.14
 	github.com/micro/go-micro v1.13.1 // indirect
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/olzhy/quote v1.0.0
@@ -28,9 +31,10 @@ require (
 	github.com/xdg/stringprep v1.0.0 // indirect
 	go.mongodb.org/mongo-driver v1.2.0
 	go.uber.org/zap v1.10.0
-	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
-	golang.org/x/net v0.0.0-20191011234655-491137f69257
+	golang.org/x/crypto v0.0.0-20191227163750-53104e6ec876
+	golang.org/x/net v0.0.0-20191209160850-c0dbc17a3553
 	golang.org/x/text v0.3.2
+	google.golang.org/api v0.8.0
 	google.golang.org/grpc v1.24.0
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
