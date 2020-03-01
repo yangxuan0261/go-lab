@@ -30,15 +30,15 @@ func Test_firebase01(t *testing.T) {
 	//cliRegToken1 := "cZeBocpAO8c:APA91bELuBaRgBnz2qlqt8hVcR0TPjf7yDHAxExI7PKC-mBquIAtZFQuxa-aVACyt1HEGaMfNB3tTyluAdswP_ClF8nvGD1Wa_ALOV7tDHdUebsvcs7sJTueiaR3jDyhOgEGaCcztz5y"
 	//cliRegToken2 := "eeaAQ6tdrrY:APA91bEXmLUYWd2Go1oGe2t1hjhJIik2CrvshAtc8976dM0WYT6jezRcpCmfttXTI-JKsVI1zsGl50U4j4jLrHZ9yPubYokBeV3Sf0xfgu0b9j2sqZNnoDN16qMLGYxhyb3jvU7PrX54"
 	//cliRegToken3 := "f8GFKqYVGLo:APA91bGp0Ze6tRzsevqliCKjL16CPGy7S6nU5-1Ufbtalw4pX6ORIyuNkC4qZVgJsZMynuE04EcbTu2hyRio5bRvhYu4P08C47I2qwyWLTTA-zQ8EqGoM5W2wyAG2VJ7914lg80vc8bN"
-	//cliRegToken4 := "ck0f20pk0vQ:APA91bE5st7ePyxsOxpA-XiBY-npNew9KEIIynVMqFxEXSj96RtaXfiUBvSqfI-9CaQAeDUUFbgklu8vIafoVTqOTiTCWz4FNMxgB5XMzAYntlwRJ61-IR1LYzDqm4a7grHX0HC0DJvS"
-	cliRegToken5 := "cmpPb8MaShg:APA91bEYzwlWCLGxSJApAbNajv6RWOxbCIUg9N8jhYVZeZsYqetRKWm5wSxAaT0DoO6BTXiaEwKaKoHKUq9W4tJT42U-bll3N9_gTMai3THAujh33dlywLS18iLbpbzUB6bm_O3adVFn"
+	cliRegToken4 := "cE2sUszKbvs:APA91bGTEkdgQAEPFCALT_71xXwA-_i-dCKKnGw6bINvo-4_EuURkUI2J-7ug3b0hCe9ux35-2g-k_fMOZzuXiCe5guOYmiho4_rgpjQzqDQnFJxmm7h4G-hMFkbVeCXB1KEqiKz_zql"
+	cliRegToken5 := "f_UVCtvIoDU:APA91bFVPfrDqBS1B6qKYTcDS7fajNZYyAGv5k1kSxdfR4FckIJ0c9NNV3LkO21H6me61NOxKpwyzXDvXEANYNsqVsPjoegkuOFCave1kq7TsNiALu1ao8MYAAlHGDV6ooHWCIsPgj3z"
 
 	// These registration tokens come from the client FCM SDKs.
 	cliRegTokenArr := []string{
 		//cliRegToken1,
 		//cliRegToken2,
 		//cliRegToken3,
-		//cliRegToken4,
+		cliRegToken4,
 		cliRegToken5,
 		// ...
 	}
@@ -77,10 +77,8 @@ func unsubscribe(ctx context.Context, client *messaging.Client, topic string, re
 // 对多个 token 发送, 设备必须先订阅某个主题
 func sendMsgToTopic(ctx context.Context, client *messaging.Client, topic string) {
 	notification := &messaging.Notification{
-		Title: "RMG Rummy Station",
-		Body:  "Nice to meet you~111\nNice to meet you~222\nNice to meet you~333\n",
-		//ImageURL: "https://www.baidu.com/img/PC-pad_6d2362fef025ffd42a538cfab26ec26c.png?123",
-		//ImageURL: "https://avatar.csdnimg.cn/8/6/B/3_yangxuan0261_1555516125.jpg?123", // 必须是 https
+		Title:    "RMG Rummy Station",
+		Body:     "Nice to meet you~111\nNice to meet you~222\nNice to meet you~333\n",
 		ImageURL: "https://img-blog.csdnimg.cn/20200216122912287.png", // 必须是 https
 	}
 
@@ -94,7 +92,9 @@ func sendMsgToTopic(ctx context.Context, client *messaging.Client, topic string)
 		Topic:        topic,
 		Android: &messaging.AndroidConfig{
 			Notification: &messaging.AndroidNotification{
-				Color: "#c9a63e",
+				Color:                 "#c9a63e",
+				DefaultVibrateTimings: true, // 震动
+				Priority:              messaging.PriorityMax,
 			},
 		},
 	}
