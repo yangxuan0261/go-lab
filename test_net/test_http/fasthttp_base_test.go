@@ -102,7 +102,14 @@ func PostRummy(ctx *fasthttp.RequestCtx) {
 		fmt.Printf("--- success, data:%+v\n", aIns)
 	}
 
-	fmt.Fprint(ctx, buff) // 原封不动返回去
+	aIns.Deviceid = "srv msg~"
+	buff, err = json.Marshal(aIns)
+	if err != nil {
+		fmt.Printf("--- err:%+v\n", err)
+		return
+	}
+
+	ctx.Response.SetBody(buff) // 原封不动返回去
 }
 
 func Testue4(ctx *fasthttp.RequestCtx) {

@@ -7,6 +7,8 @@ require (
 	github.com/DataDog/zstd v1.4.4 // indirect
 	github.com/buaazp/fasthttprouter v0.1.1
 	github.com/eclipse/paho.mqtt.golang v1.2.0
+	github.com/emersion/go-imap v1.0.4
+	github.com/emersion/go-message v0.11.1
 	github.com/garyburd/redigo v1.6.0
 	github.com/gin-gonic/gin v1.5.0
 	github.com/go-sql-driver/mysql v1.4.1
