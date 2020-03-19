@@ -1,4 +1,4 @@
-package test_mail
+package main
 
 import (
 	"bufio"
@@ -83,6 +83,10 @@ func AcceptAllMail(addr, user, pass string) ([]Literal, error) {
 	return response, nil
 }
 
+func main() {
+	Test_fetch01(nil)
+}
+
 func Test_fetch01(t *testing.T) {
 	err := doFetch()
 	if err != nil {
@@ -103,8 +107,10 @@ func doFetch() error {
 		return err
 	}
 
-	fmt.Println("--- Username:", acc.Username)
-	fmt.Println("--- Password:", acc.Password)
+	fmt.Println("Username:", acc.Username)
+	fmt.Println("Password:", acc.Password)
+
+	println("正在处理中......")
 
 	request, err := AcceptAllMail("imap.mxhichina.com:993", acc.Username, acc.Password)
 	//request, err := AcceptAllMail("imap.mxhichina.com:993", "aaa@bbb.com", "ccc")
@@ -112,8 +118,6 @@ func doFetch() error {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	println("正在处理中......")
 
 	var response []*ResponseMessage
 	for _, r := range request {

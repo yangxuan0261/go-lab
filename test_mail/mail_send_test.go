@@ -38,7 +38,7 @@ func Test_aliyun(t *testing.T) {
 	m.SetHeader("Subject", "Welcome to RMG Station")
 	m.SetBody("text/html", content)
 
-	d := gomail.NewDialer("smtp.mxhichina.com", 465, from, "password")
+	d := gomail.NewDialer("smtp.mxhichina.com", 465, from, "Password")
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 	err := d.DialAndSend(m)
 	if err != nil {
@@ -59,7 +59,7 @@ func Test_qq02(t *testing.T) {
 	m.SetHeader("Subject", "Welcome to RMG Station")
 	m.SetBody("text/html", content)
 
-	d := gomail.NewDialer("smtp.qq.com", 25, from, "password")
+	d := gomail.NewDialer("smtp.qq.com", 25, from, "Password")
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 	err := d.DialAndSend(m)
 	if err != nil {
