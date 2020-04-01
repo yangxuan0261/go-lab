@@ -27,19 +27,17 @@ func Test_firebase01(t *testing.T) {
 
 	randTopic := "sdfesdfesdfesdfes"
 	// This registration token comes from the client FCM SDKs.
-	//cliRegToken1 := "cZeBocpAO8c:APA91bELuBaRgBnz2qlqt8hVcR0TPjf7yDHAxExI7PKC-mBquIAtZFQuxa-aVACyt1HEGaMfNB3tTyluAdswP_ClF8nvGD1Wa_ALOV7tDHdUebsvcs7sJTueiaR3jDyhOgEGaCcztz5y"
-	//cliRegToken2 := "eeaAQ6tdrrY:APA91bEXmLUYWd2Go1oGe2t1hjhJIik2CrvshAtc8976dM0WYT6jezRcpCmfttXTI-JKsVI1zsGl50U4j4jLrHZ9yPubYokBeV3Sf0xfgu0b9j2sqZNnoDN16qMLGYxhyb3jvU7PrX54"
-	//cliRegToken3 := "f8GFKqYVGLo:APA91bGp0Ze6tRzsevqliCKjL16CPGy7S6nU5-1Ufbtalw4pX6ORIyuNkC4qZVgJsZMynuE04EcbTu2hyRio5bRvhYu4P08C47I2qwyWLTTA-zQ8EqGoM5W2wyAG2VJ7914lg80vc8bN"
-	cliRegToken4 := "cE2sUszKbvs:APA91bGTEkdgQAEPFCALT_71xXwA-_i-dCKKnGw6bINvo-4_EuURkUI2J-7ug3b0hCe9ux35-2g-k_fMOZzuXiCe5guOYmiho4_rgpjQzqDQnFJxmm7h4G-hMFkbVeCXB1KEqiKz_zql"
-	cliRegToken5 := "f_UVCtvIoDU:APA91bFVPfrDqBS1B6qKYTcDS7fajNZYyAGv5k1kSxdfR4FckIJ0c9NNV3LkO21H6me61NOxKpwyzXDvXEANYNsqVsPjoegkuOFCave1kq7TsNiALu1ao8MYAAlHGDV6ooHWCIsPgj3z"
+	cliRegToken1 := "fhqXFqU-_K4:APA91bHn6PkgY4xeW0nquD4-KC0SCS0Ly4f2wzhWQAaUW7E2tdWkzCwc2gd3fkCb_dxlfHkQoDNi0AADt6mlk2imcLFRDhG4F9fyQKSDT43vyFo8w2HX2_8xWhtQ1q8pPWKAm5-AHVB8"
+	//cliRegToken2 := "dnSPVyzwTFg:APA91bFNQ2qyajGVxYsdw38Z-8sse-YLGlZp60-_btD2pDMVFsR3aQ-43OKAt-1JmTuHw-qb2JUsC-XBc5ktrYEarJ0hX1DcZ_krzV1DYc335eVfZ56L4A51ahcp5cub-ozX-B9ON5PM"
+	//cliRegToken3 := "ccqkWMM5CzI:APA91bEXQcd_N0LUOH2xr3WORvtXBTCHr7_FI7dmalQfJVNdIMJ6AVEGLefmmUBtsvEm-y_LrobjYXtirZh-PeUD-0SC0jzkD8Mu3itpFNglHi3MdDUBuC6y2EOdeASkRHZv-nzV5GaL"
+	//cliRegToken4 := "eDAbTuRtJwg:APA91bGqM1d1W5v_VyG7j5wOVLPfjGVl2zgjQZPAl27PrxeqqMKsu2p9HPt3lB3ZU0B_GLa_qasbT98XOQfTExCeXJa9vkM1D5NhG3GABLEImaCPJZ2x_NoZcYirO-jzZnhXqsy6cfsN"
 
 	// These registration tokens come from the client FCM SDKs.
 	cliRegTokenArr := []string{
-		//cliRegToken1,
+		cliRegToken1,
 		//cliRegToken2,
 		//cliRegToken3,
-		cliRegToken4,
-		cliRegToken5,
+		//cliRegToken4,
 		// ...
 	}
 	_ = randTopic
@@ -77,10 +75,12 @@ func unsubscribe(ctx context.Context, client *messaging.Client, topic string, re
 // 对多个 token 发送, 设备必须先订阅某个主题
 func sendMsgToTopic(ctx context.Context, client *messaging.Client, topic string) {
 	notification := &messaging.Notification{
-		Title:    "RMG Rummy Station",
-		Body:     "Nice to meet you~111\nNice to meet you~222\nNice to meet you~333\n",
-		ImageURL: "https://img-blog.csdnimg.cn/20200216122912287.png", // 必须是 https
+		Title: "RMG Rummy Station",
+		Body:  "Nice to meet you~111\nNice to meet you~222\nNice to meet you~333\n",
+		//ImageURL: "https://img-blog.csdnimg.cn/20200216122912287.png", // 必须是 https
 	}
+
+	cnt := 9
 
 	// See documentation on defining a message payload.
 	message := &messaging.Message{
@@ -95,6 +95,10 @@ func sendMsgToTopic(ctx context.Context, client *messaging.Client, topic string)
 				Color:                 "#c9a63e",
 				DefaultVibrateTimings: true, // 震动
 				Priority:              messaging.PriorityMax,
+				NotificationCount:     &cnt,
+
+				//ImageURL:"https://img-blog.csdnimg.cn/20200330171658746.jpg", // 覆盖
+				Icon: "https://img-blog.csdnimg.cn/20200401153051574.png",
 			},
 		},
 	}

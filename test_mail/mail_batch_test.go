@@ -58,8 +58,10 @@ func sendAll(mailArr []string, content string, senderArr []*Sender) {
 	for index, to := range mailArr {
 		sIndex := index % slen
 		from := senderArr[sIndex]
+		//to = "wilkeryun@gmail.com"
 		fmt.Printf("--- index:%02d, from: %s, to: %s\n", index, from.username, to)
 		sendMail(from.username, to, from.password, content)
+		//panic("中断测试")
 		time.Sleep(time.Second * 1) // 不敢发的太频繁, 间隔 1s
 	}
 }
@@ -69,7 +71,7 @@ func sendMail(from string, to string, password, content string) {
 	m.SetAddressHeader("From", from, "RMG Station")
 	m.SetAddressHeader("To", to, "")
 	m.SetHeader("Subject", "RMG Station")
-	m.SetBody("text/html", content) // 内容换行必须要用 <br>
+	m.SetBody("text/html", content) // html 内容, 所以换行必须要用 <br>
 
 	d := gomail.NewDialer("smtp.mxhichina.com", 465, from, password)
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
@@ -82,7 +84,7 @@ func sendMail(from string, to string, password, content string) {
 func Test_sendAll(t *testing.T) {
 	toPath := "E:/its_rummy_info/mail/20200325_144011/temp_support@rmgstation.com_20200325-114223_871.txt"
 	fromPath := "E:/its_rummy_info/mail/20200325_144011/temp_sender.txt"
-	contentPath := "E:/its_rummy_info/mail/20200325_144011/content.txt"
+	contentPath := "E:/its_rummy_info/mail/20200325_144011/content.html"
 
 	toArr := getToArr(toPath)
 	senderArr := getFromArr(fromPath)

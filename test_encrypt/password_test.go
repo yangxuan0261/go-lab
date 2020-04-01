@@ -25,8 +25,8 @@ var StrArr5 = [][]byte{[]byte(NumStr), []byte(CharLowStr)}
 func genPass(num int) string {
 
 	var dstBts [][]byte
-	dstBts = StrArr1
-	//dstBts = StrArr2
+	//dstBts = StrArr1
+	dstBts = StrArr2
 	//dstBts = StrArr3
 	//dstBts = StrArr4
 	//dstBts = StrArr5
