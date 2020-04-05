@@ -11,7 +11,7 @@ var dbIns *sql.DB
 func init() {
 	var err error
 
-	addr := "root:123456@tcp(192.168.1.177:6306)/testdb1?charset=utf8mb4"
+	addr := "root:123456@tcp(192.168.2.233:6306)/testdb1?charset=utf8mb4"
 	dbIns, err = sql.Open("mysql", addr)
 	if err != nil {
 		panic(err)
@@ -21,7 +21,10 @@ func init() {
 }
 
 func Test_Insert(t *testing.T) {
-	stmt, _ := dbIns.Prepare(`INSERT INTO user (name, age) VALUES (?, ?)`)
+	stmt, err := dbIns.Prepare(`INSERT INTO user (name, age) VALUES (?, ?)`)
+	if err != nil {
+		panic(err)
+	}
 	defer stmt.Close()
 
 	for i := 1; i <= 5; i++ {
@@ -39,7 +42,10 @@ func Test_Insert(t *testing.T) {
 }
 
 func Test_Delete(t *testing.T) {
-	stmt, _ := dbIns.Prepare(`DELETE FROM user WHERE id=?`)
+	stmt, err := dbIns.Prepare(`DELETE FROM user WHERE id=?`)
+	if err != nil {
+		panic(err)
+	}
 	defer stmt.Close()
 
 	ret, err := stmt.Exec(1)
@@ -53,14 +59,17 @@ func Test_Delete(t *testing.T) {
 }
 
 func Test_Upate(t *testing.T) {
-	smt, err := dbIns.Prepare(`UPDATE user SET name=? WHERE id<=?`)
-	defer smt.Close()
+	stmt, err := dbIns.Prepare(`UPDATE user SET name=? WHERE id<=?`)
+	if err != nil {
+		panic(err)
+	}
+	defer stmt.Close()
 
 	if err != nil {
 		panic(err)
 	}
 
-	result, err := smt.Exec("wolegequ", 2)
+	result, err := stmt.Exec("wolegequ", 2)
 	if err != nil {
 		panic(err)
 	}
@@ -81,7 +90,10 @@ func Test_QuerSingle(t *testing.T) {
 }
 
 func Test_QuerMulti(t *testing.T) {
-	stmt, _ := dbIns.Prepare(`SELECT * From user where age >= ? AND age < ?`) // 映射顺序必须与数据库一致
+	stmt, err := dbIns.Prepare(`SELECT * From user where age >= ? AND age < ?`) // 映射顺序必须与数据库一致
+	if err != nil {
+		panic(err)
+	}
 	defer stmt.Close()
 
 	rows, err := stmt.Query(20, 500)

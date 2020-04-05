@@ -19,7 +19,10 @@ type userTB struct {
 }
 
 func (dbw *DbWorker) insertData() {
-	stmt, _ := dbw.Db.Prepare(`INSERT INTO user (name, age) VALUES (?, ?)`)
+	stmt, err := dbw.Db.Prepare(`INSERT INTO user (name, age) VALUES (?, ?)`)
+	if err != nil {
+		panic(err)
+	}
 	defer stmt.Close()
 
 	ret, err := stmt.Exec("xys", 25)
@@ -40,17 +43,20 @@ func (dbw *DbWorker) QueryDataPre() {
 }
 
 func (dbw *DbWorker) queryData() {
-	stmt, _ := dbw.Db.Prepare(`SELECT * From user where age >= ? AND age < ?`)
+	stmt, err := dbw.Db.Prepare(`SELECT * From user where age >= ? AND age < ?`)
+	if err != nil {
+		panic(err)
+	}
 	defer stmt.Close()
 
 	dbw.QueryDataPre()
 
 	rows, err := stmt.Query(20, 30)
-	defer rows.Close()
 	if err != nil {
-		fmt.Printf("insert data error: %v\n", err)
-		return
+		panic(err)
 	}
+	defer rows.Close()
+
 	for rows.Next() {
 		rows.Scan(&dbw.UserInfo.Id, &dbw.UserInfo.Name, &dbw.UserInfo.Age)
 		if err != nil {
@@ -74,7 +80,6 @@ func Test_001(t *testing.T) {
 	dbw.Db, err = sql.Open("mysql", dbw.Dsn)
 	if err != nil {
 		panic(err)
-		return
 	}
 	defer dbw.Db.Close()
 
